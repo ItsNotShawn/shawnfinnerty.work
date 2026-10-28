@@ -12,6 +12,7 @@ Personal site for Shawn Finnerty. GitHub Pages builds it with Jekyll automatical
 | Client work + testimonials | `_clients/*.md` | `/freelance/clients/<file-name>/` |
 | Personal projects | `_projects/*.md` | `/portfolio/<file-name>/` |
 | Portfolio channels (names, numbers, colors) | `_data/channels.yml` | filter buttons + chips |
+| "AI, on my terms" page (draft copy) | `portfolio/ai/index.html` | `/portfolio/ai/` (linked from the AI channel via `intro_url`) |
 | Styles / scripts | `assets/css/site.css`, `assets/js/site.js` | |
 
 ## Add a portfolio project
