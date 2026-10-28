@@ -55,8 +55,6 @@ The dark pages (home, portfolio, projects) are styled like a worn VHS tape playi
 - **Scanlines:** dark scan lines plus an RGB phosphor mask.
 - The browser window itself is framed as the TV (rounded tube corners and curved-glass shading).
 
-To show a specific animation on a page (for example in the Now Playing area or future spots), use `screen:` in its front matter.
-
 ## Picture settings
 
 The MENU button (dark pages) has Intensity (Low / Med / High, default High), Color split, Tape, Tracking, Scanlines and Motion. Visitors' choices are remembered. Effect strengths are at the top of `assets/css/site.css`: everything scales with `--k`, which Intensity sets. The overlay layers are in `_includes/vhs.html`.
