@@ -173,7 +173,7 @@
   ["lg-r", "lg-g", "lg-b", "sm-r", "sm-g", "sm-b"].forEach(function (id) { rgbNodes[id] = document.querySelector('[data-rgb="' + id + '"]'); });
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
   var CH = { r: { mag: 1, rot: 16 }, g: { mag: .3, rot: -35 }, b: { mag: .65, rot: -14 } };   // per-color personality
-  var SIZE = { lg: 4.2, sm: 1.1 };                                                             // px at Intensity 1
+  var SIZE = { lg: 2.8, sm: .75 };                                                             // px at Intensity 1
   var EASE = 0.06;                                                                             // lower = floatier
   var REST = { x: -.7, y: -.25 };                                                              // no mouse: drift left, slightly up
   var cur = { x: REST.x, y: REST.y }, tgt = { x: REST.x, y: REST.y }, loop = null;
