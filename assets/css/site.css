@@ -45,6 +45,11 @@ html[data-fx-level="3"] { --k: 1.8; }
 html.no-split { --split-a: 0; }
 html.no-tape { --tape-a: 0; }
 
+@property --mx { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --my { syntax: "<number>"; inherits: true; initial-value: 0; }
+html { transition: --mx .4s ease-out, --my .4s ease-out; }
+@media (prefers-reduced-motion: reduce) { html { transition: none; } }
+
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -357,14 +362,15 @@ html.no-motion .rec { animation: none; }
    PICTURE EFFECTS (glow, fuzz, scanlines) - screen theme only
    ========================================================================== */
 /* Chroma smear follows the mouse everywhere: red smears toward the cursor side, blue the other way.
-   --smx/--smy = resting smear direction (slightly right, like real tape) + mouse position. */
+   --smx/--smy = resting smear direction (slightly right, like real tape) + mouse position.
+   Body text keeps a fixed smear; headings and images follow the mouse (cheaper to repaint). */
 .theme-screen {
   --smx: calc(.35 + var(--mx) * 1.6);
   --smy: calc(var(--my) * .8);
   /* all text inherits this: a soft smear, scaled for body copy */
   text-shadow:
-    calc(.07em * var(--smx) * var(--k)) calc(.07em * var(--smy) * var(--k)) calc(.06em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
-    calc(-.05em * var(--smx) * var(--k)) calc(-.05em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(40, 140, 255, calc(.4 * var(--tape-a)));
+    calc(.03em * var(--k)) 0 calc(.05em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
+    calc(-.02em * var(--k)) 0 calc(.04em * var(--k)) rgba(40, 140, 255, calc(.4 * var(--tape-a)));
 }
 /* Display type: permanent RGB misregistration (Color split, fixed) + the mouse-steered smear */
 .theme-screen .logo__name,
@@ -383,8 +389,8 @@ html.no-motion .rec { animation: none; }
     calc(-.03em * var(--k)) 0 rgba(255, 25, 70, calc(.9 * var(--split-a))),
     calc(.03em * var(--k)) 0 rgba(0, 185, 255, calc(.9 * var(--split-a))),
     0 calc(.02em * var(--k)) rgba(40, 255, 120, calc(.5 * var(--split-a))),
-    calc(.09em * var(--smx) * var(--k)) calc(.09em * var(--smy) * var(--k)) calc(.07em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
-    calc(-.07em * var(--smx) * var(--k)) calc(-.07em * var(--smy) * var(--k)) calc(.06em * var(--k)) rgba(40, 120, 255, calc(.4 * var(--tape-a))),
+    calc(.1em * var(--smx) * var(--k)) calc(.1em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(255, 30, 80, calc(.7 * var(--tape-a))),
+    calc(-.08em * var(--smx) * var(--k)) calc(-.08em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(30, 120, 255, calc(.6 * var(--tape-a))),
     var(--fx-glow);
 }
 .theme-screen .logo__name, .theme-screen .portfolio__title { filter: var(--fx-blur); }
@@ -393,8 +399,7 @@ html.no-motion .rec { animation: none; }
 .theme-screen .logo__stripes,
 .theme-screen .nosignal,
 .theme-screen .media,
-.theme-screen .ident,
-.theme-screen .ident__media { filter: url(#chroma); }
+.theme-screen .ident { filter: url(#chroma); }
 html.no-tape .theme-screen .logo__stripes, html.no-tape .theme-screen .nosignal, html.no-tape .theme-screen .media,
 html.no-tape .theme-screen .ident, html.no-tape .theme-screen .ident__media { filter: none; }
 
@@ -405,7 +410,7 @@ html.no-motion .theme-screen * { animation-name: none !important; }
   content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 49;
   opacity: calc(.11 * var(--k) * var(--tape-a));
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain .7s steps(6) infinite;
+  animation: grain .7s steps(6) infinite; will-change: transform;
 }
 @keyframes grain {
   0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); }
@@ -418,7 +423,7 @@ html.no-motion .theme-screen * { animation-name: none !important; }
   background:
     repeating-linear-gradient(0deg, rgba(0,0,0, calc(.2 * var(--k))) 0 1px, transparent 1px 3px),
     repeating-linear-gradient(90deg, rgba(255,0,60, calc(.03 * var(--k))) 0 1px, rgba(0,255,90, calc(.03 * var(--k))) 1px 2px, rgba(0,90,255, calc(.03 * var(--k))) 2px 3px);
-  animation: flicker 5s steps(1) infinite;
+  animation: flicker 5s steps(1) infinite; will-change: opacity;
 }
 @keyframes flicker { 0%, 100% { opacity: 1; } 31% { opacity: .92; } 32% { opacity: 1; } 67% { opacity: .95; } 68% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .theme-screen::after { animation: none; } }
@@ -429,12 +434,9 @@ html.no-scan .theme-screen::after { display: none; }
 /* washed-out, warm tape color */
 .vhs__grade {
   inset: 0; z-index: 48;
-  background: rgba(128,128,128, calc(.09 * var(--k) * var(--tape-a))); mix-blend-mode: saturation;
+  background: rgba(255, 170, 110, calc(.045 * var(--k) * var(--tape-a)));
 }
-.vhs__grade::after {
-  content: ""; position: absolute; inset: 0;
-  background: rgba(255, 170, 110, calc(.07 * var(--k) * var(--tape-a))); mix-blend-mode: soft-light;
-}
+
 /* head-switching tear along the bottom edge */
 .vhs__head {
   left: 0; right: 0; bottom: 0; height: calc(clamp(8px, 1.6vh, 18px) * var(--k)); z-index: 52;
@@ -442,7 +444,6 @@ html.no-scan .theme-screen::after { display: none; }
   background:
     repeating-linear-gradient(0deg, rgba(255,255,255,.55) 0 1px, transparent 1px 3px),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='30'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: screen;
   transform-origin: bottom; animation: head-switch .25s steps(2) infinite;
   -webkit-mask-image: linear-gradient(to top, #000 40%, transparent);
           mask-image: linear-gradient(to top, #000 40%, transparent);
@@ -454,9 +455,7 @@ html.no-scan .theme-screen::after { display: none; }
   background:
     repeating-linear-gradient(0deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px),
     linear-gradient(transparent, rgba(255,255,255,.07) 30%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.07) 70%, transparent);
-  -webkit-backdrop-filter: blur(1.2px) saturate(1.6) hue-rotate(-12deg);
-          backdrop-filter: blur(1.2px) saturate(1.6) hue-rotate(-12deg);
-  animation: tracking-roll 11s linear infinite;
+  animation: tracking-roll 11s linear infinite; will-change: transform;
 }
 @keyframes tracking-roll { 0% { transform: translateY(-20vh); } 72% { transform: translateY(-20vh); } 100% { transform: translateY(115vh); } }
 html.no-tracking .vhs__track { display: none; }
@@ -465,7 +464,7 @@ html.no-tracking .vhs__track { display: none; }
 .vhs__frame {
   inset: 0; z-index: 53; border-radius: 26px;
   box-shadow: 0 0 0 60px #000, inset 0 0 calc(70px * var(--k)) rgba(0,0,0,.75), inset 0 0 0 2px rgba(255,255,255,.04);
-  background: radial-gradient(ellipse 60% 45% at calc(30% + var(--mx) * 12%) calc(18% + var(--my) * 10%), rgba(255,255,255,.07), transparent 70%);
+  background: radial-gradient(ellipse 60% 45% at 30% 18%, rgba(255,255,255,.06), transparent 70%);
 }
 @media (max-width: 600px) { .vhs__frame { border-radius: 16px; } }
 

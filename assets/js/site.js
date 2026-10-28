@@ -178,25 +178,31 @@
   var levelBtn0;
   if (levelBtn0 = document.querySelector("[data-fx-level-btn]")) levelBtn0.addEventListener("click", function () { setTimeout(function () { steerChroma(0, 0); }, 0); });
 
-  /* Mouse: steers the chroma smear across the whole page (desktop only, no scrolling involved) */
+  /* Mouse: steers the chroma smear on headings and images (desktop only).
+     Snapped to a few positions and only updated when the snapped value changes;
+     CSS eases between them, so the page repaints a handful of times, not 60x a second. */
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (fine && document.body.classList.contains("theme-screen")) {
-    var tx = 0, ty = 0, cx = 0, cy = 0, mraf = null;
-    var step = function () {
-      mraf = null;
-      if (!motionOn()) { cx = cy = 0; }
-      else { cx += (tx - cx) * 0.12; cy += (ty - cy) * 0.12; }
-      root.style.setProperty("--mx", cx.toFixed(3));
-      root.style.setProperty("--my", cy.toFixed(3));
-      steerChroma(cx, cy);
-      if (motionOn() && (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002)) mraf = requestAnimationFrame(step);
+    var qx = 0, qy = 0, ix = 0, iy = 0, pending = false, lx = 0, ly = 0;
+    var snap = function (v, steps) { return Math.round(v * steps) / steps; };
+    var apply = function () {
+      pending = false;
+      if (!motionOn()) { lx = ly = 0; }
+      var nx = snap(lx, 4), ny = snap(ly, 3);
+      if (nx !== qx || ny !== qy) {
+        qx = nx; qy = ny;
+        root.style.setProperty("--mx", String(qx));
+        root.style.setProperty("--my", String(qy));
+      }
+      var mx = snap(lx, 2), my = snap(ly, 1);   // images: even coarser
+      if (mx !== ix || my !== iy) { ix = mx; iy = my; steerChroma(ix, iy); }
     };
     window.addEventListener("pointermove", function (e) {
-      tx = (e.clientX / window.innerWidth) * 2 - 1;
-      ty = (e.clientY / window.innerHeight) * 2 - 1;
-      if (!mraf) mraf = requestAnimationFrame(step);
+      lx = (e.clientX / window.innerWidth) * 2 - 1;
+      ly = (e.clientY / window.innerHeight) * 2 - 1;
+      if (!pending) { pending = true; setTimeout(apply, 60); }
     }, { passive: true });
-    document.addEventListener("pointerleave", function () { tx = ty = 0; if (!mraf) mraf = requestAnimationFrame(step); });
-    fxListeners.push(function (k) { if (k === "motion" && !mraf) mraf = requestAnimationFrame(step); });
+    document.addEventListener("pointerleave", function () { lx = ly = 0; if (!pending) { pending = true; setTimeout(apply, 60); } });
+    fxListeners.push(function (k) { if (k === "motion") apply(); });
   }
 })();
