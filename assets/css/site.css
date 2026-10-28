@@ -27,13 +27,26 @@
   --gutter: 16px;
   --radius-screen: 18px;
 
-  /* picture effects; the VCR menu switches these off via classes on <html> */
-  --fx-glow: 0 0 .06em rgba(255,255,255,.65), 0 0 .3em rgba(150,205,255,.45), 0 0 .9em rgba(150,205,255,.18);
-  --fx-fringe: -.022em 0 rgba(255,40,80,.6), .022em 0 rgba(0,200,255,.6);
-  --fx-blur: blur(.35px);
-  --fx-media-glow: drop-shadow(0 0 10px currentColor);
+  /* picture effects; the VCR menu switches these off via classes on <html>,
+     and Intensity sets --k (Low .55 / Med 1 / High 1.6) */
+  --k: 1.6;
+  --bleed: 0;
+  --fx-glow: 0 0 calc(.05em * var(--k)) rgba(255,255,255, calc(.45 * var(--k))),
+             0 0 calc(.28em * var(--k)) rgba(150,205,255, calc(.32 * var(--k))),
+             0 0 calc(.8em * var(--k)) rgba(150,205,255, calc(.14 * var(--k)));
+  --fx-glow-soft: 0 0 calc(.35em * var(--k)) rgba(200,225,255, calc(.16 * var(--k)));
+  --fx-fringe: calc(-.02em * var(--k)) 0 rgba(255,40,80,.7), calc(.02em * var(--k)) 0 rgba(0,200,255,.7);
+  --fx-bleed: 0 calc(var(--bleed) * 1px) rgba(255,30,70,.8),
+              calc(var(--bleed) * .25px) calc(var(--bleed) * .45px) rgba(40,255,110,.6),
+              0 calc(var(--bleed) * -.8px) rgba(30,130,255,.8);
+  --fx-blur: blur(calc(.28px * var(--k)));
+  --fx-media-glow: drop-shadow(0 0 calc(8px * var(--k)) currentColor);
 }
-html.no-glow { --fx-glow: 0 0 0 transparent; --fx-media-glow: drop-shadow(0 0 0 transparent); }
+html[data-fx-level="1"] { --k: .55; }
+html[data-fx-level="2"] { --k: 1; }
+html[data-fx-level="3"] { --k: 1.6; }
+html.no-glow { --fx-glow: 0 0 0 transparent; --fx-glow-soft: 0 0 0 transparent; --fx-media-glow: drop-shadow(0 0 0 transparent); }
+html.no-bleed, html.no-motion { --fx-bleed: 0 0 0 transparent; }
 html.no-fuzz { --fx-fringe: 0 0 0 transparent; --fx-blur: blur(0); }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -366,15 +379,21 @@ html.no-motion .rec { animation: none; }
 .theme-screen .osd-bar,
 .theme-screen .nowplaying__label,
 .theme-screen .ident__label {
-  text-shadow: var(--fx-fringe), var(--fx-glow);
+  text-shadow: var(--fx-bleed), var(--fx-fringe), var(--fx-glow);
 }
+/* everything else that's text gets the bleed + a soft halo */
+.theme-screen p, .theme-screen li, .theme-screen dd, .theme-screen dt, .theme-screen a,
+.theme-screen .chip, .theme-screen .wordmark, .theme-screen .lede, .theme-screen .guide__all, .theme-screen .np-slide__more {
+  text-shadow: var(--fx-bleed), var(--fx-glow-soft);
+}
+.theme-screen .chip { text-shadow: var(--fx-bleed); }
 .theme-screen .logo__name, .theme-screen .portfolio__title { filter: var(--fx-blur); }
 .theme-screen .logo__stripes { filter: var(--fx-blur) drop-shadow(0 0 14px rgba(255,255,255,.18)); }
 html.no-glow .theme-screen .logo__stripes { filter: var(--fx-blur); }
 
 /* film grain = part of "fuzz" */
 .theme-screen::before {
-  content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 49; opacity: .09;
+  content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 49; opacity: calc(.065 * var(--k));
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain .9s steps(6) infinite;
 }
@@ -386,12 +405,17 @@ html.no-fuzz .theme-screen::before { display: none; }
 html.no-motion .theme-screen::before, html.no-motion .theme-screen::before { animation: none; }
 @media (prefers-reduced-motion: reduce) { .theme-screen::before { animation: none; } }
 
-/* scanlines + soft CRT vignette */
+/* scanlines + RGB phosphor mask + CRT vignette (+ faint flicker) */
 .theme-screen::after {
   background:
-    radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,.45) 100%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 3px);
+    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0, calc(.32 * var(--k))) 100%),
+    repeating-linear-gradient(0deg, rgba(0,0,0, calc(.24 * var(--k))) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255,0,60, calc(.035 * var(--k))) 0 1px, rgba(0,255,90, calc(.035 * var(--k))) 1px 2px, rgba(0,90,255, calc(.035 * var(--k))) 2px 3px);
+  animation: flicker 4s steps(1) infinite;
 }
+@keyframes flicker { 0%, 100% { opacity: 1; } 31% { opacity: .93; } 32% { opacity: 1; } 67% { opacity: .96; } 68% { opacity: 1; } }
+html.no-motion .theme-screen::after { animation: none; }
+@media (prefers-reduced-motion: reduce) { .theme-screen::after { animation: none; } }
 html.no-scan .theme-screen::after { display: none; }
 
 /* ---------- VCR menu ---------- */
@@ -483,89 +507,57 @@ html.no-glow .guide__tile[aria-pressed="true"] .ident { box-shadow: inset 0 0 0 
 .prose h2, .portfolio__about h2 { font-size: 2.1rem; }
 
 /* ==========================================================================
-   MINI TV: little screen in the corner that tunes to each page's channel
+   TV WALL: stacked CRTs in the background of the dark pages
    ========================================================================== */
-.minitv {
-  position: fixed; left: 16px; bottom: 16px; z-index: 55; width: 150px; pointer-events: none;
-  display: grid; gap: 4px; justify-items: start;
+.theme-screen > header, .theme-screen > main, .theme-screen > footer, .theme-screen > .osd-bar { position: relative; z-index: 1; }
+.tvwall {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  width: min(860px, 72vw); opacity: .5;
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 100%);
+          mask-image: linear-gradient(to left, #000 35%, transparent 100%);
 }
-.minitv__set {
-  display: grid; grid-template-columns: 1fr 18px; gap: 6px; width: 100%; padding: 7px;
-  background: linear-gradient(#2b2a28, #171615); border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 8px 20px rgba(0,0,0,.45);
+@media (max-width: 760px) { .tvwall { width: 100vw; opacity: .26; } }
+html.no-tv .tvwall { display: none; }
+.tvwall__track { will-change: transform; transform: translate3d(0, var(--wall-y, 0px), 0); }
+.tvwall__row { display: flex; justify-content: center; align-items: flex-end; gap: .6%; }
+.tv {
+  flex: none; width: var(--w); display: grid; grid-template-columns: 1fr 13%; gap: 4%; padding: 4.5% 4%;
+  border-radius: 9% / 11%; box-shadow: inset 0 2px 0 rgba(255,255,255,.12), 0 6px 14px rgba(0,0,0,.6);
 }
-.minitv__screen {
-  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: #000;
-  border-radius: 14px / 18px; /* bulgy CRT corners */
-  box-shadow: inset 0 0 12px rgba(0,0,0,.9), inset 0 0 0 1px rgba(255,255,255,.06);
+.tv--wood { background: repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 3px, transparent 3px 9px), linear-gradient(#7a4f2e, #4f321c); }
+.tv--silver { background: linear-gradient(#c9c9c5, #7d7d79); }
+.tv--black { background: linear-gradient(#2c2c2a, #121211); }
+.tv--cream { background: linear-gradient(#e2d8bf, #b3a888); }
+.tv__screen {
+  position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #000; color: var(--ch);
+  border-radius: 12% / 15%; box-shadow: inset 0 0 14px rgba(0,0,0,.95);
 }
-.minitv__screen::after { /* glass reflection + scanlines */
-  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+.tv__screen::after { /* glass + scanlines */
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
   background:
-    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.14), transparent 55%),
-    repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 1px, transparent 1px 3px);
+    radial-gradient(ellipse at 30% 22%, rgba(255,255,255,.16), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px);
 }
-html.no-scan .minitv__screen::after { background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.14), transparent 55%); }
-.minitv__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: var(--fx-blur); }
-.minitv__empty {
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--ch), color-mix(in srgb, var(--ch) 25%, #000));
-  opacity: .5;
+.tv__media, .tv__fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.tv__fill--channel { background: radial-gradient(ellipse at center, color-mix(in srgb, var(--ch) 80%, #fff), color-mix(in srgb, var(--ch) 30%, #000)); }
+.tv__fill--bars { background: linear-gradient(90deg, #c0c0c0 0 14.28%, #c0c000 14.28% 28.57%, #00c0c0 28.57% 42.85%, #00c000 42.85% 57.14%, #c000c0 57.14% 71.42%, #c00000 71.42% 85.71%, #0000c0 85.71% 100%); }
+.tv__fill--stripes {
+  background: linear-gradient(180deg, transparent 0 22%, var(--green) 22% 31%, var(--yellow) 31% 40%, var(--orange) 40% 49%, var(--red) 49% 58%, var(--purple) 58% 67%, var(--blue) 67% 76%, transparent 76%);
 }
-.minitv__osd {
-  position: absolute; right: 8px; top: 4px; z-index: 1; color: #fff; font-size: 1.05rem; line-height: 1;
-  text-shadow: var(--fx-fringe), var(--fx-glow);
+.tv__fill--static {
+  inset: -40%; width: auto; height: auto;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .5s steps(4) infinite;
 }
-.minitv__static { /* tuning-in static, plays once per page */
-  position: absolute; inset: 0; z-index: 2; opacity: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: tune-in .7s steps(5) .15s backwards;
-}
-@keyframes tune-in { 0% { opacity: 1; transform: translateY(0); } 50% { opacity: .9; transform: translateY(-6%); } 100% { opacity: 0; transform: translateY(0); } }
-html.no-motion .minitv__static { animation: none; }
-@media (prefers-reduced-motion: reduce) { .minitv__static { animation: none; } }
-.minitv__side { display: grid; align-content: start; justify-items: center; gap: 6px; padding-top: 4px; }
-.minitv__side i { width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #8a8780, #3a3835); box-shadow: 0 1px 0 rgba(0,0,0,.6); }
-.minitv__side b { /* speaker grille */
-  width: 12px; height: 26px; margin-top: 4px;
-  background: repeating-linear-gradient(0deg, #0c0c0b 0 2px, transparent 2px 4px);
-}
-.minitv__label {
-  padding: 0 6px; font-size: 1.05rem; line-height: 1.35; text-transform: uppercase;
-  background: var(--ch); color: #000; border-radius: 3px;
-}
-html.no-tv .minitv { display: none; }
-@media (max-width: 600px) {
-  .minitv { width: 104px; left: 10px; bottom: 10px; }
-  .minitv__set { grid-template-columns: 1fr; padding: 5px; }
-  .minitv__side { display: none; }
-  .minitv__label { font-size: .95rem; }
-}
-/* keep the footer clear of the TV and the MENU button */
-.site-footer { padding-bottom: 150px; }
-html.no-tv .site-footer { padding-bottom: 72px; }
-@media (max-width: 600px) { .site-footer { padding-bottom: 120px; } }
+html.no-motion .tv__fill--static { animation: none; }
+@media (prefers-reduced-motion: reduce) { .tv__fill--static { animation: none; } }
+.tv__osd { position: absolute; right: 7%; top: 5%; z-index: 1; color: #fff; font-size: clamp(.8rem, 1.6vw, 1.3rem); line-height: 1; text-shadow: var(--fx-glow); }
+.tv__side { display: grid; align-content: start; justify-items: center; gap: 12%; padding-top: 10%; }
+.tv__side i { width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9a978f, #3a3835); }
+.tv__side b { width: 70%; aspect-ratio: 1 / 2; background: repeating-linear-gradient(0deg, rgba(0,0,0,.6) 0 2px, transparent 2px 4px); }
 
-.minitv { transition: opacity .2s, transform .2s; }
-.minitv.is-ducked { opacity: 0; transform: translateY(12px); }
-
-/* Mini TV placement: inline in the header normally; floats in the empty
-   left margin only on wide screens where it can't cover content. */
-.brand { display: flex; align-items: center; gap: 14px; }
-.minitv { position: static; width: 96px; grid-template-columns: auto; }
-.minitv__set { grid-template-columns: 1fr; padding: 4px; border-radius: 8px; }
-.minitv__side, .minitv__label { display: none; }
-.minitv__screen { border-radius: 8px / 10px; }
-.minitv__osd { font-size: .9rem; right: 5px; top: 2px; }
-.osd-bar { align-items: center; }
-.site-footer, html.no-tv .site-footer { padding-bottom: 72px; }
-@media (max-width: 600px) { .minitv { width: 64px; } .minitv__osd { display: none; } .site-footer { padding-bottom: 72px; } }
-.minitv.is-ducked { opacity: 1; transform: none; }
-@media (min-width: 1480px) {
-  .minitv { position: fixed; left: 20px; bottom: 20px; width: 150px; }
-  .minitv__set { grid-template-columns: 1fr 18px; padding: 7px; border-radius: 12px; }
-  .minitv__side { display: grid; }
-  .minitv__label { display: inline-block; }
-  .minitv__screen { border-radius: 14px / 18px; }
-  .minitv__osd { font-size: 1.05rem; right: 8px; top: 4px; }
-}
+/* intensity row in the menu */
+.fx__level::before { content: "High"; }
+html[data-fx-level="1"] .fx__level::before { content: "Low"; }
+html[data-fx-level="2"] .fx__level::before { content: "Med"; }
+.fx__level::after { content: " \25B8\FE0E"; }

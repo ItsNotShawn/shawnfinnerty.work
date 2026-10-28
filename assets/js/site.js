@@ -152,4 +152,46 @@
     fxListeners.push(function (k) { if (k === "motion") { syncLoops(); scrub(); } });
   }
 
+
+  /* Intensity: Low / Med / High (cycles), remembered with the other settings */
+  var levelBtn = document.querySelector("[data-fx-level-btn]");
+  if (levelBtn) {
+    levelBtn.addEventListener("click", function () {
+      var cur = parseInt(root.getAttribute("data-fx-level") || "3", 10);
+      var next = cur >= 3 ? 1 : cur + 1;
+      root.setAttribute("data-fx-level", String(next));
+      try { var o = JSON.parse(localStorage.getItem("sf-fx") || "{}"); o.level = String(next); localStorage.setItem("sf-fx", JSON.stringify(o)); } catch (e) {}
+    });
+  }
+
+  /* TV wall: drifts at ~35% of scroll speed, looping seamlessly */
+  var wall = document.querySelector(".tvwall__track");
+  /* Color bleed: scroll speed splits text into R/G/B, which then eases back together */
+  var bleedOn = function () { return motionOn() && !root.classList.contains("no-bleed") && document.body.classList.contains("theme-screen"); };
+  var lastY = window.scrollY, target = 0, cur = 0, raf = null;
+  var stackH = 0;
+  var measure = function () { var st = wall && wall.querySelector(".tvwall__stack"); stackH = st ? st.offsetHeight : 0; };
+  var frame = function () {
+    raf = null;
+    if (wall && stackH && motionOn()) {
+      var y = -((window.scrollY * 0.35) % stackH);
+      wall.style.setProperty("--wall-y", y.toFixed(1) + "px");
+    }
+    if (bleedOn()) {
+      cur += (target - cur) * 0.3;
+      target *= 0.82;
+      if (Math.abs(cur) < 0.05 && Math.abs(target) < 0.05) { cur = 0; target = 0; }
+      root.style.setProperty("--bleed", cur.toFixed(2));
+      if (cur !== 0) raf = requestAnimationFrame(frame);
+    } else if (cur !== 0) { cur = 0; target = 0; root.style.setProperty("--bleed", "0"); }
+  };
+  var kick = function () { if (!raf) raf = requestAnimationFrame(frame); };
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY, dy = y - lastY; lastY = y;
+    target = Math.max(-12, Math.min(12, target + dy * 0.18));
+    kick();
+  }, { passive: true });
+  window.addEventListener("resize", function () { measure(); kick(); });
+  window.addEventListener("load", function () { measure(); kick(); });
+  measure(); kick();
 })();

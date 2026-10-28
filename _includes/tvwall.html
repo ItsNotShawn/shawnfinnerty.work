@@ -1,0 +1,67 @@
+{%- comment -%}
+  Background wall of stacked CRT TVs (dark pages only). It drifts slower than the page as you scroll.
+  What the screens show:
+    - the first big TV shows this page's `screen:` (front matter), or on project pages the channel's ident
+    - "I" slots cycle through every channel ident you've added in _data/channels.yml
+    - everything else (and any slot with nothing to show yet) is static, color bars, stripes or a channel card
+  Row recipe: each TV is "width%:kind" where kind is P (page), I (ident), S static, B bars, C channel, R stripes.
+{%- endcomment -%}
+{%- assign tw_media = page.screen -%}{%- assign tw_num = "00" -%}{%- assign tw_color = "#ffffff" -%}
+{%- if page.layout == "project" -%}
+  {%- assign tw_ch = site.data.channels | where: "id", page.channel | first -%}
+  {%- assign tw_num = tw_ch.number -%}{%- assign tw_color = tw_ch.color -%}
+  {%- unless tw_media -%}{%- assign tw_media = tw_ch.ident -%}{%- endunless -%}
+{%- elsif page.url contains "/portfolio/" -%}
+  {%- assign tw_num = "02" -%}{%- assign tw_color = "#1aa3dc" -%}
+{%- endif -%}
+{%- assign idents = site.data.channels | where_exp: "c", "c.ident" -%}
+{%- assign rows = "24:C|34:P|22:S,30:B|26:I|28:R,22:S|36:I|24:C,32:R|30:B|20:S,26:I|24:S|30:C,30:C|34:I|22:B" | split: "," -%}
+{%- assign bezels = "wood,silver,black,cream,black,wood,silver" | split: "," -%}
+<div class="tvwall" aria-hidden="true">
+  <div class="tvwall__track">
+  {%- for copy in (1..2) -%}
+    <div class="tvwall__stack">
+    {%- assign n = 0 -%}{%- assign ii = 0 -%}
+    {%- for row in rows -%}
+      <div class="tvwall__row">
+      {%- assign tvs = row | split: "|" -%}
+      {%- for tv in tvs -%}
+        {%- assign parts = tv | split: ":" -%}
+        {%- assign kind = parts[1] -%}
+        {%- assign bz = n | modulo: bezels.size -%}
+        {%- assign chi = n | modulo: site.data.channels.size -%}
+        {%- assign cch = site.data.channels[chi] -%}
+        {%- assign media = nil -%}
+        {%- if kind == "P" -%}{%- assign media = tw_media -%}{%- endif -%}
+        {%- if kind == "I" and idents.size > 0 -%}
+          {%- assign k = ii | modulo: idents.size -%}{%- assign media = idents[k].ident -%}{%- assign ii = ii | plus: 1 -%}
+        {%- endif -%}
+        <div class="tv tv--{{ bezels[bz] }}" style="--w: {{ parts[0] }}%; --ch: {% if kind == 'P' %}{{ tw_color }}{% else %}{{ cch.color }}{% endif %}">
+          <div class="tv__screen">
+          {%- if media -%}
+            {%- assign mext = media | split: "." | last | downcase -%}
+            {%- if mext == "mp4" or mext == "webm" -%}
+            <video class="tv__media" src="{{ media | relative_url }}" muted playsinline loop preload="metadata" data-ident="loop"></video>
+            {%- else -%}
+            <img class="tv__media" src="{{ media | relative_url }}" alt="" loading="lazy">
+            {%- endif -%}
+          {%- elsif kind == "P" or kind == "C" -%}
+            <span class="tv__fill tv__fill--channel"></span><span class="tv__osd osd">CH {% if kind == 'P' %}{{ tw_num }}{% else %}{{ cch.number }}{% endif %}</span>
+          {%- elsif kind == "B" -%}
+            <span class="tv__fill tv__fill--bars"></span>
+          {%- elsif kind == "R" -%}
+            <span class="tv__fill tv__fill--stripes"></span>
+          {%- else -%}
+            <span class="tv__fill tv__fill--static"></span>
+          {%- endif -%}
+          </div>
+          <div class="tv__side"><i></i><i></i><b></b></div>
+        </div>
+        {%- assign n = n | plus: 1 -%}
+      {%- endfor -%}
+      </div>
+    {%- endfor -%}
+    </div>
+  {%- endfor -%}
+  </div>
+</div>

@@ -45,18 +45,21 @@ Two playback modes (`ident_mode:`):
 
 All animations pause when a visitor turns Motion off in the on-screen MENU (or if their system asks for reduced motion).
 
-## The mini TV
+## The TV wall
 
-The little TV in the bottom-left corner tunes to each page's channel: home is CH 00, freelance pages CH 01, the portfolio CH 02, and project pages show their channel (CH 03 to 07) and that channel's ident animation.
+The dark pages (home, portfolio, projects) have a wall of stacked CRT TVs in the background that drifts slower than the page as you scroll.
 
-To show something specific on any page, add this to that page's front matter (the section between the `---` lines):
+- The first big TV shows the page's own footage. Add it to any page's front matter (the section between the `---` lines):
+  ```yaml
+  screen: /screens/guitar-pedal.mp4   # short muted loop, .gif, or a still image (4:3 looks best)
+  ```
+  Project pages fall back to their channel's ident animation.
+- Several other TVs cycle through every channel ident you've added in `_data/channels.yml`.
+- The rest show static, color bars, rainbow stripes or a channel card. The layout recipe is at the top of `_includes/tvwall.html`.
 
-```yaml
-screen: /screens/guitar-pedal.mp4   # short muted loop, .gif, or a still image/icon (4:3 looks best)
-screen_label: "Pedal build"          # optional; replaces the label under the TV
-```
+## Picture settings
 
-Visitors can hide it from the MENU on the dark pages.
+The MENU button (dark pages) has Intensity (Low / Med / High, default High), Glow, Fuzz, Scanlines, Color bleed (RGB split while scrolling), TV wall and Motion. Visitors' choices are remembered. The effect strengths live at the top of `assets/css/site.css` (`--fx-*` variables), and High/Med/Low just scale them with `--k`.
 
 ## Fonts
 
