@@ -90,7 +90,8 @@
     var rows = Array.prototype.slice.call(fx.querySelectorAll("[data-fx-key]"));
     var save = function () {
       var o = {};
-      rows.forEach(function (r) { o[r.dataset.fxKey] = r.getAttribute("aria-checked") === "true"; });
+      try { o = JSON.parse(localStorage.getItem("sf-fx") || "{}"); } catch (e) {}
+      rows.forEach(function (r) { if (r.dataset.fxKey) o[r.dataset.fxKey] = r.getAttribute("aria-checked") === "true"; });
       try { localStorage.setItem("sf-fx", JSON.stringify(o)); } catch (e) {}
     };
     rows.forEach(function (r) {
