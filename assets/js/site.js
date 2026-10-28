@@ -172,10 +172,10 @@
   var rgbNodes = {};
   ["lg-r", "lg-g", "lg-b", "sm-r", "sm-g", "sm-b"].forEach(function (id) { rgbNodes[id] = document.querySelector('[data-rgb="' + id + '"]'); });
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
-  var CH = { r: { mag: 1, rot: 16 }, g: { mag: .2, rot: -35 }, b: { mag: .62, rot: -14 } };   // per-color personality
-  var SIZE = { lg: 2.3, sm: .6 };                                                             // px at Intensity 1
+  var CH = { r: { mag: 1, rot: 16 }, g: { mag: .3, rot: -35 }, b: { mag: .65, rot: -14 } };   // per-color personality
+  var SIZE = { lg: 4.2, sm: 1.1 };                                                             // px at Intensity 1
   var EASE = 0.06;                                                                             // lower = floatier
-  var REST = { x: -.55, y: -.2 };                                                              // no mouse: drift left, slightly up
+  var REST = { x: -.7, y: -.25 };                                                              // no mouse: drift left, slightly up
   var cur = { x: REST.x, y: REST.y }, tgt = { x: REST.x, y: REST.y }, loop = null;
   var drawAt = function (v) {
     var k = levelK(), ang = Math.atan2(v.y, v.x), len = Math.hypot(v.x, v.y);
@@ -210,7 +210,7 @@
       var len = Math.hypot(lx, ly);
       if (len < .08) { tgt.x = REST.x * .5; tgt.y = REST.y * .5; }
       else {
-        var s = .35 + .65 * Math.min(len, 1);                      // farther from centre = stronger
+        var s = .55 + .45 * Math.min(len, 1);                      // farther from centre = stronger
         tgt.x = (-lx / len) * s; tgt.y = (-ly / len) * s;          // pointing away from the cursor
       }
       wake();
