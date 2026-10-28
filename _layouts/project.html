@@ -25,7 +25,10 @@ theme: screen
         {% if page.tools %}<div><dt>Tools</dt><dd>{{ page.tools }}</dd></div>{% endif %}
         {% if page.link %}<div><dt>Link</dt><dd><a href="{{ page.link }}">{{ page.link_label | default: "View project" }}</a></dd></div>{% endif %}
       </dl>
-      <div class="prose">{{ content }}</div>
+      <div class="prose">
+        {{ content }}
+        {% if ch.intro_url %}<p><a class="np-slide__more" href="{{ ch.intro_url }}">How I think about using AI</a></p>{% endif %}
+      </div>
     </div>
     <nav class="project__pager" aria-label="More projects">
       {% if prev_i >= 0 %}{% assign pp = sorted[prev_i] %}<a href="{{ pp.url | relative_url }}"><span class="osd">&#9664;&#9664; Rewind</span>{{ pp.title }}</a>{% else %}<span></span>{% endif %}

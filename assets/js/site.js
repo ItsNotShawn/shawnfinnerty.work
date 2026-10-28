@@ -66,6 +66,7 @@
         if (match) count++;
       });
       if (status) status.textContent = count + (count === 1 ? " project" : " projects") + " shown";
+      Array.prototype.forEach.call(document.querySelectorAll("[data-channel-intro]"), function (el) { el.hidden = el.dataset.channelIntro !== id; });
       if (updateHash) history.replaceState(null, "", id === "all" ? location.pathname : "#" + id);
     };
     cards.forEach(function (c) { c.dataset.featured = String(c.classList.contains("pf-card--featured")); });

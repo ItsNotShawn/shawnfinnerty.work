@@ -1,0 +1,61 @@
+---
+layout: base
+theme: screen
+title: "AI, on my terms"
+seo_title: "AI, on my terms | Shawn Finnerty"
+description: "How Shawn Finnerty uses AI: openly, with a person in charge, and pointed at things that should be free and accessible to everyone. Plus his AI projects."
+---
+{%- assign ch = site.data.channels | where: "id", "ai" | first -%}
+{%- assign ai_projects = "" | split: "" -%}
+{%- assign sorted = site.projects | sort: "year" | reverse -%}
+{%- for p in sorted -%}{%- if p.channel == "ai" or p.also contains "ai" -%}{%- assign ai_projects = ai_projects | push: p -%}{%- endif -%}{%- endfor -%}
+{% include portfolio-header.html %}
+<main id="main" class="ai-page wrap" style="--ch: {{ ch.color }}">
+  <a class="backlink" href="/portfolio/#ai">Back to the channel guide</a>
+  <a class="project__ident" href="/portfolio/#ai" aria-label="AI projects">{% include ident.html channel=ch size="band" %}</a>
+
+  <!-- DRAFT COPY: written from what you said; edit it into your own words -->
+  <header class="project__head">
+    <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
+    <h1 class="project__title">AI, on my terms</h1>
+    <p class="project__summary">AI isn't going anywhere. So instead of pretending I don't use it, I'd rather be upfront about how I do, and point it at things I think should exist.</p>
+  </header>
+
+  <div class="ai-page__body prose">
+    <h2>Where I stand</h2>
+    <p>I use AI tools to make a lot of things. I think they work best when a person stays in charge: I decide what gets made, what it should feel like, and what's true. The tool helps me get there faster.</p>
+    <p>A lot of what's being built with AI is designed to lock people in or charge them for the basics. I'd rather make it work for me on my terms, and use it to build things that are free and accessible to everyone. That's where most of my AI projects are headed.</p>
+
+    <h2>Being transparent about it</h2>
+    <p>Employers ask about AI use a lot, so here's the honest version. Every AI project on this page says what the AI did and what I did.</p>
+    <div class="ai-split">
+      <div>
+        <h3>What I use it for</h3>
+        <ul>
+          <li>Writing and debugging code, like this website and Resume Memory</li>
+          <li>Placeholder: another way you use it</li>
+          <li>Placeholder: another way you use it</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What stays mine</h3>
+        <ul>
+          <li>The idea, the direction, and the final call on what's good</li>
+          <li>Placeholder: something you always do yourself</li>
+          <li>Placeholder: something you always do yourself</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>If you're hiring</h2>
+    <p>Ask me about any project here and I'll walk you through exactly what the AI did and what I did, and how I'd use it on your team.</p>
+  </div>
+
+  <section class="ai-page__projects">
+    <h2>AI projects</h2>
+    <div class="pf-grid">
+      {% for p in ai_projects %}{% include project-card.html project=p %}{% endfor %}
+    </div>
+  </section>
+</main>
+{% include portfolio-footer.html %}

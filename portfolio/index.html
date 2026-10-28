@@ -22,6 +22,13 @@ description: "Personal projects by Shawn Finnerty: game jam games, guitar pedals
     <button type="button" class="guide__all osd" data-filter="all" aria-pressed="true">All channels</button>
   </div>
   <p class="visually-hidden" aria-live="polite" data-filter-status></p>
+  {% for ch in site.data.channels %}{% if ch.intro_url %}
+  <a class="channel-intro" href="{{ ch.intro_url }}" data-channel-intro="{{ ch.id }}" style="--ch: {{ ch.color }}" hidden>
+    <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
+    <span class="channel-intro__title">AI, on my terms</span>
+    <span class="channel-intro__text">How I use AI, what it does and what I do, and why I'm pointing it at things that should be free. Read it first, then see the projects below.</span>
+  </a>
+  {% endif %}{% endfor %}
 
   <div class="pf-grid">
     {% for p in projects %}{% include project-card.html project=p %}{% endfor %}
