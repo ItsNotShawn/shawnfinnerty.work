@@ -9,26 +9,26 @@
 - id: games
   number: "03"
   name: Games
-  color: "#5cb84a"
+  color: "#23e05a"
   # ident: /idents/games.mp4
 - id: hardware
   number: "04"
   name: Hardware & Product
-  color: "#f7c325"
+  color: "#ffd500"
   # ident: /idents/hardware.mp4
 - id: motion
   number: "05"
   name: Motion & 3D
-  color: "#f4892b"
+  color: "#ff8a00"
   # ident: /idents/motion.mp4
   # ident_mode: scroll
 - id: design
   number: "06"
   name: Design
-  color: "#e2403f"
+  color: "#ff2b6e"
   # ident: /idents/design.mp4
 - id: photo-sound
   number: "07"
   name: Photo & Sound
-  color: "#1aa3dc"
+  color: "#19d3ff"
   # ident: /idents/photo-sound.mp4
