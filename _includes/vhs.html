@@ -1,3 +1,17 @@
+<svg class="vhs__defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <!-- chroma smear for images: red and blue are pulled apart and blurred sideways; site.js steers dx/dy with the mouse -->
+  <filter id="chroma" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+    <feOffset in="r" dx="3" dy="0" result="ro" data-chroma="r"/>
+    <feGaussianBlur in="ro" stdDeviation="1.6 0.2" result="rb"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
+    <feOffset in="b" dx="-2" dy="0" result="bo" data-chroma="b"/>
+    <feGaussianBlur in="bo" stdDeviation="1.3 0.2" result="bb"/>
+    <feBlend in="rb" in2="g" mode="screen" result="rg"/>
+    <feBlend in="rg" in2="bb" mode="screen"/>
+  </filter>
+</svg>
 <div class="vhs" aria-hidden="true">
   <div class="vhs__grade"></div>
   <div class="vhs__track"></div>

@@ -28,7 +28,7 @@
   --radius-screen: 18px;
 
   /* VHS picture effects. Intensity sets --k (Low .6 / Med 1.1 / High 1.8).
-     --mx/--my (-1..1) follow the mouse; --boost spikes on hover. */
+     --mx/--my (-1..1) follow the mouse and steer the chroma smear. */
   --k: 1.8;
   --mx: 0;
   --my: 0;
@@ -178,15 +178,7 @@ html.no-motion .home .home__main { animation: none; }
 .channel__name { font-family: var(--font-display); font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.05; color: #fff; }
 .channel__desc { color: #bdbdb6; font-size: 1rem; }
 .channel:hover, .channel:focus-visible { border-color: var(--ch); }
-.channel:hover .channel__name { animation: tracking .32s steps(4) 1; }
-@keyframes tracking {
-  0% { transform: translateX(0); text-shadow: none; }
-  25% { transform: translateX(-4px); text-shadow: 3px 0 rgba(255,40,80,.7), -3px 0 rgba(0,200,255,.7); }
-  50% { transform: translateX(3px); }
-  75% { transform: translateX(-2px); text-shadow: 2px 0 rgba(255,40,80,.6), -2px 0 rgba(0,200,255,.6); }
-  100% { transform: translateX(0); text-shadow: none; }
-}
-@media (prefers-reduced-motion: reduce) { .channel:hover .channel__name { animation: none; } }
+
 
 
 /* Now Playing */
@@ -364,8 +356,17 @@ html.no-motion .rec { animation: none; }
 /* ==========================================================================
    PICTURE EFFECTS (glow, fuzz, scanlines) - screen theme only
    ========================================================================== */
-/* Display type: permanent RGB misregistration (Color split) + horizontal chroma smear (Tape).
-   The split leans with the mouse (--mx/--my) and spikes on hover (--boost). */
+/* Chroma smear follows the mouse everywhere: red smears toward the cursor side, blue the other way.
+   --smx/--smy = resting smear direction (slightly right, like real tape) + mouse position. */
+.theme-screen {
+  --smx: calc(.35 + var(--mx) * 1.1);
+  --smy: calc(var(--my) * .55);
+  /* all text inherits this: a soft smear, scaled for body copy */
+  text-shadow:
+    calc(.07em * var(--smx) * var(--k)) calc(.07em * var(--smy) * var(--k)) calc(.06em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
+    calc(-.05em * var(--smx) * var(--k)) calc(-.05em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(40, 140, 255, calc(.4 * var(--tape-a)));
+}
+/* Display type: permanent RGB misregistration (Color split, fixed) + the mouse-steered smear */
 .theme-screen .logo__name,
 .theme-screen .channel__name,
 .theme-screen .portfolio__title,
@@ -378,43 +379,25 @@ html.no-motion .rec { animation: none; }
 .theme-screen .nowplaying__label,
 .theme-screen .ident__label,
 .theme-screen .wordmark {
-  --boost: 1;
-  --lean: 1;
-  --s: calc(var(--k) * var(--boost));
   text-shadow:
-    calc((-.03em - var(--mx) * .025em * var(--lean)) * var(--s)) calc(var(--my) * -.018em * var(--lean) * var(--s)) rgba(255, 25, 70, calc(.9 * var(--split-a))),
-    calc((.03em + var(--mx) * .025em * var(--lean)) * var(--s)) calc(var(--my) * .018em * var(--lean) * var(--s)) rgba(0, 185, 255, calc(.9 * var(--split-a))),
-    calc(var(--mx) * .01em * var(--lean) * var(--s)) calc((.02em + var(--my) * .012em * var(--lean)) * var(--s)) rgba(40, 255, 120, calc(.55 * var(--split-a))),
-    calc(.08em * var(--k)) 0 calc(.07em * var(--k)) rgba(255, 40, 90, calc(.45 * var(--tape-a))),
-    calc(-.06em * var(--k)) 0 calc(.06em * var(--k)) rgba(40, 120, 255, calc(.35 * var(--tape-a))),
+    calc(-.03em * var(--k)) 0 rgba(255, 25, 70, calc(.9 * var(--split-a))),
+    calc(.03em * var(--k)) 0 rgba(0, 185, 255, calc(.9 * var(--split-a))),
+    0 calc(.02em * var(--k)) rgba(40, 255, 120, calc(.5 * var(--split-a))),
+    calc(.09em * var(--smx) * var(--k)) calc(.09em * var(--smy) * var(--k)) calc(.07em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
+    calc(-.07em * var(--smx) * var(--k)) calc(-.07em * var(--smy) * var(--k)) calc(.06em * var(--k)) rgba(40, 120, 255, calc(.4 * var(--tape-a))),
     var(--fx-glow);
 }
-/* body text stays crisp: just a whisper of bloom */
-.theme-screen p, .theme-screen li, .theme-screen dd, .theme-screen .lede {
-  text-shadow: 0 0 calc(.3em * var(--k)) rgba(255, 230, 210, calc(.07 * var(--k) * var(--tape-a)));
-}
 .theme-screen .logo__name, .theme-screen .portfolio__title { filter: var(--fx-blur); }
-.theme-screen .logo__stripes { filter: var(--fx-blur) drop-shadow(calc(4px * var(--k) * var(--tape-a)) 0 calc(3px * var(--k)) rgba(255,40,90,.35)); }
 
-/* hover = a short tape glitch on whatever you point at */
-@media (hover: hover) {
-  .channel:hover .channel__name,
-  .pf-card__link:hover .pf-card__title,
-  .np-slide__link:hover h3,
-  .project__pager a:hover,
-  .wordmark:hover { --boost: 3.2; animation: vhs-glitch .45s steps(5) 1; }
-  .logo__name:hover { --boost: 1.6; animation: vhs-glitch .45s steps(5) 1; }
-}
-/* the giant name leans less, so it never gets unreadable */
-.theme-screen .logo__name { --lean: .45; }
-@keyframes vhs-glitch {
-  0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
-  20% { transform: translateX(-5px); clip-path: inset(10% 0 55% 0); }
-  40% { transform: translateX(4px); clip-path: inset(55% 0 8% 0); }
-  60% { transform: translateX(-2px); clip-path: inset(0 0 0 0); }
-  80% { transform: translateX(2px); }
-  100% { transform: translateX(0); }
-}
+/* pictures, stripes and channel screens get the same smear via an SVG filter (_includes/vhs.html), steered by JS */
+.theme-screen .logo__stripes,
+.theme-screen .nosignal,
+.theme-screen .media,
+.theme-screen .ident,
+.theme-screen .ident__media { filter: url(#chroma); }
+html.no-tape .theme-screen .logo__stripes, html.no-tape .theme-screen .nosignal, html.no-tape .theme-screen .media,
+html.no-tape .theme-screen .ident, html.no-tape .theme-screen .ident__media { filter: none; }
+
 html.no-motion .theme-screen * { animation-name: none !important; }
 
 /* tape grain (heavier, chunkier) */

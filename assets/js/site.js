@@ -165,7 +165,20 @@
     });
   }
 
-  /* Mouse: the color split leans toward where the cursor is (desktop only, no scrolling involved) */
+  /* Chroma smear on images (SVG filter): offsets follow the mouse, scaled by Intensity */
+  var chR = document.querySelector('[data-chroma="r"]'), chB = document.querySelector('[data-chroma="b"]');
+  var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
+  var steerChroma = function (x, y) {
+    if (!chR) return;
+    var k = levelK(), sx = .35 + x * 1.1, sy = y * .55;
+    chR.setAttribute("dx", (3 * sx * k).toFixed(2)); chR.setAttribute("dy", (3 * sy * k).toFixed(2));
+    chB.setAttribute("dx", (-2.4 * sx * k).toFixed(2)); chB.setAttribute("dy", (-2.4 * sy * k).toFixed(2));
+  };
+  steerChroma(0, 0);
+  var levelBtn0;
+  if (levelBtn0 = document.querySelector("[data-fx-level-btn]")) levelBtn0.addEventListener("click", function () { setTimeout(function () { steerChroma(0, 0); }, 0); });
+
+  /* Mouse: steers the chroma smear across the whole page (desktop only, no scrolling involved) */
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (fine && document.body.classList.contains("theme-screen")) {
     var tx = 0, ty = 0, cx = 0, cy = 0, mraf = null;
@@ -175,6 +188,7 @@
       else { cx += (tx - cx) * 0.12; cy += (ty - cy) * 0.12; }
       root.style.setProperty("--mx", cx.toFixed(3));
       root.style.setProperty("--my", cy.toFixed(3));
+      steerChroma(cx, cy);
       if (motionOn() && (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002)) mraf = requestAnimationFrame(step);
     };
     window.addEventListener("pointermove", function (e) {
