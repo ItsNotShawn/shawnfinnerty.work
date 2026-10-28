@@ -165,44 +165,42 @@
     });
   }
 
-  /* Chroma smear on images (SVG filter): offsets follow the mouse, scaled by Intensity */
+  /* Color split direction: red is pulled toward the mouse, cyan the opposite way.
+     Snapped to 8 directions and only updated when the direction changes; CSS eases between them. */
   var chR = document.querySelector('[data-chroma="r"]'), chB = document.querySelector('[data-chroma="b"]');
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
-  var steerChroma = function (x, y) {
-    if (!chR) return;
-    var k = levelK(), sx = .35 + x * 1.6, sy = y * .8;
-    chR.setAttribute("dx", (3 * sx * k).toFixed(2)); chR.setAttribute("dy", (3 * sy * k).toFixed(2));
-    chB.setAttribute("dx", (-2.4 * sx * k).toFixed(2)); chB.setAttribute("dy", (-2.4 * sy * k).toFixed(2));
+  var dirX = -1, dirY = 0;
+  var setDir = function (x, y) {
+    dirX = x; dirY = y;
+    root.style.setProperty("--cdx", x.toFixed(3));
+    root.style.setProperty("--cdy", y.toFixed(3));
+    if (chR) {
+      var px = 2.2 * levelK();
+      chR.setAttribute("dx", (x * px).toFixed(2)); chR.setAttribute("dy", (y * px).toFixed(2));
+      chB.setAttribute("dx", (-x * px).toFixed(2)); chB.setAttribute("dy", (-y * px).toFixed(2));
+    }
   };
-  steerChroma(0, 0);
-  var levelBtn0;
-  if (levelBtn0 = document.querySelector("[data-fx-level-btn]")) levelBtn0.addEventListener("click", function () { setTimeout(function () { steerChroma(0, 0); }, 0); });
+  setDir(-1, 0);
+  var lvBtn = document.querySelector("[data-fx-level-btn]");
+  if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { setDir(dirX, dirY); }, 0); });
 
-  /* Mouse: steers the chroma smear on headings and images (desktop only).
-     Snapped to a few positions and only updated when the snapped value changes;
-     CSS eases between them, so the page repaints a handful of times, not 60x a second. */
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (fine && document.body.classList.contains("theme-screen")) {
-    var qx = 0, qy = 0, ix = 0, iy = 0, pending = false, lx = 0, ly = 0;
-    var snap = function (v, steps) { return Math.round(v * steps) / steps; };
+    var lx = -1, ly = 0, pending = false, lastA = null;
     var apply = function () {
       pending = false;
-      if (!motionOn()) { lx = ly = 0; }
-      var nx = snap(lx, 4), ny = snap(ly, 3);
-      if (nx !== qx || ny !== qy) {
-        qx = nx; qy = ny;
-        root.style.setProperty("--mx", String(qx));
-        root.style.setProperty("--my", String(qy));
-      }
-      var mx = snap(lx, 2), my = snap(ly, 1);   // images: even coarser
-      if (mx !== ix || my !== iy) { ix = mx; iy = my; steerChroma(ix, iy); }
+      if (!motionOn()) { if (lastA !== "rest") { lastA = "rest"; setDir(-1, 0); } return; }
+      var len = Math.hypot(lx, ly);
+      var ang = len < 0.15 ? Math.PI : Math.atan2(ly, lx);              // near the centre: default (red left)
+      var snapped = Math.round(ang / (Math.PI / 4)) * (Math.PI / 4);   // 8 directions
+      var key = snapped.toFixed(3);
+      if (key !== lastA) { lastA = key; setDir(Math.cos(snapped), Math.sin(snapped)); }
     };
     window.addEventListener("pointermove", function (e) {
       lx = (e.clientX / window.innerWidth) * 2 - 1;
-      ly = (e.clientY / window.innerHeight) * 2 - 1;
+      ly = ((e.clientY / window.innerHeight) * 2 - 1) * 0.7;
       if (!pending) { pending = true; setTimeout(apply, 60); }
     }, { passive: true });
-    document.addEventListener("pointerleave", function () { lx = ly = 0; if (!pending) { pending = true; setTimeout(apply, 60); } });
     fxListeners.push(function (k) { if (k === "motion") apply(); });
   }
 })();

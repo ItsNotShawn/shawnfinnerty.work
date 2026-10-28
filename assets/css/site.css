@@ -29,10 +29,8 @@
   --radius-screen: 18px;
 
   /* VHS picture effects. Intensity sets --k (Low .6 / Med 1.1 / High 1.8).
-     --mx/--my (-1..1) follow the mouse and steer the chroma smear. */
+     The color split direction (--cdx/--cdy) follows the mouse; see site.js. */
   --k: 1.8;
-  --mx: 0;
-  --my: 0;
   --split-a: 1;   /* Color split on/off */
   --tape-a: 1;    /* Tape on/off */
   --fx-glow: 0 0 calc(.05em * var(--k)) rgba(255,255,255, calc(.3 * var(--k) * var(--tape-a))),
@@ -46,9 +44,10 @@ html[data-fx-level="3"] { --k: 1.8; }
 html.no-split { --split-a: 0; }
 html.no-tape { --tape-a: 0; }
 
-@property --mx { syntax: "<number>"; inherits: true; initial-value: 0; }
-@property --my { syntax: "<number>"; inherits: true; initial-value: 0; }
-html { transition: --mx .4s ease-out, --my .4s ease-out; }
+/* --cdx/--cdy: direction the red channel is pulled (toward the cursor); cyan goes the opposite way */
+@property --cdx { syntax: "<number>"; inherits: true; initial-value: -1; }
+@property --cdy { syntax: "<number>"; inherits: true; initial-value: 0; }
+html { transition: --cdx .45s ease-out, --cdy .45s ease-out; }
 @media (prefers-reduced-motion: reduce) { html { transition: none; } }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -362,18 +361,8 @@ html.no-motion .rec { animation: none; }
 /* ==========================================================================
    PICTURE EFFECTS (glow, fuzz, scanlines) - screen theme only
    ========================================================================== */
-/* Chroma smear follows the mouse everywhere: red smears toward the cursor side, blue the other way.
-   --smx/--smy = resting smear direction (slightly right, like real tape) + mouse position.
-   Body text keeps a fixed smear; headings and images follow the mouse (cheaper to repaint). */
-.theme-screen {
-  --smx: calc(.35 + var(--mx) * 1.6);
-  --smy: calc(var(--my) * .8);
-  /* all text inherits this: a soft smear, scaled for body copy */
-  text-shadow:
-    calc(.03em * var(--k)) 0 calc(.05em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),
-    calc(-.02em * var(--k)) 0 calc(.04em * var(--k)) rgba(40, 140, 255, calc(.4 * var(--tape-a)));
-}
-/* Display type: permanent RGB misregistration (Color split, fixed) + the mouse-steered smear */
+/* Color split: one crisp red/cyan offset on display type (like the Polaroid / 80s print misregistration).
+   The red channel is pulled toward the mouse, cyan the opposite way. Body text stays clean. */
 .theme-screen .logo__name,
 .theme-screen .channel__name,
 .theme-screen .portfolio__title,
@@ -386,23 +375,20 @@ html.no-motion .rec { animation: none; }
 .theme-screen .nowplaying__label,
 .theme-screen .ident__label,
 .theme-screen .wordmark {
+  --sp: calc(.032em * var(--k));
   text-shadow:
-    calc(-.03em * var(--k)) 0 rgba(255, 25, 70, calc(.9 * var(--split-a))),
-    calc(.03em * var(--k)) 0 rgba(0, 185, 255, calc(.9 * var(--split-a))),
-    0 calc(.02em * var(--k)) rgba(40, 255, 120, calc(.5 * var(--split-a))),
-    calc(.1em * var(--smx) * var(--k)) calc(.1em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(255, 30, 80, calc(.7 * var(--tape-a))),
-    calc(-.08em * var(--smx) * var(--k)) calc(-.08em * var(--smy) * var(--k)) calc(.05em * var(--k)) rgba(30, 120, 255, calc(.6 * var(--tape-a))),
+    calc(var(--cdx) * var(--sp)) calc(var(--cdy) * var(--sp)) rgba(255, 40, 70, calc(.9 * var(--split-a))),
+    calc(var(--cdx) * var(--sp) * -1) calc(var(--cdy) * var(--sp) * -1) rgba(0, 215, 255, calc(.9 * var(--split-a))),
     var(--fx-glow);
 }
 .theme-screen .logo__name, .theme-screen .portfolio__title { filter: var(--fx-blur); }
 
-/* pictures, stripes and channel screens get the same smear via an SVG filter (_includes/vhs.html), steered by JS */
+/* real pictures, the stripes and channel animations get the same split via an SVG filter (_includes/vhs.html).
+   Placeholders (no-signal bars, empty channel cards) are left clean. */
 .theme-screen .logo__stripes,
-.theme-screen .nosignal,
 .theme-screen .media,
-.theme-screen .ident { filter: url(#chroma); }
-html.no-tape .theme-screen .logo__stripes, html.no-tape .theme-screen .nosignal, html.no-tape .theme-screen .media,
-html.no-tape .theme-screen .ident, html.no-tape .theme-screen .ident__media { filter: none; }
+.theme-screen .ident__media { filter: url(#chroma); }
+html.no-split .theme-screen .logo__stripes, html.no-split .theme-screen .media, html.no-split .theme-screen .ident__media { filter: none; }
 
 html.no-motion .theme-screen * { animation-name: none !important; }
 
