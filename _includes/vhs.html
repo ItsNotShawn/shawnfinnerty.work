@@ -1,15 +1,25 @@
 <svg class="vhs__defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <!-- color split for images: red and blue channels are offset in opposite directions; site.js points them at the mouse -->
-  <filter id="chroma" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+  <!-- RGB split: red, green and blue are separated, each offset on its own, then added back together
+       (so they make white where they overlap). site.js sets each channel's dx/dy from the mouse. -->
+  <filter id="rgb-lg" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">
     <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
-    <feOffset in="r" dx="-3" dy="0" result="ro" data-chroma="r"/>
-    <feGaussianBlur in="ro" stdDeviation="0.4 0" result="rb"/>
+    <feOffset in="r" dx="-6" dy="2" result="ro" data-rgb="lg-r"/>
     <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
+    <feOffset in="g" dx="-1" dy="0" result="go" data-rgb="lg-g"/>
     <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
-    <feOffset in="b" dx="3" dy="0" result="bo" data-chroma="b"/>
-    <feGaussianBlur in="bo" stdDeviation="0.4 0" result="bb"/>
-    <feBlend in="rb" in2="g" mode="screen" result="rg"/>
-    <feBlend in="rg" in2="bb" mode="screen"/>
+    <feOffset in="b" dx="-4" dy="-1" result="bo" data-rgb="lg-b"/>
+    <feComposite in="ro" in2="go" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="rg"/>
+    <feComposite in="rg" in2="bo" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+  </filter>
+  <filter id="rgb-sm" x="-4%" y="-30%" width="108%" height="160%" color-interpolation-filters="sRGB">
+    <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+    <feOffset in="r" dx="-2" dy="0" result="ro" data-rgb="sm-r"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
+    <feOffset in="g" dx="0" dy="0" result="go" data-rgb="sm-g"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
+    <feOffset in="b" dx="-1" dy="0" result="bo" data-rgb="sm-b"/>
+    <feComposite in="ro" in2="go" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="rg"/>
+    <feComposite in="rg" in2="bo" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
   </filter>
 </svg>
 <div class="vhs" aria-hidden="true">

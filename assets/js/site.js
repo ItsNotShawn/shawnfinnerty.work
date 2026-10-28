@@ -165,42 +165,55 @@
     });
   }
 
-  /* Color split direction: red is pulled toward the mouse, cyan the opposite way.
-     Snapped to 8 directions and only updated when the direction changes; CSS eases between them. */
-  var chR = document.querySelector('[data-chroma="r"]'), chB = document.querySelector('[data-chroma="b"]');
+  /* RGB split: each channel is pushed AWAY from the mouse, by its own amount and angle.
+     red = farthest, blue = medium, green = barely; together they add back up to white.
+     Snapped to 8 directions; a short 4-step tween keeps changes smooth but cheap. */
+  var rgbNodes = {};
+  ["lg-r", "lg-g", "lg-b", "sm-r", "sm-g", "sm-b"].forEach(function (id) { rgbNodes[id] = document.querySelector('[data-rgb="' + id + '"]'); });
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
-  var dirX = -1, dirY = 0;
-  var setDir = function (x, y) {
-    dirX = x; dirY = y;
-    root.style.setProperty("--cdx", x.toFixed(3));
-    root.style.setProperty("--cdy", y.toFixed(3));
-    if (chR) {
-      var px = 2.2 * levelK();
-      chR.setAttribute("dx", (x * px).toFixed(2)); chR.setAttribute("dy", (y * px).toFixed(2));
-      chB.setAttribute("dx", (-x * px).toFixed(2)); chB.setAttribute("dy", (-y * px).toFixed(2));
-    }
+  var CH = { r: { mag: 1, rot: 16 }, g: { mag: .2, rot: -35 }, b: { mag: .62, rot: -14 } };   // per-color personality
+  var SIZE = { lg: 3.6, sm: 1.05 };                                                           // px at Intensity 1
+  var curAng = Math.atan2(-.35, -1), tweenT = null;                                              // rest: pushed left and slightly up
+  var drawAt = function (ang) {
+    var k = levelK();
+    Object.keys(SIZE).forEach(function (sz) {
+      Object.keys(CH).forEach(function (c) {
+        var n = rgbNodes[sz + "-" + c]; if (!n) return;
+        var a = ang + CH[c].rot * Math.PI / 180, m = SIZE[sz] * CH[c].mag * k;
+        n.setAttribute("dx", (Math.cos(a) * m).toFixed(2));
+        n.setAttribute("dy", (Math.sin(a) * m).toFixed(2));
+      });
+    });
   };
-  setDir(-1, 0);
+  var aimAt = function (target) {
+    clearInterval(tweenT);
+    var from = curAng, d = Math.atan2(Math.sin(target - from), Math.cos(target - from)), i = 0;
+    if (!motionOn()) { curAng = target; drawAt(curAng); return; }
+    tweenT = setInterval(function () {
+      i++; curAng = from + d * (i / 4); drawAt(curAng);
+      if (i >= 4) clearInterval(tweenT);
+    }, 45);
+  };
+  drawAt(curAng);
   var lvBtn = document.querySelector("[data-fx-level-btn]");
-  if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { setDir(dirX, dirY); }, 0); });
+  if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { drawAt(curAng); }, 0); });
 
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (fine && document.body.classList.contains("theme-screen")) {
-    var lx = -1, ly = 0, pending = false, lastA = null;
+    var lx = 1, ly = .35, pending = false, lastKey = null;
     var apply = function () {
       pending = false;
-      if (!motionOn()) { if (lastA !== "rest") { lastA = "rest"; setDir(-1, 0); } return; }
-      var len = Math.hypot(lx, ly);
-      var ang = len < 0.15 ? Math.PI : Math.atan2(ly, lx);              // near the centre: default (red left)
-      var snapped = Math.round(ang / (Math.PI / 4)) * (Math.PI / 4);   // 8 directions
+      if (!motionOn()) return;
+      var away = Math.atan2(-ly, -lx);                                   // direction pointing away from the cursor
+      if (Math.hypot(lx, ly) < .15) away = Math.atan2(-.35, -1);         // cursor near the centre: rest pose
+      var snapped = Math.round(away / (Math.PI / 4)) * (Math.PI / 4);
       var key = snapped.toFixed(3);
-      if (key !== lastA) { lastA = key; setDir(Math.cos(snapped), Math.sin(snapped)); }
+      if (key !== lastKey) { lastKey = key; aimAt(snapped); }
     };
     window.addEventListener("pointermove", function (e) {
       lx = (e.clientX / window.innerWidth) * 2 - 1;
-      ly = ((e.clientY / window.innerHeight) * 2 - 1) * 0.7;
+      ly = ((e.clientY / window.innerHeight) * 2 - 1) * .8;
       if (!pending) { pending = true; setTimeout(apply, 60); }
     }, { passive: true });
-    fxListeners.push(function (k) { if (k === "motion") apply(); });
   }
 })();

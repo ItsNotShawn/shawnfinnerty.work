@@ -49,10 +49,10 @@ All animations pause when a visitor turns Motion off in the on-screen MENU (or i
 
 The dark pages (home, portfolio, projects) are styled like a worn VHS tape playing on a CRT:
 
-- **Color split:** headings, real images and the rainbow stripes have a crisp red/cyan misregistration. On desktop the red channel is pulled toward the mouse and cyan the opposite way. Nothing moves when you scroll. Placeholders stay clean.
+- **Color split:** all text, the rainbow stripes and real images are separated into red, green and blue layers that add back up to white. Each channel is pushed away from the mouse by its own amount and angle (red farthest, blue less, green barely). Tune it in `site.js` (`CH` and `SIZE`). Nothing moves when you scroll; placeholders stay clean.
 - **Tape:** sparse grain, a slight softness on the big type, and the head-switching tear along the bottom edge.
 - **Tracking:** a distortion band that rolls through the picture every ~11 seconds.
-- **Scanlines:** dark scan lines plus an RGB phosphor mask.
+- **Scanlines:** a vertical RGB aperture-grille mask (like a Trinitron CRT) plus faint horizontal scan lines.
 - The browser window itself is framed as the TV (rounded tube corners and curved-glass shading).
 
 ## Picture settings
