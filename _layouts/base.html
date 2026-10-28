@@ -18,13 +18,13 @@
   <meta name="theme-color" content="{% if page.theme == 'label' %}#fbfbf8{% else %}#000000{% endif %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Righteous&family=VT323&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:ital,wght@0,400..700;1,400..700&family=Righteous&family=VT323&display=swap">
   <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}?v={{ site.time | date: '%s' }}">
   <script>
     /* apply saved effect switches before first paint (no flash) */
     try {
       var fx = JSON.parse(localStorage.getItem("sf-fx") || "{}"), cl = document.documentElement.classList;
-      ["glow", "fuzz", "scan", "motion"].forEach(function (k) { if (fx[k] === false) cl.add("no-" + k); });
+      ["glow", "fuzz", "scan", "motion", "tv"].forEach(function (k) { if (fx[k] === false) cl.add("no-" + k); });
       if (fx.motion === undefined && window.matchMedia("(prefers-reduced-motion: reduce)").matches) cl.add("no-motion");
     } catch (e) {}
   </script>
@@ -32,6 +32,7 @@
 <body class="theme-{{ page.theme | default: 'screen' }}{% if page.body_class %} {{ page.body_class }}{% endif %}">
   <a class="skip" href="#main">Skip to content</a>
 {{ content }}
+{% include minitv.html %}
 {%- assign theme = page.theme | default: 'screen' -%}
 {%- if theme == 'screen' %}
 {% include fx-menu.html %}

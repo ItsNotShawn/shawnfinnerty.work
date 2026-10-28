@@ -45,10 +45,23 @@ Two playback modes (`ident_mode:`):
 
 All animations pause when a visitor turns Motion off in the on-screen MENU (or if their system asks for reduced motion).
 
+## The mini TV
+
+The little TV in the bottom-left corner tunes to each page's channel: home is CH 00, freelance pages CH 01, the portfolio CH 02, and project pages show their channel (CH 03 to 07) and that channel's ident animation.
+
+To show something specific on any page, add this to that page's front matter (the section between the `---` lines):
+
+```yaml
+screen: /screens/guitar-pedal.mp4   # short muted loop, .gif, or a still image/icon (4:3 looks best)
+screen_label: "Pedal build"          # optional; replaces the label under the TV
+```
+
+Visitors can hide it from the MENU on the dark pages.
+
 ## Fonts
 
-Three fonts, set in two places:
+Fonts (Righteous, Anton, Jost, VT323), set in two places:
 - `_layouts/base.html`: the Google Fonts `<link>` that loads them.
-- `assets/css/site.css`: `--font-display` (big chunky type), `--font-body` (paragraphs), `--font-osd` (VCR on-screen text).
+- `assets/css/site.css`: `--font-display` (your name, page titles), `--font-headline` (section headlines), `--font-body` (paragraphs), `--font-osd` (VCR on-screen text).
 
 For a font from somewhere other than Google Fonts, put the `.woff2` file in `assets/fonts/`, add an `@font-face` rule at the top of `site.css`, and point the variable at it. Check that the license allows web use.
