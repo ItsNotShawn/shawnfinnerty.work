@@ -84,9 +84,11 @@ p { margin: 0 0 1em; }
   background: var(--black); color: var(--white); font-family: var(--font-display); font-size: 1.1rem;
   text-decoration: none; line-height: 1.1;
 }
+/* scoped to the theme so the theme's link color can't override button text */
+.theme-label .btn, .theme-screen .btn { color: var(--white); }
 .btn:hover { background: var(--osd-blue); border-color: var(--osd-blue); }
-.btn--ghost { background: transparent; color: var(--black); }
-.btn--ghost:hover { color: var(--white); }
+.theme-label .btn--ghost { background: transparent; color: var(--black); }
+.theme-label .btn--ghost:hover { background: var(--osd-blue); color: var(--white); }
 
 /* ==========================================================================
    SCREEN THEME (homepage + portfolio)
