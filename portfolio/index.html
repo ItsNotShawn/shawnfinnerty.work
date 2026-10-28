@@ -14,10 +14,12 @@ description: "Personal projects by Shawn Finnerty: game jam games, guitar pedals
   </header>
 
   <div class="guide" role="group" aria-label="Filter projects by channel">
-    <button type="button" class="guide__btn osd" data-filter="all" aria-pressed="true" style="--ch: #ffffff"><span class="guide__num">ALL</span> Everything</button>
-    {% for ch in site.data.channels %}
-    <button type="button" class="guide__btn osd" data-filter="{{ ch.id }}" aria-pressed="false" style="--ch: {{ ch.color }}"><span class="guide__num">{{ ch.number }}</span> {{ ch.name }}</button>
-    {% endfor %}
+    <div class="guide__tiles">
+      {% for ch in site.data.channels %}
+      <button type="button" class="guide__tile" data-filter="{{ ch.id }}" aria-pressed="false" aria-label="Show {{ ch.name }}" style="--ch: {{ ch.color }}">{% include ident.html channel=ch size="tile" %}</button>
+      {% endfor %}
+    </div>
+    <button type="button" class="guide__all osd" data-filter="all" aria-pressed="true">All channels</button>
   </div>
   <p class="visually-hidden" aria-live="polite" data-filter-status></p>
 

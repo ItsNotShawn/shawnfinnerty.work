@@ -11,6 +11,7 @@ theme: screen
 <main id="main" class="project" style="--ch: {{ ch.color }}">
   <div class="wrap">
     <a class="backlink" href="/portfolio/#{{ ch.id }}">Back to {{ ch.name }}</a>
+    <a class="project__ident" href="/portfolio/#{{ ch.id }}" aria-label="More {{ ch.name }} projects">{% include ident.html channel=ch size="band" %}</a>
     <header class="project__head">
       <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
       <h1 class="project__title">{{ page.title }}</h1>

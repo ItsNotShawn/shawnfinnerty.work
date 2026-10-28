@@ -1,0 +1,22 @@
+{%- comment -%}
+  A channel "ident": your own animation for a channel, set in _data/channels.yml.
+    ident:        path to a video (.mp4/.webm), animated .gif/.webp, or still image
+    ident_poster: optional still frame shown before a video loads / when Motion is off
+    ident_mode:   "loop" (plays while on screen) or "scroll" (video scrubs as the page scrolls)
+  Until `ident` is set, a no-signal card with the channel name is shown.
+  Usage: {% include ident.html channel=ch size="tile" %}   (size: tile | band)
+{%- endcomment -%}
+{%- assign ch = include.channel -%}
+{%- assign ext = ch.ident | split: "." | last | downcase -%}
+{%- assign is_video = false -%}
+{%- if ch.ident -%}{%- if ext == "mp4" or ext == "webm" -%}{%- assign is_video = true -%}{%- endif -%}{%- endif -%}
+<span class="ident ident--{{ include.size | default: 'tile' }}" style="--ch: {{ ch.color }}">
+  {%- if is_video %}
+  <video class="ident__media" src="{{ ch.ident | relative_url }}"{% if ch.ident_poster %} poster="{{ ch.ident_poster | relative_url }}"{% endif %} muted playsinline loop preload="metadata" data-ident="{{ ch.ident_mode | default: 'loop' }}" aria-hidden="true"></video>
+  {%- elsif ch.ident %}
+  <img class="ident__media" src="{{ ch.ident | relative_url }}" alt="" loading="lazy">
+  {%- else %}
+  <span class="ident__empty" aria-hidden="true"><span class="ident__bars"></span></span>
+  {%- endif %}
+  <span class="ident__label osd"><span class="ident__num">CH {{ ch.number }}</span> {{ ch.name }}</span>
+</span>
