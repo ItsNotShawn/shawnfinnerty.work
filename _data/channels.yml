@@ -10,7 +10,7 @@
   number: "03"
   name: Games
   color: "#5cb84a"
-  ident: /idents/test.mp4   # TEMP TEST
+  # ident: /idents/games.mp4
 - id: hardware
   number: "04"
   name: Hardware & Product
@@ -20,8 +20,8 @@
   number: "05"
   name: Motion & 3D
   color: "#f4892b"
-  ident: /idents/test.mp4   # TEMP TEST
-  ident_mode: scroll
+  # ident: /idents/motion.mp4
+  # ident_mode: scroll
 - id: design
   number: "06"
   name: Design

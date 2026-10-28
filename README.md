@@ -29,3 +29,26 @@ image: /images/my-project/cover.jpg   # leave out to show the "no signal" placeh
 ```
 
 Write the page body in Markdown underneath. Put images in an `images/` folder.
+
+## Channel animations (idents)
+
+Each portfolio channel has a slot for your own animation. It shows on the channel tiles at the top of `/portfolio/` and as the header band on that channel's project pages.
+
+1. Export your animation as a short, wide (16:9) **.mp4** (or .webm / animated .gif). Aim for 3 to 8 seconds and under ~2 MB, with no audio.
+2. Put it in an `idents/` folder, e.g. `idents/games.mp4`.
+3. In `_data/channels.yml`, uncomment that channel's `ident:` line.
+
+Two playback modes (`ident_mode:`):
+- `loop` (default): plays on repeat while it's on screen.
+- `scroll`: the video scrubs forward and back as the visitor scrolls. For smooth scrubbing, export with a keyframe on every frame:
+  `ffmpeg -i in.mov -c:v libx264 -g 1 -pix_fmt yuv420p -an -vf scale=1280:-2 idents/motion.mp4`
+
+All animations pause when a visitor turns Motion off in the on-screen MENU (or if their system asks for reduced motion).
+
+## Fonts
+
+Three fonts, set in two places:
+- `_layouts/base.html`: the Google Fonts `<link>` that loads them.
+- `assets/css/site.css`: `--font-display` (big chunky type), `--font-body` (paragraphs), `--font-osd` (VCR on-screen text).
+
+For a font from somewhere other than Google Fonts, put the `.woff2` file in `assets/fonts/`, add an `@font-face` rule at the top of `site.css`, and point the variable at it. Check that the license allows web use.
