@@ -32,3 +32,9 @@
   name: Photo & Sound
   color: "#19d3ff"
   # ident: /idents/photo-sound.mp4
+- id: ai
+  number: "08"
+  name: AI
+  color: "#a63cff"
+  intro_url: /portfolio/ai/      # the "AI, on my terms" page
+  # ident: /idents/ai.mp4
