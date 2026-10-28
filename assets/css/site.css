@@ -359,8 +359,8 @@ html.no-motion .rec { animation: none; }
 /* Chroma smear follows the mouse everywhere: red smears toward the cursor side, blue the other way.
    --smx/--smy = resting smear direction (slightly right, like real tape) + mouse position. */
 .theme-screen {
-  --smx: calc(.35 + var(--mx) * 1.1);
-  --smy: calc(var(--my) * .55);
+  --smx: calc(.35 + var(--mx) * 1.6);
+  --smy: calc(var(--my) * .8);
   /* all text inherits this: a soft smear, scaled for body copy */
   text-shadow:
     calc(.07em * var(--smx) * var(--k)) calc(.07em * var(--smy) * var(--k)) calc(.06em * var(--k)) rgba(255, 40, 90, calc(.5 * var(--tape-a))),

@@ -170,7 +170,7 @@
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
   var steerChroma = function (x, y) {
     if (!chR) return;
-    var k = levelK(), sx = .35 + x * 1.1, sy = y * .55;
+    var k = levelK(), sx = .35 + x * 1.6, sy = y * .8;
     chR.setAttribute("dx", (3 * sx * k).toFixed(2)); chR.setAttribute("dy", (3 * sy * k).toFixed(2));
     chB.setAttribute("dx", (-2.4 * sx * k).toFixed(2)); chB.setAttribute("dy", (-2.4 * sy * k).toFixed(2));
   };
