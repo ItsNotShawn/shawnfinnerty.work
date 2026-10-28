@@ -45,21 +45,21 @@ Two playback modes (`ident_mode:`):
 
 All animations pause when a visitor turns Motion off in the on-screen MENU (or if their system asks for reduced motion).
 
-## The TV wall
+## The VHS look
 
-The dark pages (home, portfolio, projects) have a wall of stacked CRT TVs in the background that drifts slower than the page as you scroll.
+The dark pages (home, portfolio, projects) are styled like a worn VHS tape playing on a CRT:
 
-- The first big TV shows the page's own footage. Add it to any page's front matter (the section between the `---` lines):
-  ```yaml
-  screen: /screens/guitar-pedal.mp4   # short muted loop, .gif, or a still image (4:3 looks best)
-  ```
-  Project pages fall back to their channel's ident animation.
-- Several other TVs cycle through every channel ident you've added in `_data/channels.yml`.
-- The rest show static, color bars, rainbow stripes or a channel card. The layout recipe is at the top of `_includes/tvwall.html`.
+- **Color split:** headings have a permanent red/green/blue misregistration. On desktop it leans toward the mouse, and hovering a title or card triggers a short tape glitch. Nothing moves when you scroll.
+- **Tape:** chroma smear, chunky grain, a washed-out warm color grade, and the head-switching tear along the bottom edge.
+- **Tracking:** a distortion band that rolls through the picture every ~11 seconds.
+- **Scanlines:** dark scan lines plus an RGB phosphor mask.
+- The browser window itself is framed as the TV (rounded tube corners and curved-glass shading).
+
+To show a specific animation on a page (for example in the Now Playing area or future spots), use `screen:` in its front matter.
 
 ## Picture settings
 
-The MENU button (dark pages) has Intensity (Low / Med / High, default High), Glow, Fuzz, Scanlines, Color bleed (RGB split while scrolling), TV wall and Motion. Visitors' choices are remembered. The effect strengths live at the top of `assets/css/site.css` (`--fx-*` variables), and High/Med/Low just scale them with `--k`.
+The MENU button (dark pages) has Intensity (Low / Med / High, default High), Color split, Tape, Tracking, Scanlines and Motion. Visitors' choices are remembered. Effect strengths are at the top of `assets/css/site.css`: everything scales with `--k`, which Intensity sets. The overlay layers are in `_includes/vhs.html`.
 
 ## Fonts
 

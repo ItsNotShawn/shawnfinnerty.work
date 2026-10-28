@@ -165,34 +165,24 @@
     });
   }
 
-  /* TV wall: drifts at ~35% of scroll speed, looping seamlessly */
-  var wall = document.querySelector(".tvwall__track");
-  /* Color bleed: scroll speed splits text into R/G/B, which then eases back together */
-  var bleedOn = function () { return motionOn() && !root.classList.contains("no-bleed") && document.body.classList.contains("theme-screen"); };
-  var lastY = window.scrollY, target = 0, cur = 0, raf = null;
-  var stackH = 0;
-  var measure = function () { var st = wall && wall.querySelector(".tvwall__stack"); stackH = st ? st.offsetHeight : 0; };
-  var frame = function () {
-    raf = null;
-    if (wall && stackH && motionOn()) {
-      var y = -((window.scrollY * 0.35) % stackH);
-      wall.style.setProperty("--wall-y", y.toFixed(1) + "px");
-    }
-    if (bleedOn()) {
-      cur += (target - cur) * 0.3;
-      target *= 0.82;
-      if (Math.abs(cur) < 0.05 && Math.abs(target) < 0.05) { cur = 0; target = 0; }
-      root.style.setProperty("--bleed", cur.toFixed(2));
-      if (cur !== 0) raf = requestAnimationFrame(frame);
-    } else if (cur !== 0) { cur = 0; target = 0; root.style.setProperty("--bleed", "0"); }
-  };
-  var kick = function () { if (!raf) raf = requestAnimationFrame(frame); };
-  window.addEventListener("scroll", function () {
-    var y = window.scrollY, dy = y - lastY; lastY = y;
-    target = Math.max(-12, Math.min(12, target + dy * 0.18));
-    kick();
-  }, { passive: true });
-  window.addEventListener("resize", function () { measure(); kick(); });
-  window.addEventListener("load", function () { measure(); kick(); });
-  measure(); kick();
+  /* Mouse: the color split leans toward where the cursor is (desktop only, no scrolling involved) */
+  var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (fine && document.body.classList.contains("theme-screen")) {
+    var tx = 0, ty = 0, cx = 0, cy = 0, mraf = null;
+    var step = function () {
+      mraf = null;
+      if (!motionOn()) { cx = cy = 0; }
+      else { cx += (tx - cx) * 0.12; cy += (ty - cy) * 0.12; }
+      root.style.setProperty("--mx", cx.toFixed(3));
+      root.style.setProperty("--my", cy.toFixed(3));
+      if (motionOn() && (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002)) mraf = requestAnimationFrame(step);
+    };
+    window.addEventListener("pointermove", function (e) {
+      tx = (e.clientX / window.innerWidth) * 2 - 1;
+      ty = (e.clientY / window.innerHeight) * 2 - 1;
+      if (!mraf) mraf = requestAnimationFrame(step);
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { tx = ty = 0; if (!mraf) mraf = requestAnimationFrame(step); });
+    fxListeners.push(function (k) { if (k === "motion" && !mraf) mraf = requestAnimationFrame(step); });
+  }
 })();

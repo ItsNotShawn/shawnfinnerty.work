@@ -24,7 +24,7 @@
     /* apply saved effect switches before first paint (no flash) */
     try {
       var fx = JSON.parse(localStorage.getItem("sf-fx") || "{}"), cl = document.documentElement.classList;
-      ["glow", "fuzz", "scan", "bleed", "motion", "tv"].forEach(function (k) { if (fx[k] === false) cl.add("no-" + k); });
+      ["split", "tape", "tracking", "scan", "motion"].forEach(function (k) { if (fx[k] === false) cl.add("no-" + k); });
       document.documentElement.setAttribute("data-fx-level", fx.level || "3");
       if (fx.motion === undefined && window.matchMedia("(prefers-reduced-motion: reduce)").matches) cl.add("no-motion");
     } catch (e) {}
@@ -34,7 +34,7 @@
   <a class="skip" href="#main">Skip to content</a>
 {%- assign page_theme = page.theme | default: 'screen' -%}
 {%- if page_theme == 'screen' %}
-{% include tvwall.html %}
+{% include vhs.html %}
 {%- endif %}
 {{ content }}
 {%- assign theme = page.theme | default: 'screen' -%}

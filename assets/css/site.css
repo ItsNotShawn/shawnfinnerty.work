@@ -27,27 +27,23 @@
   --gutter: 16px;
   --radius-screen: 18px;
 
-  /* picture effects; the VCR menu switches these off via classes on <html>,
-     and Intensity sets --k (Low .55 / Med 1 / High 1.6) */
-  --k: 1.6;
-  --bleed: 0;
-  --fx-glow: 0 0 calc(.05em * var(--k)) rgba(255,255,255, calc(.45 * var(--k))),
-             0 0 calc(.28em * var(--k)) rgba(150,205,255, calc(.32 * var(--k))),
-             0 0 calc(.8em * var(--k)) rgba(150,205,255, calc(.14 * var(--k)));
-  --fx-glow-soft: 0 0 calc(.35em * var(--k)) rgba(200,225,255, calc(.16 * var(--k)));
-  --fx-fringe: calc(-.02em * var(--k)) 0 rgba(255,40,80,.7), calc(.02em * var(--k)) 0 rgba(0,200,255,.7);
-  --fx-bleed: 0 calc(var(--bleed) * 1px) rgba(255,30,70,.8),
-              calc(var(--bleed) * .25px) calc(var(--bleed) * .45px) rgba(40,255,110,.6),
-              0 calc(var(--bleed) * -.8px) rgba(30,130,255,.8);
-  --fx-blur: blur(calc(.28px * var(--k)));
-  --fx-media-glow: drop-shadow(0 0 calc(8px * var(--k)) currentColor);
+  /* VHS picture effects. Intensity sets --k (Low .6 / Med 1.1 / High 1.8).
+     --mx/--my (-1..1) follow the mouse; --boost spikes on hover. */
+  --k: 1.8;
+  --mx: 0;
+  --my: 0;
+  --split-a: 1;   /* Color split on/off */
+  --tape-a: 1;    /* Tape on/off */
+  --fx-glow: 0 0 calc(.06em * var(--k)) rgba(255,255,255, calc(.22 * var(--k) * var(--tape-a))),
+             0 0 calc(.35em * var(--k)) rgba(255,220,200, calc(.12 * var(--k) * var(--tape-a)));
+  --fx-blur: blur(calc(.3px * var(--k) * var(--tape-a)));
+  --fx-media-glow: drop-shadow(0 0 calc(6px * var(--k) * var(--tape-a)) currentColor);
 }
-html[data-fx-level="1"] { --k: .55; }
-html[data-fx-level="2"] { --k: 1; }
-html[data-fx-level="3"] { --k: 1.6; }
-html.no-glow { --fx-glow: 0 0 0 transparent; --fx-glow-soft: 0 0 0 transparent; --fx-media-glow: drop-shadow(0 0 0 transparent); }
-html.no-bleed, html.no-motion { --fx-bleed: 0 0 0 transparent; }
-html.no-fuzz { --fx-fringe: 0 0 0 transparent; --fx-blur: blur(0); }
+html[data-fx-level="1"] { --k: .6; }
+html[data-fx-level="2"] { --k: 1.1; }
+html[data-fx-level="3"] { --k: 1.8; }
+html.no-split { --split-a: 0; }
+html.no-tape { --tape-a: 0; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -191,7 +187,7 @@ html.no-motion .home .home__main { animation: none; }
   100% { transform: translateX(0); text-shadow: none; }
 }
 @media (prefers-reduced-motion: reduce) { .channel:hover .channel__name { animation: none; } }
-html.no-motion .channel:hover .channel__name, html.no-fuzz .channel:hover .channel__name { animation: none; }
+
 
 /* Now Playing */
 .nowplaying { margin-top: 56px; }
@@ -368,6 +364,8 @@ html.no-motion .rec { animation: none; }
 /* ==========================================================================
    PICTURE EFFECTS (glow, fuzz, scanlines) - screen theme only
    ========================================================================== */
+/* Display type: permanent RGB misregistration (Color split) + horizontal chroma smear (Tape).
+   The split leans with the mouse (--mx/--my) and spikes on hover (--boost). */
 .theme-screen .logo__name,
 .theme-screen .channel__name,
 .theme-screen .portfolio__title,
@@ -378,45 +376,112 @@ html.no-motion .rec { animation: none; }
 .theme-screen .prose h2,
 .theme-screen .osd-bar,
 .theme-screen .nowplaying__label,
-.theme-screen .ident__label {
-  text-shadow: var(--fx-bleed), var(--fx-fringe), var(--fx-glow);
+.theme-screen .ident__label,
+.theme-screen .wordmark {
+  --boost: 1;
+  --s: calc(var(--k) * var(--boost));
+  text-shadow:
+    calc((-.03em - var(--mx) * .025em) * var(--s)) calc(var(--my) * -.018em * var(--s)) rgba(255, 25, 70, calc(.9 * var(--split-a))),
+    calc((.03em + var(--mx) * .025em) * var(--s)) calc(var(--my) * .018em * var(--s)) rgba(0, 185, 255, calc(.9 * var(--split-a))),
+    calc(var(--mx) * .01em * var(--s)) calc((.02em + var(--my) * .012em) * var(--s)) rgba(40, 255, 120, calc(.55 * var(--split-a))),
+    calc(.08em * var(--k)) 0 calc(.07em * var(--k)) rgba(255, 40, 90, calc(.45 * var(--tape-a))),
+    calc(-.06em * var(--k)) 0 calc(.06em * var(--k)) rgba(40, 120, 255, calc(.35 * var(--tape-a))),
+    var(--fx-glow);
 }
-/* everything else that's text gets the bleed + a soft halo */
-.theme-screen p, .theme-screen li, .theme-screen dd, .theme-screen dt, .theme-screen a,
-.theme-screen .chip, .theme-screen .wordmark, .theme-screen .lede, .theme-screen .guide__all, .theme-screen .np-slide__more {
-  text-shadow: var(--fx-bleed), var(--fx-glow-soft);
+/* body text stays crisp: just a whisper of bloom */
+.theme-screen p, .theme-screen li, .theme-screen dd, .theme-screen .lede {
+  text-shadow: 0 0 calc(.3em * var(--k)) rgba(255, 230, 210, calc(.07 * var(--k) * var(--tape-a)));
 }
-.theme-screen .chip { text-shadow: var(--fx-bleed); }
 .theme-screen .logo__name, .theme-screen .portfolio__title { filter: var(--fx-blur); }
-.theme-screen .logo__stripes { filter: var(--fx-blur) drop-shadow(0 0 14px rgba(255,255,255,.18)); }
-html.no-glow .theme-screen .logo__stripes { filter: var(--fx-blur); }
+.theme-screen .logo__stripes { filter: var(--fx-blur) drop-shadow(calc(4px * var(--k) * var(--tape-a)) 0 calc(3px * var(--k)) rgba(255,40,90,.35)); }
 
-/* film grain = part of "fuzz" */
+/* hover = a short tape glitch on whatever you point at */
+@media (hover: hover) {
+  .channel:hover .channel__name,
+  .pf-card__link:hover .pf-card__title,
+  .np-slide__link:hover h3,
+  .project__pager a:hover,
+  .logo:hover .logo__name,
+  .wordmark:hover { --boost: 3.2; animation: vhs-glitch .45s steps(5) 1; }
+}
+@keyframes vhs-glitch {
+  0% { transform: translateX(0); clip-path: inset(0 0 0 0); }
+  20% { transform: translateX(-5px); clip-path: inset(10% 0 55% 0); }
+  40% { transform: translateX(4px); clip-path: inset(55% 0 8% 0); }
+  60% { transform: translateX(-2px); clip-path: inset(0 0 0 0); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+html.no-motion .theme-screen * { animation-name: none !important; }
+
+/* tape grain (heavier, chunkier) */
 .theme-screen::before {
-  content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 49; opacity: calc(.065 * var(--k));
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain .9s steps(6) infinite;
+  content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 49;
+  opacity: calc(.11 * var(--k) * var(--tape-a));
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .7s steps(6) infinite;
 }
 @keyframes grain {
   0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); }
   60% { transform: translate(-1%, 3%); } 80% { transform: translate(4%, 1%); } 100% { transform: translate(0, 0); }
 }
-html.no-fuzz .theme-screen::before { display: none; }
-html.no-motion .theme-screen::before, html.no-motion .theme-screen::before { animation: none; }
 @media (prefers-reduced-motion: reduce) { .theme-screen::before { animation: none; } }
 
-/* scanlines + RGB phosphor mask + CRT vignette (+ faint flicker) */
+/* scanlines + RGB phosphor mask (+ faint flicker) */
 .theme-screen::after {
   background:
-    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0, calc(.32 * var(--k))) 100%),
-    repeating-linear-gradient(0deg, rgba(0,0,0, calc(.24 * var(--k))) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(90deg, rgba(255,0,60, calc(.035 * var(--k))) 0 1px, rgba(0,255,90, calc(.035 * var(--k))) 1px 2px, rgba(0,90,255, calc(.035 * var(--k))) 2px 3px);
-  animation: flicker 4s steps(1) infinite;
+    repeating-linear-gradient(0deg, rgba(0,0,0, calc(.2 * var(--k))) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255,0,60, calc(.03 * var(--k))) 0 1px, rgba(0,255,90, calc(.03 * var(--k))) 1px 2px, rgba(0,90,255, calc(.03 * var(--k))) 2px 3px);
+  animation: flicker 5s steps(1) infinite;
 }
-@keyframes flicker { 0%, 100% { opacity: 1; } 31% { opacity: .93; } 32% { opacity: 1; } 67% { opacity: .96; } 68% { opacity: 1; } }
-html.no-motion .theme-screen::after { animation: none; }
+@keyframes flicker { 0%, 100% { opacity: 1; } 31% { opacity: .92; } 32% { opacity: 1; } 67% { opacity: .95; } 68% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .theme-screen::after { animation: none; } }
 html.no-scan .theme-screen::after { display: none; }
+
+/* ---------- VHS overlay layers (see _includes/vhs.html) ---------- */
+.vhs > * { position: fixed; pointer-events: none; }
+/* washed-out, warm tape color */
+.vhs__grade {
+  inset: 0; z-index: 48;
+  background: rgba(128,128,128, calc(.09 * var(--k) * var(--tape-a))); mix-blend-mode: saturation;
+}
+.vhs__grade::after {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(255, 170, 110, calc(.07 * var(--k) * var(--tape-a))); mix-blend-mode: soft-light;
+}
+/* head-switching tear along the bottom edge */
+.vhs__head {
+  left: 0; right: 0; bottom: 0; height: calc(clamp(8px, 1.6vh, 18px) * var(--k)); z-index: 52;
+  opacity: calc(.8 * var(--tape-a));
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.55) 0 1px, transparent 1px 3px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='30'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: screen;
+  transform-origin: bottom; animation: head-switch .25s steps(2) infinite;
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent);
+          mask-image: linear-gradient(to top, #000 40%, transparent);
+}
+@keyframes head-switch { 0% { transform: translateX(-6px) skewX(-12deg); } 50% { transform: translateX(5px) skewX(8deg); } 100% { transform: translateX(-2px) skewX(-4deg); } }
+/* tracking band that rolls through every ~11s */
+.vhs__track {
+  left: 0; right: 0; top: 0; height: 9vh; z-index: 51; transform: translateY(-20vh);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px),
+    linear-gradient(transparent, rgba(255,255,255,.07) 30%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.07) 70%, transparent);
+  -webkit-backdrop-filter: blur(1.2px) saturate(1.6) hue-rotate(-12deg);
+          backdrop-filter: blur(1.2px) saturate(1.6) hue-rotate(-12deg);
+  animation: tracking-roll 11s linear infinite;
+}
+@keyframes tracking-roll { 0% { transform: translateY(-20vh); } 72% { transform: translateY(-20vh); } 100% { transform: translateY(115vh); } }
+html.no-tracking .vhs__track { display: none; }
+@media (prefers-reduced-motion: reduce) { .vhs__track, .vhs__head { animation: none; } }
+/* the browser window is the TV: rounded tube corners, curved-glass shading, glare that follows the mouse */
+.vhs__frame {
+  inset: 0; z-index: 53; border-radius: 26px;
+  box-shadow: 0 0 0 60px #000, inset 0 0 calc(70px * var(--k)) rgba(0,0,0,.75), inset 0 0 0 2px rgba(255,255,255,.04);
+  background: radial-gradient(ellipse 60% 45% at calc(30% + var(--mx) * 12%) calc(18% + var(--my) * 10%), rgba(255,255,255,.07), transparent 70%);
+}
+@media (max-width: 600px) { .vhs__frame { border-radius: 16px; } }
 
 /* ---------- VCR menu ---------- */
 .fx { position: fixed; right: 16px; bottom: 16px; z-index: 60; }
@@ -480,7 +545,6 @@ html.no-scan .theme-screen::after { display: none; }
 .guide__tile .ident { box-shadow: inset 0 0 0 2px rgba(255,255,255,.18); transition: box-shadow .15s; }
 .guide__tile:hover .ident { box-shadow: inset 0 0 0 3px var(--ch); }
 .guide__tile[aria-pressed="true"] .ident { box-shadow: inset 0 0 0 4px var(--ch), 0 0 18px color-mix(in srgb, var(--ch) 55%, transparent); }
-html.no-glow .guide__tile[aria-pressed="true"] .ident { box-shadow: inset 0 0 0 4px var(--ch); }
 .guide__all {
   margin-top: 10px; min-height: 44px; padding: 2px 16px; font-size: 1.4rem; text-transform: uppercase; cursor: pointer;
   color: #fff; background: #000; border: 2px solid rgba(255,255,255,.4); border-radius: 8px;
@@ -506,58 +570,12 @@ html.no-glow .guide__tile[aria-pressed="true"] .ident { box-shadow: inset 0 0 0 
 .fl-section h2, .fl-contact h2 { font-size: clamp(2.3rem, 6vw, 3.4rem); }
 .prose h2, .portfolio__about h2 { font-size: 2.1rem; }
 
-/* ==========================================================================
-   TV WALL: stacked CRTs in the background of the dark pages
-   ========================================================================== */
+/* content sits above the page background but under the VHS overlay layers */
 .theme-screen > header, .theme-screen > main, .theme-screen > footer, .theme-screen > .osd-bar { position: relative; z-index: 1; }
-.tvwall {
-  position: fixed; top: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none; overflow: hidden;
-  width: min(860px, 72vw); opacity: .5;
-  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 100%);
-          mask-image: linear-gradient(to left, #000 35%, transparent 100%);
-}
-@media (max-width: 760px) { .tvwall { width: 100vw; opacity: .26; } }
-html.no-tv .tvwall { display: none; }
-.tvwall__track { will-change: transform; transform: translate3d(0, var(--wall-y, 0px), 0); }
-.tvwall__row { display: flex; justify-content: center; align-items: flex-end; gap: .6%; }
-.tv {
-  flex: none; width: var(--w); display: grid; grid-template-columns: 1fr 13%; gap: 4%; padding: 4.5% 4%;
-  border-radius: 9% / 11%; box-shadow: inset 0 2px 0 rgba(255,255,255,.12), 0 6px 14px rgba(0,0,0,.6);
-}
-.tv--wood { background: repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 3px, transparent 3px 9px), linear-gradient(#7a4f2e, #4f321c); }
-.tv--silver { background: linear-gradient(#c9c9c5, #7d7d79); }
-.tv--black { background: linear-gradient(#2c2c2a, #121211); }
-.tv--cream { background: linear-gradient(#e2d8bf, #b3a888); }
-.tv__screen {
-  position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #000; color: var(--ch);
-  border-radius: 12% / 15%; box-shadow: inset 0 0 14px rgba(0,0,0,.95);
-}
-.tv__screen::after { /* glass + scanlines */
-  content: ""; position: absolute; inset: 0; border-radius: inherit;
-  background:
-    radial-gradient(ellipse at 30% 22%, rgba(255,255,255,.16), transparent 55%),
-    repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px);
-}
-.tv__media, .tv__fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.tv__fill--channel { background: radial-gradient(ellipse at center, color-mix(in srgb, var(--ch) 80%, #fff), color-mix(in srgb, var(--ch) 30%, #000)); }
-.tv__fill--bars { background: linear-gradient(90deg, #c0c0c0 0 14.28%, #c0c000 14.28% 28.57%, #00c0c0 28.57% 42.85%, #00c000 42.85% 57.14%, #c000c0 57.14% 71.42%, #c00000 71.42% 85.71%, #0000c0 85.71% 100%); }
-.tv__fill--stripes {
-  background: linear-gradient(180deg, transparent 0 22%, var(--green) 22% 31%, var(--yellow) 31% 40%, var(--orange) 40% 49%, var(--red) 49% 58%, var(--purple) 58% 67%, var(--blue) 67% 76%, transparent 76%);
-}
-.tv__fill--static {
-  inset: -40%; width: auto; height: auto;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain .5s steps(4) infinite;
-}
-html.no-motion .tv__fill--static { animation: none; }
-@media (prefers-reduced-motion: reduce) { .tv__fill--static { animation: none; } }
-.tv__osd { position: absolute; right: 7%; top: 5%; z-index: 1; color: #fff; font-size: clamp(.8rem, 1.6vw, 1.3rem); line-height: 1; text-shadow: var(--fx-glow); }
-.tv__side { display: grid; align-content: start; justify-items: center; gap: 12%; padding-top: 10%; }
-.tv__side i { width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9a978f, #3a3835); }
-.tv__side b { width: 70%; aspect-ratio: 1 / 2; background: repeating-linear-gradient(0deg, rgba(0,0,0,.6) 0 2px, transparent 2px 4px); }
 
 /* intensity row in the menu */
 .fx__level::before { content: "High"; }
 html[data-fx-level="1"] .fx__level::before { content: "Low"; }
 html[data-fx-level="2"] .fx__level::before { content: "Med"; }
 .fx__level::after { content: " \25B8\FE0E"; }
+html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { animation: none; }
