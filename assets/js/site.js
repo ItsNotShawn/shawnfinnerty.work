@@ -165,55 +165,56 @@
     });
   }
 
-  /* RGB split: each channel is pushed AWAY from the mouse, by its own amount and angle.
-     red = farthest, blue = medium, green = barely; together they add back up to white.
-     Snapped to 8 directions; a short 4-step tween keeps changes smooth but cheap. */
+  /* RGB split: each channel drifts AWAY from the mouse, by its own amount and angle
+     (red farthest, blue less, green barely); together they add back up to white.
+     Floaty: the split eases slowly toward where it wants to be (about a second to settle),
+     and is stronger the farther the cursor is from the centre of the screen. */
   var rgbNodes = {};
   ["lg-r", "lg-g", "lg-b", "sm-r", "sm-g", "sm-b"].forEach(function (id) { rgbNodes[id] = document.querySelector('[data-rgb="' + id + '"]'); });
   var levelK = function () { return { "1": .6, "2": 1.1, "3": 1.8 }[root.getAttribute("data-fx-level") || "3"] || 1.8; };
   var CH = { r: { mag: 1, rot: 16 }, g: { mag: .2, rot: -35 }, b: { mag: .62, rot: -14 } };   // per-color personality
-  var SIZE = { lg: 3.6, sm: 1.05 };                                                           // px at Intensity 1
-  var curAng = Math.atan2(-.35, -1), tweenT = null;                                              // rest: pushed left and slightly up
-  var drawAt = function (ang) {
-    var k = levelK();
+  var SIZE = { lg: 2.3, sm: .6 };                                                             // px at Intensity 1
+  var EASE = 0.06;                                                                             // lower = floatier
+  var REST = { x: -.55, y: -.2 };                                                              // no mouse: drift left, slightly up
+  var cur = { x: REST.x, y: REST.y }, tgt = { x: REST.x, y: REST.y }, loop = null;
+  var drawAt = function (v) {
+    var k = levelK(), ang = Math.atan2(v.y, v.x), len = Math.hypot(v.x, v.y);
     Object.keys(SIZE).forEach(function (sz) {
       Object.keys(CH).forEach(function (c) {
         var n = rgbNodes[sz + "-" + c]; if (!n) return;
-        var a = ang + CH[c].rot * Math.PI / 180, m = SIZE[sz] * CH[c].mag * k;
+        var a = ang + CH[c].rot * Math.PI / 180, m = SIZE[sz] * CH[c].mag * k * len;
         n.setAttribute("dx", (Math.cos(a) * m).toFixed(2));
         n.setAttribute("dy", (Math.sin(a) * m).toFixed(2));
       });
     });
   };
-  var aimAt = function (target) {
-    clearInterval(tweenT);
-    var from = curAng, d = Math.atan2(Math.sin(target - from), Math.cos(target - from)), i = 0;
-    if (!motionOn()) { curAng = target; drawAt(curAng); return; }
-    tweenT = setInterval(function () {
-      i++; curAng = from + d * (i / 4); drawAt(curAng);
-      if (i >= 4) clearInterval(tweenT);
-    }, 45);
+  var tick = function () {
+    var dx = tgt.x - cur.x, dy = tgt.y - cur.y;
+    if (!motionOn() || Math.abs(dx) + Math.abs(dy) < 0.004) {
+      if (!motionOn()) { cur.x = REST.x; cur.y = REST.y; } else { cur.x = tgt.x; cur.y = tgt.y; }
+      drawAt(cur); clearInterval(loop); loop = null; return;
+    }
+    cur.x += dx * EASE; cur.y += dy * EASE;
+    drawAt(cur);
   };
-  drawAt(curAng);
+  var wake = function () { if (!loop) loop = setInterval(tick, 33); };   // ~30 updates/sec, only while drifting
+  drawAt(cur);
   var lvBtn = document.querySelector("[data-fx-level-btn]");
-  if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { drawAt(curAng); }, 0); });
+  if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { drawAt(cur); }, 0); });
 
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (fine && document.body.classList.contains("theme-screen")) {
-    var lx = 1, ly = .35, pending = false, lastKey = null;
-    var apply = function () {
-      pending = false;
-      if (!motionOn()) return;
-      var away = Math.atan2(-ly, -lx);                                   // direction pointing away from the cursor
-      if (Math.hypot(lx, ly) < .15) away = Math.atan2(-.35, -1);         // cursor near the centre: rest pose
-      var snapped = Math.round(away / (Math.PI / 4)) * (Math.PI / 4);
-      var key = snapped.toFixed(3);
-      if (key !== lastKey) { lastKey = key; aimAt(snapped); }
-    };
     window.addEventListener("pointermove", function (e) {
-      lx = (e.clientX / window.innerWidth) * 2 - 1;
-      ly = ((e.clientY / window.innerHeight) * 2 - 1) * .8;
-      if (!pending) { pending = true; setTimeout(apply, 60); }
+      var lx = (e.clientX / window.innerWidth) * 2 - 1, ly = ((e.clientY / window.innerHeight) * 2 - 1) * .8;
+      var len = Math.hypot(lx, ly);
+      if (len < .08) { tgt.x = REST.x * .5; tgt.y = REST.y * .5; }
+      else {
+        var s = .35 + .65 * Math.min(len, 1);                      // farther from centre = stronger
+        tgt.x = (-lx / len) * s; tgt.y = (-ly / len) * s;          // pointing away from the cursor
+      }
+      wake();
     }, { passive: true });
+    document.addEventListener("pointerleave", function () { tgt.x = REST.x; tgt.y = REST.y; wake(); });
+    fxListeners.push(function (k) { if (k === "motion") wake(); });
   }
 })();
