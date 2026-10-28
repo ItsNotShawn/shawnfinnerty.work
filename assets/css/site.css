@@ -411,18 +411,22 @@ html.no-motion .theme-screen * { animation-name: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { .theme-screen::before { animation: none; } }
 
-/* CRT: vertical aperture-grille (R, G, B phosphor stripes with dark gaps) + faint horizontal scanlines (+ faint flicker) */
+/* CRT: vertical aperture-grille (R, G, B phosphor stripes with dark gaps) + faint horizontal scanlines (+ faint flicker).
+   Multiplied over the page like a real shadow mask: it only filters light that's there, so blacks stay black
+   and colors stay saturated (no grey wash). Strength follows Intensity via opacity. */
 .theme-screen::after {
+  mix-blend-mode: multiply;
+  opacity: clamp(.2, calc(.44 * var(--k)), .85);
   background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px),
     repeating-linear-gradient(90deg,
-      rgba(255,0,40, calc(.07 * var(--k))) 0 1px,
-      rgba(0,255,80, calc(.06 * var(--k))) 1px 2px,
-      rgba(0,80,255, calc(.08 * var(--k))) 2px 3px,
-      rgba(0,0,0, calc(.3 * var(--k))) 3px 4px),
-    repeating-linear-gradient(0deg, rgba(0,0,0, calc(.06 * var(--k))) 0 1px, transparent 1px 3px);
-  animation: flicker 5s steps(1) infinite; will-change: opacity;
+      rgb(255, 150, 150) 0 1px,
+      rgb(150, 255, 150) 1px 2px,
+      rgb(150, 150, 255) 2px 3px,
+      rgb(70, 70, 70) 3px 4px);
+  animation: flicker 5s steps(1) infinite;
 }
-@keyframes flicker { 0%, 100% { opacity: 1; } 31% { opacity: .92; } 32% { opacity: 1; } 67% { opacity: .95; } 68% { opacity: 1; } }
+@keyframes flicker { 0%, 100% { filter: brightness(1); } 31% { filter: brightness(1.08); } 32% { filter: brightness(1); } 67% { filter: brightness(1.05); } 68% { filter: brightness(1); } }
 @media (prefers-reduced-motion: reduce) { .theme-screen::after { animation: none; } }
 html.no-scan .theme-screen::after { display: none; }
 

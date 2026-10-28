@@ -188,11 +188,12 @@
       });
     });
   };
+  /* Following the cursor is something the visitor drives, so it isn't switched off by the Motion setting
+     (or the system's reduce-animations preference); those only stop the ambient animations. */
   var tick = function () {
     var dx = tgt.x - cur.x, dy = tgt.y - cur.y;
-    if (!motionOn() || Math.abs(dx) + Math.abs(dy) < 0.004) {
-      if (!motionOn()) { cur.x = REST.x; cur.y = REST.y; } else { cur.x = tgt.x; cur.y = tgt.y; }
-      drawAt(cur); clearInterval(loop); loop = null; return;
+    if (Math.abs(dx) + Math.abs(dy) < 0.004) {
+      cur.x = tgt.x; cur.y = tgt.y; drawAt(cur); clearInterval(loop); loop = null; return;
     }
     cur.x += dx * EASE; cur.y += dy * EASE;
     drawAt(cur);
@@ -202,9 +203,9 @@
   var lvBtn = document.querySelector("[data-fx-level-btn]");
   if (lvBtn) lvBtn.addEventListener("click", function () { setTimeout(function () { drawAt(cur); }, 0); });
 
-  var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  if (fine && document.body.classList.contains("theme-screen")) {
+  if (document.body.classList.contains("theme-screen")) {
     window.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;                       // finger drags don't steer it
       var lx = (e.clientX / window.innerWidth) * 2 - 1, ly = ((e.clientY / window.innerHeight) * 2 - 1) * .8;
       var len = Math.hypot(lx, ly);
       if (len < .08) { tgt.x = REST.x * .5; tgt.y = REST.y * .5; }
@@ -214,7 +215,6 @@
       }
       wake();
     }, { passive: true });
-    document.addEventListener("pointerleave", function () { tgt.x = REST.x; tgt.y = REST.y; wake(); });
-    fxListeners.push(function (k) { if (k === "motion") wake(); });
+    document.documentElement.addEventListener("mouseleave", function () { tgt.x = REST.x; tgt.y = REST.y; wake(); });
   }
 })();
