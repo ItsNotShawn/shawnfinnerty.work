@@ -152,15 +152,4 @@
     fxListeners.push(function (k) { if (k === "motion") { syncLoops(); scrub(); } });
   }
 
-  /* Mini TV ducks out of the way while scrolling on small screens */
-  var tv = document.querySelector(".minitv");
-  if (tv && window.matchMedia) {
-    var small = window.matchMedia("(max-width: 600px)"), hideT = null;
-    window.addEventListener("scroll", function () {
-      if (!small.matches) return;
-      tv.classList.add("is-ducked");
-      clearTimeout(hideT);
-      hideT = setTimeout(function () { tv.classList.remove("is-ducked"); }, 700);
-    }, { passive: true });
-  }
 })();

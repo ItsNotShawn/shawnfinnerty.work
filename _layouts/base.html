@@ -32,7 +32,6 @@
 <body class="theme-{{ page.theme | default: 'screen' }}{% if page.body_class %} {{ page.body_class }}{% endif %}">
   <a class="skip" href="#main">Skip to content</a>
 {{ content }}
-{% include minitv.html %}
 {%- assign theme = page.theme | default: 'screen' -%}
 {%- if theme == 'screen' %}
 {% include fx-menu.html %}
