@@ -7,33 +7,33 @@
 #   ident_mode:   loop                   loop = plays while on screen; scroll = video scrubs as you scroll
 # Put the files in an /idents/ folder. Wide (16:9) works best; keep loops short and small (under ~2 MB).
 - id: games
-  number: "03"
+  number: "01"
   name: Games
   color: "#23e05a"
   # ident: /idents/games.mp4
 - id: hardware
-  number: "04"
+  number: "02"
   name: Hardware & Product
   color: "#ffd500"
   # ident: /idents/hardware.mp4
 - id: motion
-  number: "05"
+  number: "03"
   name: Motion & 3D
   color: "#ff8a00"
   # ident: /idents/motion.mp4
   # ident_mode: scroll
 - id: design
-  number: "06"
+  number: "04"
   name: Design
   color: "#ff2b6e"
   # ident: /idents/design.mp4
 - id: photo-sound
-  number: "07"
+  number: "05"
   name: Photo & Sound
   color: "#19d3ff"
   # ident: /idents/photo-sound.mp4
 - id: ai
-  number: "08"
+  number: "06"
   name: AI
   color: "#a63cff"
   intro_url: /portfolio/ai/      # the "AI, on my terms" page
