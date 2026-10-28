@@ -1,0 +1,24 @@
+---
+layout: base
+theme: label
+title: Concept projects
+description: "Sample freelance projects showing how Shawn Finnerty approaches design, marketing, and analytics briefs."
+---
+{%- assign concepts = site.concepts | sort: "order" -%}
+{% include freelance-header.html %}
+<main id="main" class="fl-list wrap">
+  <a class="backlink" href="/freelance/">Freelance services</a>
+  <h1>Concept projects</h1>
+  <p class="lede">These are sample briefs, not paid client work. Each one shows how I'd approach a common kind of project, from first plan to finished deliverables.</p>
+  <div class="tiles">
+    {% for c in concepts %}
+    <a class="tile" href="{{ c.url | relative_url }}">
+      <div class="tile__media">{% include media.html item=c %}</div>
+      <span class="tile__kicker">{{ c.service }}</span>
+      <h2>{{ c.title }}</h2>
+      <p>{{ c.summary }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</main>
+{% include freelance-footer.html %}

@@ -1,54 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio | Shawn Finnerty</title>
-  <meta name="description" content="Personal video, branding, design, and data projects by Shawn Finnerty, a designer in Medford/Boston.">
-  <link rel="canonical" href="https://shawnfinnerty.work/portfolio/">
-  <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-  <header class="site">
-    <div class="wrap">
-      <a class="brand" href="/">Shawn Finnerty</a>
-      <nav>
-        <ul>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
-    </div>
+---
+layout: base
+theme: screen
+title: My work
+seo_title: "Portfolio | Shawn Finnerty: Games, Hardware, 3D, Design"
+description: "Personal projects by Shawn Finnerty: game jam games, guitar pedals and hardware builds, Blender animation, design, photography, and music."
+---
+{%- assign projects = site.projects | sort: "year" | reverse -%}
+{% include portfolio-header.html %}
+<main id="main" class="portfolio wrap">
+  <header class="portfolio__head">
+    <h1 class="portfolio__title">My work</h1>
+    <p class="lede">Things I make on my own time: games, hardware, 3D, design, and a little photo and sound. Pick a channel.</p>
   </header>
 
-  <main class="wrap">
-    <div class="page-title">
-      <h1>My work</h1>
-      <p>Personal projects in video, branding, design, and data.</p>
-    </div>
+  <div class="guide" role="group" aria-label="Filter projects by channel">
+    <button type="button" class="guide__btn osd" data-filter="all" aria-pressed="true" style="--ch: #ffffff"><span class="guide__num">ALL</span> Everything</button>
+    {% for ch in site.data.channels %}
+    <button type="button" class="guide__btn osd" data-filter="{{ ch.id }}" aria-pressed="false" style="--ch: {{ ch.color }}"><span class="guide__num">{{ ch.number }}</span> {{ ch.name }}</button>
+    {% endfor %}
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-filter-status></p>
 
-    <section id="projects">
-      <div class="grid">
-        <div class="card"><img src="/images/placeholder-1.svg" alt="Placeholder image for project 1"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-        <div class="card"><img src="/images/placeholder-2.svg" alt="Placeholder image for project 2"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-        <div class="card"><img src="/images/placeholder-3.svg" alt="Placeholder image for project 3"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-        <div class="card"><img src="/images/placeholder-4.svg" alt="Placeholder image for project 4"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-        <div class="card"><img src="/images/placeholder-5.svg" alt="Placeholder image for project 5"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-        <div class="card"><img src="/images/placeholder-6.svg" alt="Placeholder image for project 6"><div class="body"><h3>Project title</h3><p>Placeholder description.</p></div></div>
-      </div>
-    </section>
+  <div class="pf-grid">
+    {% for p in projects %}{% include project-card.html project=p %}{% endfor %}
+  </div>
 
-    <section id="about">
-      <h2>About</h2>
-      <p>Placeholder: a few sentences about you and the kind of personal work you make.</p>
-    </section>
-  </main>
-
-  <footer class="site">
-    <div class="wrap">
-      <span>&copy; 2026 Shawn Finnerty</span>
-      <a href="/freelance/">Hire me for freelance work &rarr;</a>
-    </div>
-  </footer>
-</body>
-</html>
+  <section id="about" class="portfolio__about">
+    <h2>About</h2>
+    <p>Placeholder: a few sentences about you, what you like making, and what you're working on now.</p>
+  </section>
+</main>
+{% include portfolio-footer.html %}

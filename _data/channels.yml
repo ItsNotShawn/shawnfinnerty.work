@@ -1,0 +1,22 @@
+# Portfolio channels. A project's `channel` must match one of these ids.
+# Change names/colors here and the filter buttons, chips and cards update everywhere.
+- id: games
+  number: "03"
+  name: Games
+  color: "#5cb84a"
+- id: hardware
+  number: "04"
+  name: Hardware & Product
+  color: "#f7c325"
+- id: motion
+  number: "05"
+  name: Motion & 3D
+  color: "#f4892b"
+- id: design
+  number: "06"
+  name: Design
+  color: "#e2403f"
+- id: photo-sound
+  number: "07"
+  name: Photo & Sound
+  color: "#1aa3dc"

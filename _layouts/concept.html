@@ -1,0 +1,29 @@
+---
+layout: base
+theme: label
+---
+{% include freelance-header.html %}
+<main id="main" class="fl-detail">
+  <div class="wrap">
+    <a class="backlink" href="/freelance/examples/">All concept projects</a>
+    <header class="fl-detail__head">
+      <p class="badge">Concept project. A sample of how I'd approach this kind of brief, not paid client work.</p>
+      <h1>{{ page.title }}</h1>
+      <p class="lede">{{ page.summary }}</p>
+    </header>
+    <div class="fl-detail__hero">{% include media.html item=page %}</div>
+    <div class="fl-detail__layout">
+      <dl class="fl-meta">
+        {% if page.service %}<div><dt>Service</dt><dd>{{ page.service }}</dd></div>{% endif %}
+        {% if page.deliverables %}<div><dt>Deliverables</dt><dd>{{ page.deliverables }}</dd></div>{% endif %}
+        {% if page.timeline %}<div><dt>Typical timeline</dt><dd>{{ page.timeline }}</dd></div>{% endif %}
+      </dl>
+      <div class="prose">{{ content }}</div>
+    </div>
+    <aside class="fl-cta">
+      <h2>Need something like this?</h2>
+      <a class="btn" href="mailto:{{ site.freelance_email }}?subject={{ page.title | url_encode }}">Email me about it</a>
+    </aside>
+  </div>
+</main>
+{% include freelance-footer.html %}

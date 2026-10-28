@@ -1,0 +1,27 @@
+---
+layout: base
+theme: label
+title: Client work
+description: "Freelance client projects and testimonials from Shawn Finnerty, a Medford/Boston designer."
+---
+{%- assign clients = site.clients | sort: "order" -%}
+{% include freelance-header.html %}
+<main id="main" class="fl-list wrap">
+  <a class="backlink" href="/freelance/">Freelance services</a>
+  <h1>Client work</h1>
+  <p class="lede">Projects I've done for clients, with what they had to say about it.</p>
+  <div class="client-list">
+    {% for c in clients %}
+    <article class="client-row">
+      <a class="tile" href="{{ c.url | relative_url }}">
+        <div class="tile__media">{% include media.html item=c %}</div>
+        <span class="tile__kicker">{{ c.client }} &middot; {{ c.service }}</span>
+        <h2>{{ c.title }}</h2>
+        <p>{{ c.summary }}</p>
+      </a>
+      {% if c.testimonial %}<blockquote class="quote"><p>{{ c.testimonial }}</p><footer>{{ c.testimonial_by }}</footer></blockquote>{% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</main>
+{% include freelance-footer.html %}

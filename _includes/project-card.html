@@ -1,0 +1,13 @@
+{%- assign p = include.project -%}
+{%- assign ch = site.data.channels | where: "id", p.channel | first -%}
+{%- capture chans -%}{{ p.channel }}{% for t in p.also %} {{ t }}{% endfor %}{%- endcapture -%}
+<article class="pf-card{% if p.featured %} pf-card--featured{% endif %}" data-channels="{{ chans | strip }}" style="--ch: {{ ch.color }}">
+  <a class="pf-card__link" href="{{ p.url | relative_url }}">
+    <div class="pf-card__media screen-frame">{% include media.html item=p %}</div>
+    <div class="pf-card__body">
+      <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
+      <h3 class="pf-card__title">{{ p.title }}</h3>
+      <p class="pf-card__summary">{{ p.summary }}</p>
+    </div>
+  </a>
+</article>

@@ -1,33 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shawn Finnerty — Designer for Video, Branding, Marketing &amp; Data | Medford/Boston</title>
-  <meta name="description" content="Shawn Finnerty is a Medford/Boston designer working across video, branding, marketing, and data — freelance creative, marketing, and analytics services for small businesses and organizations.">
-  <link rel="canonical" href="https://shawnfinnerty.work/">
-  <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-  <main class="wrap">
-    <div class="hero">
-      <h1>Shawn Finnerty</h1>
-      <p class="tagline">Designer for video, branding, marketing, and data — based in Medford/Boston</p>
-      <p class="intro">
-        <!-- PLACEHOLDER: swap in your own SEO paragraph -->
-        I help small businesses, nonprofits, and teams around Boston look sharp and make better decisions.
-        My work spans video editing and motion graphics, logo and brand identity design, social media and
-        marketing content, SEO, and data analysis and dashboards — so one person can take a project from
-        idea to finished, measurable result.
-      </p>
-      <div class="big-buttons">
-        <a class="btn big" href="/freelance/">Freelance services</a>
-        <a class="btn big alt" href="/portfolio/">My work</a>
+---
+layout: base
+theme: screen
+body_class: home
+seo_title: "Shawn Finnerty | Designer for Video, Branding, Marketing & Data in Medford/Boston"
+description: "Shawn Finnerty is a Medford/Boston designer working across video, branding, marketing, and data. Freelance creative, marketing, and analytics services, plus personal work in games, hardware, and 3D."
+---
+{%- assign featured = site.projects | where: "featured", true | sort: "year" | reverse -%}
+<div class="osd-bar osd" aria-hidden="true">
+  <span>Play &#9654;</span>
+  <span>SP <span data-osd-clock>0:00:00</span></span>
+</div>
+
+<main id="main" class="home__main">
+  <section class="home__hero">
+    <h1 class="logo">
+      <span class="logo__stripes">{% include stripes.html %}</span>
+      <span class="logo__name">Shawn<br>Finnerty</span>
+    </h1>
+    <p class="home__tagline">Designer for video, branding, marketing, and data, based in Medford/Boston.</p>
+  </section>
+
+  <nav class="channels wrap" aria-label="Choose a section">
+    <a class="channel" href="/freelance/" style="--ch: #f7c325">
+      <span class="channel__num osd">CH 01</span>
+      <span class="channel__name">Freelance services</span>
+      <span class="channel__desc">Design, video, marketing, and data work for your business.</span>
+    </a>
+    <a class="channel" href="/portfolio/" style="--ch: #1aa3dc">
+      <span class="channel__num osd">CH 02</span>
+      <span class="channel__name">My work</span>
+      <span class="channel__desc">Games, hardware, 3D, and everything else I make for fun.</span>
+    </a>
+  </nav>
+
+  {% if featured.size > 0 %}
+  <section class="nowplaying wrap" aria-roledescription="carousel" aria-label="Now playing: featured projects" data-nowplaying>
+    <div class="nowplaying__head">
+      <h2 class="osd nowplaying__label"><span class="rec" aria-hidden="true"></span>Now playing</h2>
+      <div class="nowplaying__controls">
+        <button type="button" class="np-btn osd" data-np-prev aria-label="Previous project">&#9664;&#9664;</button>
+        <button type="button" class="np-btn osd" data-np-toggle aria-label="Pause rotation">&#10074;&#10074;</button>
+        <button type="button" class="np-btn osd" data-np-next aria-label="Next project">&#9654;&#9654;</button>
       </div>
     </div>
-  </main>
-  <footer class="site">
-    <div class="wrap"><span>&copy; 2026 Shawn Finnerty</span></div>
-  </footer>
-</body>
-</html>
+    <div class="nowplaying__deck" aria-live="polite">
+      {% for p in featured %}
+      {%- assign ch = site.data.channels | where: "id", p.channel | first -%}
+      <article class="np-slide" style="--ch: {{ ch.color }}" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ featured.size }}"{% unless forloop.first %} hidden{% endunless %}>
+        <a href="{{ p.url | relative_url }}" class="np-slide__link">
+          <div class="np-slide__media screen-frame">{% include media.html item=p %}</div>
+          <div class="np-slide__body">
+            <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
+            <h3>{{ p.title }}</h3>
+            <p>{{ p.summary }}</p>
+            <span class="np-slide__more">Watch the project</span>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="home__about wrap">
+    <h2 class="visually-hidden">About</h2>
+    <!-- SEO paragraph: swap in your own words anytime -->
+    <p>I'm a designer in the Medford/Boston area who works across video, branding, marketing, and data. For clients, that means video editing and motion graphics, logos and brand identity, social media and SEO, and dashboards that make numbers easy to act on. On my own time I build games, guitar pedals, and gadgets, and make 3D animation in Blender.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <span>&copy; {{ site.time | date: '%Y' }} Shawn Finnerty</span>
+    <a href="mailto:{{ site.freelance_email }}">{{ site.freelance_email }}</a>
+  </div>
+</footer>

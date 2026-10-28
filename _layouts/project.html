@@ -1,0 +1,35 @@
+---
+layout: base
+theme: screen
+---
+{%- assign ch = site.data.channels | where: "id", page.channel | first -%}
+{%- assign sorted = site.projects | sort: "year" | reverse -%}
+{%- for p in sorted -%}{%- if p.url == page.url -%}{%- assign idx = forloop.index0 -%}{%- endif -%}{%- endfor -%}
+{%- assign prev_i = idx | minus: 1 -%}
+{%- assign next_i = idx | plus: 1 -%}
+{% include portfolio-header.html %}
+<main id="main" class="project" style="--ch: {{ ch.color }}">
+  <div class="wrap">
+    <a class="backlink" href="/portfolio/#{{ ch.id }}">Back to {{ ch.name }}</a>
+    <header class="project__head">
+      <span class="chip osd">CH {{ ch.number }} {{ ch.name }}</span>
+      <h1 class="project__title">{{ page.title }}</h1>
+      <p class="project__summary">{{ page.summary }}</p>
+    </header>
+    <div class="project__hero screen-frame">{% include media.html item=page %}</div>
+    <div class="project__layout">
+      <dl class="project__meta">
+        {% if page.year %}<div><dt>Year</dt><dd>{{ page.year }}</dd></div>{% endif %}
+        {% if page.role %}<div><dt>Role</dt><dd>{{ page.role }}</dd></div>{% endif %}
+        {% if page.tools %}<div><dt>Tools</dt><dd>{{ page.tools }}</dd></div>{% endif %}
+        {% if page.link %}<div><dt>Link</dt><dd><a href="{{ page.link }}">{{ page.link_label | default: "View project" }}</a></dd></div>{% endif %}
+      </dl>
+      <div class="prose">{{ content }}</div>
+    </div>
+    <nav class="project__pager" aria-label="More projects">
+      {% if prev_i >= 0 %}{% assign pp = sorted[prev_i] %}<a href="{{ pp.url | relative_url }}"><span class="osd">&#9664;&#9664; Rewind</span>{{ pp.title }}</a>{% else %}<span></span>{% endif %}
+      {% if next_i < sorted.size %}{% assign np = sorted[next_i] %}<a class="next" href="{{ np.url | relative_url }}"><span class="osd">Fast forward &#9654;&#9654;</span>{{ np.title }}</a>{% endif %}
+    </nav>
+  </div>
+</main>
+{% include portfolio-footer.html %}

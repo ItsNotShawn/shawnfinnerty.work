@@ -1,0 +1,9 @@
+{%- comment -%}
+  Shows an item's image if its front matter has `image:`, otherwise the no-signal placeholder.
+  Usage: {% include media.html item=project %}
+{%- endcomment -%}
+{%- if include.item.image -%}
+<img class="media" src="{{ include.item.image | relative_url }}" alt="{{ include.item.image_alt | default: include.item.title | escape }}" loading="lazy">
+{%- else -%}
+{% include nosignal.html label=include.item.title %}
+{%- endif -%}

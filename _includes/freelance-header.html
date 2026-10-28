@@ -1,0 +1,15 @@
+<header class="fl-header">
+  <div class="wrap fl-header__inner">
+    <a class="wordmark" href="/">Shawn Finnerty</a>
+    <nav aria-label="Freelance">
+      <ul>
+        <li><a href="/freelance/#services">Services</a></li>
+        <li><a href="/freelance/examples/"{% if page.url contains '/freelance/examples/' %} aria-current="page"{% endif %}>Concept projects</a></li>
+        <li><a href="/freelance/clients/"{% if page.url contains '/freelance/clients/' %} aria-current="page"{% endif %}>Client work</a></li>
+        <li><a href="/freelance/#process">How it works</a></li>
+        <li><a class="fl-header__cta" href="/freelance/#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+  {% include stripes.html class="stripes--rule" %}
+</header>

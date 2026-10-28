@@ -1,0 +1,37 @@
+---
+layout: base
+theme: label
+---
+{% include freelance-header.html %}
+<main id="main" class="fl-detail">
+  <div class="wrap">
+    <a class="backlink" href="/freelance/clients/">All client work</a>
+    <header class="fl-detail__head">
+      <p class="fl-detail__client">{{ page.client }}</p>
+      <h1>{{ page.title }}</h1>
+      <p class="lede">{{ page.summary }}</p>
+    </header>
+    <div class="fl-detail__hero">{% include media.html item=page %}</div>
+    <div class="fl-detail__layout">
+      <dl class="fl-meta">
+        {% if page.service %}<div><dt>Service</dt><dd>{{ page.service }}</dd></div>{% endif %}
+        {% if page.year %}<div><dt>Year</dt><dd>{{ page.year }}</dd></div>{% endif %}
+        {% if page.link %}<div><dt>Link</dt><dd><a href="{{ page.link }}">{{ page.link_label | default: "Visit" }}</a></dd></div>{% endif %}
+      </dl>
+      <div class="prose">
+        {{ content }}
+        {% if page.testimonial %}
+        <blockquote class="quote">
+          <p>{{ page.testimonial }}</p>
+          <footer>{{ page.testimonial_by }}</footer>
+        </blockquote>
+        {% endif %}
+      </div>
+    </div>
+    <aside class="fl-cta">
+      <h2>Have a project in mind?</h2>
+      <a class="btn" href="mailto:{{ site.freelance_email }}">Email me</a>
+    </aside>
+  </div>
+</main>
+{% include freelance-footer.html %}

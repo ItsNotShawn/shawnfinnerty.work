@@ -1,0 +1,19 @@
+title: Shawn Finnerty
+description: Designer for video, branding, marketing, and data, based in Medford/Boston.
+url: https://shawnfinnerty.work
+baseurl: ""
+freelance_email: ShawnFinnertyFreelance@gmail.com
+
+collections:
+  projects:          # personal work  -> /portfolio/<file-name>/
+    output: true
+    permalink: /portfolio/:name/
+  concepts:          # freelance concept (example) projects -> /freelance/examples/<file-name>/
+    output: true
+    permalink: /freelance/examples/:name/
+  clients:           # real freelance client work -> /freelance/clients/<file-name>/
+    output: true
+    permalink: /freelance/clients/:name/
+
+exclude:
+  - README.md

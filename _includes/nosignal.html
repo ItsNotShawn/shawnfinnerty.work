@@ -1,0 +1,8 @@
+{%- comment -%}
+  Placeholder "no signal" color bars, shown wherever an image hasn't been added yet.
+  Usage: {% include nosignal.html label="Optional caption" %}
+{%- endcomment -%}
+<div class="nosignal" role="img" aria-label="Image coming soon{% if include.label %}: {{ include.label }}{% endif %}">
+  <span class="nosignal__bars" aria-hidden="true"></span>
+  <span class="nosignal__text osd" aria-hidden="true">No signal</span>
+</div>
