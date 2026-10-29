@@ -1,0 +1,17 @@
+{%- comment -%}
+  Embedded media. Usage:
+    {% include embed.html ccv="RERFoJgxv9K" title="..." %}               Adobe video (from the old portfolio)
+    {% include embed.html ccv="HwduxUCdfhp" kind="audio" title="..." %}  Adobe audio track
+    {% include embed.html youtube="7Q2scPrc1WE" start="288" title="..." %}
+    {% include embed.html sc="2294376020" token="s-KgL5MU4xAOs" title="..." %}  SoundCloud track
+{%- endcomment -%}
+<figure class="embed{% if include.kind == 'audio' %} embed--audio{% elsif include.sc %} embed--sc{% endif %}">
+{%- if include.ccv -%}
+  <iframe src="https://www-ccv.adobe.io/v1/player/ccv/{{ include.ccv }}/embed?bgcolor=%23111111&lazyLoading=true{% if include.kind == 'audio' %}&autohide=false&maxframewidth=6400&maxframeheight=75{% endif %}&api_key=BehancePro2View" title="{{ include.title | escape }}" loading="lazy" allowfullscreen></iframe>
+{%- elsif include.youtube -%}
+  <iframe src="https://www.youtube-nocookie.com/embed/{{ include.youtube }}{% if include.start %}?start={{ include.start }}{% endif %}" title="{{ include.title | escape }}" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+{%- elsif include.sc -%}
+  <iframe src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{ include.sc }}{% if include.token %}%3Fsecret_token%3D{{ include.token }}{% endif %}&color=%23ff2b6e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false" title="{{ include.title | default: 'SoundCloud track' | escape }}" loading="lazy" allow="autoplay"></iframe>
+{%- endif -%}
+{%- if include.title and include.sc == nil %}<figcaption>{{ include.title }}</figcaption>{% endif -%}
+</figure>

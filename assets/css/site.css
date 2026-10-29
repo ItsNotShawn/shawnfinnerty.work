@@ -613,3 +613,16 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .fl-header nav a.fl-header__cta:hover { background: var(--osd-blue); }
 .pf-header nav a.pf-header__cta { border: 2px solid #fff; color: #fff; }
 .pf-header nav a.pf-header__cta:hover { background: #fff; color: #000; text-decoration: none; }
+
+/* ---------- Embedded video / audio in project pages ---------- */
+.embed { margin: 1.4em 0; }
+.embed iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: #111; }
+.embed--audio iframe { aspect-ratio: auto; height: 75px; border-radius: 8px; }
+.embed--sc iframe { aspect-ratio: auto; height: 120px; border-radius: 8px; }
+.embed figcaption { margin-top: 6px; font-size: .95rem; color: #b8b8b0; }
+.theme-screen .embed figcaption { filter: url(#rgb-sm); }
+.embed--audio, .embed--sc { margin: .6em 0; }
+.prose h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.35rem; margin: 1.4em 0 .4em; }
+.theme-screen .prose h3 { color: #fff; filter: url(#rgb-lg); }
+.prose ul { padding-left: 1.2em; }
+.prose li { margin-bottom: .3em; }

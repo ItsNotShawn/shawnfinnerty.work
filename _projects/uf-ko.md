@@ -4,23 +4,18 @@ title: "UF-KO"
 channel: games
 year: 2025
 featured: false   # true = shows in Now Playing on the homepage
-summary: "A game project. Placeholder summary: one line on what it is and what makes it fun."
-role: "Game design"
+summary: "Placeholder: one line on what UF-KO is and what makes it fun."
+role: "Placeholder: your role"
 tools: "Placeholder"
+link: https://chifle.itch.io/uf-ko
+link_label: "Play on itch.io"
 # image: /images/uf-ko/cover.jpg   # uncomment once you add a cover image
-# link: https://...   # e.g. itch.io page
-# old page to pull content from: https://shawnfinnerty.myportfolio.com/uf-ko
 ---
 
 ## The idea
 
-Placeholder: what this project is, who it's for, and why you made it.
+Placeholder: your old page only had the itch.io link and two empty sections ("Stylistic inspiration" and "Text"). What's the game, who made it with you, and what did you do?
 
-## Process
+## Stylistic inspiration
 
-Placeholder: how it came together. Sketches, prototypes, problems you solved. Add process photos with:
-`![Describe the image](/images/uf-ko/process-1.jpg)`
-
-## Result
-
-Placeholder: what came out of it, and anything you'd do differently next time.
+Placeholder: reference images and what you were going for.

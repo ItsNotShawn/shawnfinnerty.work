@@ -4,23 +4,33 @@ title: "Photography"
 channel: photo-sound
 year: 2025
 featured: false   # true = shows in Now Playing on the homepage
-summary: "Placeholder: a selection of photographs."
+summary: "Film and digital photography: Europe, Arizona, an engagement shoot, and more."
 role: "Photography"
-tools: "Placeholder"
+tools: "Placeholder: your cameras and film stocks"
 # image: /images/photography/cover.jpg   # uncomment once you add a cover image
-# link: https://...   # e.g. itch.io page
-# old page to pull content from: https://shawnfinnerty.myportfolio.com/photography-1
 ---
 
-## The idea
+Placeholder: a line about why you shoot film.
 
-Placeholder: what this project is, who it's for, and why you made it.
+<!-- Add photos under each set like this:
+![Describe the photo](/images/photography/europe-01.jpg) -->
 
-## Process
+## Europe, film, 2024
 
-Placeholder: how it came together. Sketches, prototypes, problems you solved. Add process photos with:
-`![Describe the image](/images/photography/process-1.jpg)`
+Placeholder: photos.
 
-## Result
+## Arizona, film, 2023
 
-Placeholder: what came out of it, and anything you'd do differently next time.
+Placeholder: photos.
+
+## Engagement photography, 2024
+
+Placeholder: photos.
+
+## Various film photography
+
+Placeholder: photos.
+
+## Various digital photography
+
+Placeholder: photos.
