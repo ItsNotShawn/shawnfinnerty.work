@@ -277,7 +277,15 @@ html.no-motion .rec { animation: none; }
 .fl-header { background: #fbfbf8; }
 .fl-header nav a { text-decoration: none; padding: 4px 0; }
 .fl-header nav a:hover, .fl-header nav a[aria-current] { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; text-decoration-color: var(--orange); }
-.fl-header__cta { font-weight: 700; }
+/* Contact: a pill button so it stands out from the other links */
+.fl-header nav ul, .pf-header nav ul { align-items: center; }
+.fl-header nav a.fl-header__cta, .pf-header nav a.pf-header__cta {
+  font-weight: 700; padding: 6px 16px; border-radius: 999px; text-decoration: none;
+}
+.fl-header nav a.fl-header__cta { background: #141414; color: #fff; }
+.fl-header nav a.fl-header__cta:hover { background: var(--osd-blue); }
+.pf-header nav a.pf-header__cta { border: 2px solid #fff; color: #fff; }
+.pf-header nav a.pf-header__cta:hover { background: #fff; color: #000; text-decoration: none; }
 
 .fl-hero { padding-top: 64px; padding-bottom: 56px; }
 .fl-hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.5rem, 7vw, 4.6rem); max-width: 16ch; margin-bottom: 20px; }
@@ -596,4 +604,12 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 /* Top nav links: Comfortaa, a lighter rounded cousin of Righteous (which only comes in one weight) */
 .fl-header nav a, .pf-header nav a { font-family: "Comfortaa", var(--font-display); font-weight: 600; font-size: .92rem; letter-spacing: -.01em; }
 .fl-header nav ul, .pf-header nav ul { gap: 4px 16px; }
-.fl-header__cta { font-weight: 700; }
+/* Contact: a pill button so it stands out from the other links */
+.fl-header nav ul, .pf-header nav ul { align-items: center; }
+.fl-header nav a.fl-header__cta, .pf-header nav a.pf-header__cta {
+  font-weight: 700; padding: 6px 16px; border-radius: 999px; text-decoration: none;
+}
+.fl-header nav a.fl-header__cta { background: #141414; color: #fff; }
+.fl-header nav a.fl-header__cta:hover { background: var(--osd-blue); }
+.pf-header nav a.pf-header__cta { border: 2px solid #fff; color: #fff; }
+.pf-header nav a.pf-header__cta:hover { background: #fff; color: #000; text-decoration: none; }
