@@ -594,5 +594,6 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .channel__name { font-family: var(--font-accent); letter-spacing: .01em; }
 .ident__name { font-family: var(--font-accent); font-size: 1.05em; text-transform: none; letter-spacing: .01em; }
 /* Top nav links: Comfortaa, a lighter rounded cousin of Righteous (which only comes in one weight) */
-.fl-header nav a, .pf-header nav a { font-family: "Comfortaa", var(--font-display); font-weight: 600; letter-spacing: 0; }
+.fl-header nav a, .pf-header nav a { font-family: "Comfortaa", var(--font-display); font-weight: 600; font-size: .92rem; letter-spacing: -.01em; }
+.fl-header nav ul, .pf-header nav ul { gap: 4px 16px; }
 .fl-header__cta { font-weight: 700; }
