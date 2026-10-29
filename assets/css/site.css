@@ -5,14 +5,6 @@
    - "label":  white VHS-tape-label, used on the freelance pages (the calm side)
    ========================================================================== */
 
-/* Glacial Indifference (SIL Open Font License), self-hosted: put the .woff2/.otf files in assets/fonts/ */
-@font-face { font-family: "Glacial Indifference"; font-weight: 400; font-display: swap;
-  src: local("Glacial Indifference"), local("GlacialIndifference-Regular"),
-       url("/assets/fonts/GlacialIndifference-Regular.woff2") format("woff2"), url("/assets/fonts/GlacialIndifference-Regular.otf") format("opentype"); }
-@font-face { font-family: "Glacial Indifference"; font-weight: 700; font-display: swap;
-  src: local("Glacial Indifference Bold"), local("GlacialIndifference-Bold"),
-       url("/assets/fonts/GlacialIndifference-Bold.woff2") format("woff2"), url("/assets/fonts/GlacialIndifference-Bold.otf") format("opentype"); }
-
 :root {
   /* the six stripes */
   /* saturated "glowing on black" palette, after the moodboard (Polaroid stripes, Atari neon, Dimension sunset) */
@@ -27,9 +19,10 @@
   --white: #fff;
   --osd-blue: #2340e0;
 
-  --font-display: "Asimovian", "Arial Rounded MT Bold", system-ui, sans-serif;            /* name, page titles, cards */
-  --font-headline: "Glacial Indifference", "Questrial", "Century Gothic", sans-serif;     /* section headlines */
-  --font-body: "Archivo", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;        /* paragraphs */
+  --font-display: "Righteous", "Arial Rounded MT Bold", system-ui, sans-serif;  /* name, page titles, cards */
+  --font-headline: "Anton", "Impact", "Arial Narrow", sans-serif;                 /* section headlines */
+  --font-body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;          /* paragraphs */
+  --font-accent: "Asimovian", "Righteous", system-ui, sans-serif;                 /* channel names (TV-network branding) */
   --font-osd: "VT323", ui-monospace, monospace;
 
   --wrap: 1120px;
@@ -555,7 +548,7 @@ html.no-tracking .vhs__track { display: none; }
 
 /* ---------- Section headlines in Anton (condensed, magazine-style) ---------- */
 .fl-section h2, .fl-contact h2, .fl-cta h2, .prose h2, .portfolio__about h2 {
-  font-family: var(--font-headline); font-weight: 700; letter-spacing: .01em; line-height: 1.1;
+  font-family: var(--font-headline); font-weight: 400; letter-spacing: .005em; line-height: 1.05;
 }
 .fl-section h2, .fl-contact h2 { font-size: clamp(2.3rem, 6vw, 3.4rem); }
 .prose h2, .portfolio__about h2 { font-size: 2.1rem; }
@@ -594,5 +587,9 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .ai-split h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.35rem; color: var(--ch); margin-bottom: 8px; }
 .ai-split ul { margin: 0; padding-left: 1.1em; }
 .ai-page__projects { margin-top: 56px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.14); }
-.ai-page__projects h2 { font-family: var(--font-headline); font-weight: 700; font-size: 2.1rem; margin-bottom: 20px; }
+.ai-page__projects h2 { font-family: var(--font-headline); font-weight: 400; font-size: 2.1rem; margin-bottom: 20px; }
 .theme-screen .ai-split h3, .theme-screen .ai-page__projects h2 { filter: url(#rgb-lg); }
+
+/* Asimovian accent: channel names, like a TV network's on-air branding */
+.channel__name { font-family: var(--font-accent); letter-spacing: .01em; }
+.ident__name { font-family: var(--font-accent); font-size: 1.05em; text-transform: none; letter-spacing: .01em; }

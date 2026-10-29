@@ -62,9 +62,8 @@ The MENU button (dark pages) has Intensity (Low / Med / High, default High), Col
 
 ## Fonts
 
-Fonts: Asimovian (name, page titles), Glacial Indifference (section headlines), Archivo (paragraphs), VT323 (VCR text). Set in two places:
-- `_layouts/base.html`: the Google Fonts `<link>` that loads Asimovian, Archivo and VT323 (plus Questrial, the stand-in until Glacial Indifference's files are added).
-- Glacial Indifference isn't on Google Fonts, so it's self-hosted: its files go in `assets/fonts/` (`GlacialIndifference-Regular` and `-Bold`, as .woff2 or .otf).
-- `assets/css/site.css`: `--font-display` (your name, page titles), `--font-headline` (section headlines), `--font-body` (paragraphs), `--font-osd` (VCR on-screen text).
+Righteous (your name, page titles, cards), Anton (section headlines), Jost (paragraphs), VT323 (VCR text), plus Asimovian as an accent for channel names. Set in two places:
+- `_layouts/base.html`: the Google Fonts `<link>` that loads them.
+- `assets/css/site.css`: `--font-display`, `--font-headline`, `--font-body`, `--font-osd` and `--font-accent`.
 
 For a font from somewhere other than Google Fonts, put the `.woff2` file in `assets/fonts/`, add an `@font-face` rule at the top of `site.css`, and point the variable at it. Check that the license allows web use.
