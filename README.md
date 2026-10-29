@@ -62,7 +62,7 @@ The MENU button (dark pages) has Intensity (Low / Med / High, default High), Col
 
 ## Fonts
 
-Righteous (your name, page titles, cards), Anton (section headlines), Jost (paragraphs), VT323 (VCR text), plus Asimovian as an accent for channel names. Set in two places:
+Righteous (your name, page titles, cards), Anton (section headlines), Jost (paragraphs), VT323 (VCR text), plus Asimovian as an accent for channel names and Comfortaa for the top nav links. Set in two places:
 - `_layouts/base.html`: the Google Fonts `<link>` that loads them.
 - `assets/css/site.css`: `--font-display`, `--font-headline`, `--font-body`, `--font-osd` and `--font-accent`.
 
