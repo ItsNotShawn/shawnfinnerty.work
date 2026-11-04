@@ -17,3 +17,5 @@ collections:
 
 exclude:
   - README.md
+  - SEND-CONTENT.md
+  - CLAUDE.md

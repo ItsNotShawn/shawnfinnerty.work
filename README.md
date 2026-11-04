@@ -2,6 +2,8 @@
 
 Personal site for Shawn Finnerty. GitHub Pages builds it with Jekyll automatically on every push to `main`.
 
+Sending new content to Claude for the site? See [SEND-CONTENT.md](SEND-CONTENT.md).
+
 ## Where things live
 
 | What | Where | Shows up at |
