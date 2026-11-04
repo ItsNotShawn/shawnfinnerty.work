@@ -19,3 +19,12 @@ exclude:
   - README.md
   - SEND-CONTENT.md
   - CLAUDE.md
+
+# Page style per section: "label" = clean freelance look, "screen" = VHS portfolio look
+defaults:
+  - scope: { type: concepts }
+    values: { theme: label }
+  - scope: { type: clients }
+    values: { theme: label }
+  - scope: { type: projects }
+    values: { theme: screen }
