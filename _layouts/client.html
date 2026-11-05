@@ -37,7 +37,7 @@ theme: label
       {%- if w.youtube -%}
         {% include embed.html youtube=w.youtube title=w.title %}
       {%- elsif w.video -%}
-        <figure class="embed"><video src="{{ w.video | relative_url }}"{% if w.image %} poster="{{ w.image | relative_url }}"{% endif %} controls muted playsinline loop preload="metadata"></video></figure>
+        <figure class="embed"><video src="{{ w.video | relative_url }}"{% if w.image %} poster="{{ w.image | relative_url }}"{% endif %} autoplay controls muted playsinline loop preload="metadata"></video></figure>
       {%- elsif w.image -%}
         <div class="fl-detail__hero">{% include media.html item=w %}</div>
       {%- endif -%}
@@ -45,6 +45,17 @@ theme: label
         {% if w.details %}<div class="prose">{{ w.details | markdownify }}</div>{% endif %}
         {% if w.link %}<p><a class="more" href="{{ w.link }}">{{ w.link_label | default: "See it live" }}</a></p>{% endif %}
       </div>
+      {% if w.platforms %}
+      <div class="platforms">
+        {% for pl in w.platforms %}
+        <div class="platform">
+          <h3>{{ pl.name }}</h3>
+          {% if pl.angle %}<p class="platform__angle">{{ pl.angle }}</p>{% endif %}
+          {% if pl.posts %}<div class="posts">{% for p in pl.posts %}{% include post-embed.html post=p platform=pl.name %}{% endfor %}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
       {% if w.gallery %}
       <div class="work__gallery">
         {% for g in w.gallery %}<figure><img src="{{ g.src | relative_url }}" alt="{{ g.alt | escape }}" loading="lazy">{% if g.caption %}<figcaption>{{ g.caption }}</figcaption>{% endif %}</figure>{% endfor %}

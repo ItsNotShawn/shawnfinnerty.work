@@ -641,3 +641,16 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .work__gallery figcaption, .theme-label .embed figcaption { color: #555; font-size: .9rem; margin-top: 6px; }
 .quote--big { margin-top: 56px; }
 .quote--big p { font-size: 1.35rem; }
+
+/* social posts grouped by platform */
+.platforms { display: grid; gap: 36px; margin-top: 28px; }
+.platform h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; margin: 0 0 4px; }
+.platform__angle { color: #4a4a4a; max-width: 62ch; }
+.posts { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); align-items: start; margin-top: 12px; }
+.post { margin: 0; }
+.post iframe { display: block; width: 100%; border: 3px solid #141414; border-radius: 6px; background: #fff; }
+.post--instagram iframe { height: 620px; }
+.post--facebook iframe { height: 560px; }
+.post--linkedin iframe { height: 600px; }
+.post img { width: 100%; border: 3px solid #141414; border-radius: 6px; }
+.post figcaption { font-size: .9rem; color: #555; margin-top: 6px; }

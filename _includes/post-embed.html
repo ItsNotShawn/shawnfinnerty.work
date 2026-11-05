@@ -1,0 +1,12 @@
+{%- comment -%} One social post, embedded. `post.embed` is the platform's embed URL; `post.url` links to the original. {%- endcomment -%}
+{%- assign p = include.post -%}
+<figure class="post post--{{ include.platform | slugify }}">
+  {%- if p.embed -%}
+  <iframe src="{{ p.embed }}" title="{{ include.platform }} post{% if p.caption %}: {{ p.caption | escape }}{% endif %}" loading="lazy" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+  {%- elsif p.image -%}
+  <img src="{{ p.image | relative_url }}" alt="{{ p.alt | default: p.caption | escape }}" loading="lazy">
+  {%- endif -%}
+  {%- if p.caption or p.url -%}
+  <figcaption>{{ p.caption }}{% if p.url %} <a href="{{ p.url }}">View on {{ include.platform }}</a>{% endif %}</figcaption>
+  {%- endif -%}
+</figure>
