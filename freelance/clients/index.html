@@ -15,9 +15,10 @@ description: "Freelance client projects and testimonials from Shawn Finnerty, a 
     <article class="client-row">
       <a class="tile" href="{{ c.url | relative_url }}">
         <div class="tile__media">{% include media.html item=c %}</div>
-        <span class="tile__kicker">{{ c.client }} &middot; {{ c.service }}</span>
-        <h2>{{ c.title }}</h2>
+        {%- assign svc = c.works | map: "service" | uniq -%}
+        <h2>{{ c.client }}</h2>
         <p>{{ c.summary }}</p>
+        {% if svc.size > 0 %}<ul class="svc-tags">{% for s in svc %}<li>{{ s }}</li>{% endfor %}</ul>{% endif %}
       </a>
       {% if c.testimonial %}<blockquote class="quote"><p>{{ c.testimonial }}</p><footer>{{ c.testimonial_by }}</footer></blockquote>{% endif %}
     </article>

@@ -626,3 +626,18 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .theme-screen .prose h3 { color: #fff; filter: url(#rgb-lg); }
 .prose ul { padding-left: 1.2em; }
 .prose li { margin-bottom: .3em; }
+
+/* ---------- Client pages: service tags + one section per piece of work ---------- */
+.svc-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; }
+.svc-tags li, .svc-tag { display: inline-block; padding: 3px 10px; border: 1.5px solid #141414; border-radius: 999px; font-size: .85rem; font-weight: 600; }
+.work-index { margin: 0; padding-left: 1.1em; }
+.work { margin-top: 64px; padding-top: 32px; border-top: 3px solid #141414; }
+.work__head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.8rem, 4.5vw, 2.6rem); margin: 12px 0 8px; }
+.work__body { margin-top: 20px; max-width: 66ch; }
+.work .embed video { display: block; width: 100%; border-radius: 6px; border: 3px solid #141414; background: #111; }
+.work__gallery { display: grid; gap: 16px; margin-top: 20px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.work__gallery figure { margin: 0; }
+.work__gallery img { width: 100%; border: 3px solid #141414; border-radius: 6px; }
+.work__gallery figcaption, .theme-label .embed figcaption { color: #555; font-size: .9rem; margin-top: 6px; }
+.quote--big { margin-top: 56px; }
+.quote--big p { font-size: 1.35rem; }

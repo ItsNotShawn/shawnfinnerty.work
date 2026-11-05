@@ -66,9 +66,10 @@ description: "Freelance creative and design, marketing and communications, and a
       {% for c in clients limit: 2 %}
       <a class="tile" href="{{ c.url | relative_url }}">
         <div class="tile__media">{% include media.html item=c %}</div>
-        <span class="tile__kicker">{{ c.client }}</span>
-        <h3>{{ c.title }}</h3>
+        {%- assign svc = c.works | map: "service" | uniq -%}
+        <h3>{{ c.client }}</h3>
         <p>{{ c.summary }}</p>
+        {% if svc.size > 0 %}<ul class="svc-tags">{% for s in svc %}<li>{{ s }}</li>{% endfor %}</ul>{% endif %}
       </a>
       {% endfor %}
     </div>
