@@ -37,7 +37,7 @@ theme: label
       {%- if w.youtube -%}
         {% include embed.html youtube=w.youtube title=w.title %}
       {%- elsif w.video -%}
-        <figure class="embed"><video src="{{ w.video | relative_url }}"{% if w.image %} poster="{{ w.image | relative_url }}"{% endif %} autoplay controls muted playsinline loop preload="metadata"></video></figure>
+        <figure class="embed{% if w.portrait %} embed--portrait{% endif %}"><video src="{{ w.video | relative_url }}"{% if w.image %} poster="{{ w.image | relative_url }}"{% endif %} autoplay controls muted playsinline loop preload="metadata"></video></figure>
       {%- elsif w.image -%}
         <div class="fl-detail__hero">{% include media.html item=w %}</div>
       {%- endif -%}

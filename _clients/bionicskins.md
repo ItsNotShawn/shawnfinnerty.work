@@ -4,19 +4,19 @@ client: "BionicSkins"
 order: 1
 years: "April 2025 to now"
 client_site: https://bionicskins.com
-summary: "An animation for their homepage, a search and social audit, and ongoing social media for a Boston prosthetics startup."
+summary: "A 3D process animation, a search and social audit, and ongoing social media for a Boston prosthetics startup."
 client_about: "A Boston-area startup making a custom prosthetic socket-and-liner system for people with below-knee amputations."
 # image: /images/clients/bionicskins/cover.jpg
 # testimonial: "..."     # their own words, once they send one
 # testimonial_by: "Name, Title, BionicSkins"
 works:
-  - title: "Homepage animation"
+  - title: "3D process animation"
     service: "Creative & Design"
     year: 2025
-    summary: "A 3D animation of the limb and bone for the Our Mission section of their homepage."
-    # video: /images/clients/bionicskins/homepage-animation.mp4   # their site blocks playing it from elsewhere, so it's hosted here
-    link: https://bionicskins.com
-    link_label: "See it on their homepage"
+    summary: "A short 3D animation that shows how their system is built: from the bones, to a scan of the limb, to a pressure map, to the finished liner and socket."
+    video: /images/clients/bionicskins/process-animation.mp4
+    image: /images/clients/bionicskins/process-animation.jpg   # poster frame
+    portrait: true
   - title: "Search and social audit"
     service: "Analytics & Business"
     year: 2026

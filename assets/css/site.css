@@ -654,3 +654,5 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .post--linkedin iframe { height: 600px; }
 .post img { width: 100%; border: 3px solid #141414; border-radius: 6px; }
 .post figcaption { font-size: .9rem; color: #555; margin-top: 6px; }
+
+.work .embed--portrait video { width: auto; max-width: min(100%, 420px); max-height: 80vh; margin: 0 auto; background: #000; }
