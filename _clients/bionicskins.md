@@ -14,7 +14,7 @@ works:
     service: "Creative & Design"
     year: 2025
     summary: "A 3D animation of the limb and bone for the Our Mission section of their homepage."
-    video: https://bionicskins.com/images/DDDM_Full_anim8_cropped.mp4   # plays from their site
+    # video: /images/clients/bionicskins/homepage-animation.mp4   # their site blocks playing it from elsewhere, so it's hosted here
     link: https://bionicskins.com
     link_label: "See it on their homepage"
   - title: "Search and social audit"
