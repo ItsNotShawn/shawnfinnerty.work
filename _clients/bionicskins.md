@@ -38,7 +38,10 @@ works:
         #     embed: ...                             # filled in by Claude
       - name: "Instagram"
         angle: "Visual posts for a younger audience."
-        # posts:
+        posts:
+          - { url: "https://www.instagram.com/p/Deuw_IpiQhj/", embed: "https://www.instagram.com/p/Deuw_IpiQhj/embed/captioned/" }
+          - { url: "https://www.instagram.com/p/DfpicvdRjDs/", embed: "https://www.instagram.com/p/DfpicvdRjDs/embed/captioned/" }
+          - { url: "https://www.instagram.com/p/DfUp1GQRO3-/", embed: "https://www.instagram.com/p/DfUp1GQRO3-/embed/captioned/" }
       - name: "LinkedIn"
         angle: "More technical framing for prosthetists and the industry."
         # posts:
