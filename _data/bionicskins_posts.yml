@@ -11,7 +11,7 @@ facebook:
   - { url: "https://www.facebook.com/reel/1085729630945810", embed: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1085729630945810&show_text=true&width=500" }
   - { url: "https://www.facebook.com/photo/?fbid=122283915938089327&set=a.122130678902089327", embed: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fphoto%2F%3Ffbid%3D122283915938089327%26set%3Da.122130678902089327&show_text=true&width=500" }
 linkedin:
-  - { url: "https://www.linkedin.com/posts/worlddiabetesday-diabetesawarenessmonth-prosthetics-share-7527099894952579072-Zvq4/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7527099894952579072" }
-  - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-share-7525634611746328576-Hvbl/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7525634611746328576" }
-  - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-ugcPost-7522018627978604544-LNvx/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7522018627978604544" }
-  - { url: "https://www.linkedin.com/posts/bionicskins-prosthetist-oandp-share-7519115058493386752-_BnW/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7519115058493386752" }
+  - { url: "https://www.linkedin.com/posts/worlddiabetesday-diabetesawarenessmonth-prosthetics-share-7527099894952579072-Zvq4/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7527099894952579072?collapsed=1" }
+  - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-share-7525634611746328576-Hvbl/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7525634611746328576?collapsed=1" }
+  - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-ugcPost-7522018627978604544-LNvx/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7522018627978604544?collapsed=1" }
+  - { url: "https://www.linkedin.com/posts/bionicskins-prosthetist-oandp-share-7519115058493386752-_BnW/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7519115058493386752?collapsed=1" }

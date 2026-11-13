@@ -2,7 +2,7 @@
 {%- assign p = include.post -%}
 <figure class="post post--{{ include.platform | slugify }}">
   {%- if p.embed -%}
-  <iframe src="{{ p.embed }}" title="{{ include.platform }} post{% if p.caption %}: {{ p.caption | escape }}{% endif %}" loading="lazy" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+  <iframe src="{{ p.embed }}" title="{{ include.platform }} post{% if p.caption %}: {{ p.caption | escape }}{% endif %}" loading="lazy" allowtransparency="true" frameborder="0"></iframe>
   {%- elsif p.image -%}
   <img src="{{ p.image | relative_url }}" alt="{{ p.alt | default: p.caption | escape }}" loading="lazy">
   {%- endif -%}
