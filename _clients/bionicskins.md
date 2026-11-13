@@ -30,19 +30,19 @@ works:
     service: "Marketing & Communications"
     year: 2026
     summary: "Weekly posts for Facebook, Instagram and LinkedIn, each written for the people on that platform."
-    platforms:
+    details: |
+      I write and design about one post a week, reusing photos and assets they already have. Each platform gets the same idea told for a different audience. These are my posts since October 2026, newest first.
+    platforms:   # posts live in _data/bionicskins_posts.yml (shared with the portfolio page)
       - name: "Facebook"
         angle: "Plain, friendly explanations for patients and their families."
-        # posts:
-        #   - url: https://www.facebook.com/...      # link to the post
-        #     embed: ...                             # filled in by Claude
+        data_file: bionicskins_posts
+        data_key: facebook
       - name: "Instagram"
         angle: "Visual posts for a younger audience."
-        posts:
-          - { url: "https://www.instagram.com/p/Deuw_IpiQhj/", embed: "https://www.instagram.com/p/Deuw_IpiQhj/embed/captioned/" }
-          - { url: "https://www.instagram.com/p/DfpicvdRjDs/", embed: "https://www.instagram.com/p/DfpicvdRjDs/embed/captioned/" }
-          - { url: "https://www.instagram.com/p/DfUp1GQRO3-/", embed: "https://www.instagram.com/p/DfUp1GQRO3-/embed/captioned/" }
+        data_file: bionicskins_posts
+        data_key: instagram
       - name: "LinkedIn"
-        angle: "More technical framing for prosthetists and the industry."
-        # posts:
+        angle: "More technical framing for prosthetists and the industry: a tool that supports their work, not one that replaces it."
+        data_file: bionicskins_posts
+        data_key: linkedin
 ---

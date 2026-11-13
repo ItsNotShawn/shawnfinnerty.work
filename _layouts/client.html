@@ -51,7 +51,9 @@ theme: label
         <div class="platform">
           <h3>{{ pl.name }}</h3>
           {% if pl.angle %}<p class="platform__angle">{{ pl.angle }}</p>{% endif %}
-          {% if pl.posts %}<div class="posts">{% for p in pl.posts %}{% include post-embed.html post=p platform=pl.name %}{% endfor %}</div>{% endif %}
+          {%- assign plposts = pl.posts -%}
+          {%- if pl.data_file -%}{%- assign plposts = site.data[pl.data_file][pl.data_key] -%}{%- endif -%}
+          {% if plposts.size > 0 %}<div class="posts">{% for p in plposts %}{% include post-embed.html post=p platform=pl.name %}{% endfor %}</div>{% endif %}
         </div>
         {% endfor %}
       </div>
