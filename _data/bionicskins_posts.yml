@@ -1,5 +1,10 @@
-# BionicSkins posts Shawn made. Add more here; `embed` is the post link + "embed/captioned/".
-p1: { url: "https://www.instagram.com/p/Deuw_IpiQhj/", embed: "https://www.instagram.com/p/Deuw_IpiQhj/embed/captioned/" }
-p2: { url: "https://www.instagram.com/p/DfpicvdRjDs/", embed: "https://www.instagram.com/p/DfpicvdRjDs/embed/captioned/" }
-p3: { url: "https://www.instagram.com/p/DfUp1GQRO3-/", embed: "https://www.instagram.com/p/DfUp1GQRO3-/embed/captioned/" }
-p4: { url: "https://www.instagram.com/reel/DfFIfzfRpYd/", embed: "https://www.instagram.com/reel/DfFIfzfRpYd/embed/captioned/" }
+# BionicSkins posts Shawn made (everything from Oct 20, 2026 on), newest first.
+# Instagram embed = post link + "embed/captioned/". Facebook embed = plugins/post.php?href=<encoded post link>.
+instagram:
+  - { date: 2026-11-12, url: "https://www.instagram.com/p/DfpicvdRjDs/", embed: "https://www.instagram.com/p/DfpicvdRjDs/embed/captioned/" }
+  - { date: 2026-11-04, url: "https://www.instagram.com/p/DfUp1GQRO3-/", embed: "https://www.instagram.com/p/DfUp1GQRO3-/embed/captioned/" }
+  - { date: 2026-10-29, url: "https://www.instagram.com/reel/DfFIfzfRpYd/", embed: "https://www.instagram.com/reel/DfFIfzfRpYd/embed/captioned/" }
+  - { date: 2026-10-20, url: "https://www.instagram.com/p/Deuw_IpiQhj/", embed: "https://www.instagram.com/p/Deuw_IpiQhj/embed/captioned/" }
+facebook:
+  - { date: 2026-11-12, url: "https://www.facebook.com/BionicSkins/posts/pfbid0Ewb5XfgQgEaea8jAnsWcLCPn7CFkRuRQbJ8whLEnvjQqxPWrGMkALS43cmtK8x94l", embed: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2FBionicSkins%2Fposts%2Fpfbid0Ewb5XfgQgEaea8jAnsWcLCPn7CFkRuRQbJ8whLEnvjQqxPWrGMkALS43cmtK8x94l&show_text=true&width=500" }
+linkedin: []
