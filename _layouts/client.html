@@ -48,13 +48,12 @@ theme: label
       {% if w.platforms %}
       <div class="platforms">
         {% for pl in w.platforms %}
-        <div class="platform">
-          <h3>{{ pl.name }}</h3>
-          {% if pl.angle %}<p class="platform__angle">{{ pl.angle }}</p>{% endif %}
-          {%- assign plposts = pl.posts -%}
-          {%- if pl.data_file -%}{%- assign plposts = site.data[pl.data_file][pl.data_key] -%}{%- endif -%}
-          {% if plposts.size > 0 %}<div class="posts">{% for p in plposts %}{% include post-embed.html post=p platform=pl.name %}{% endfor %}</div>{% endif %}
-        </div>
+          {%- assign plposts = pl.posts -%}{%- assign plresults = pl.results -%}
+          {%- if pl.data_file -%}
+            {%- assign plposts = site.data[pl.data_file][pl.data_key] -%}
+            {%- assign plresults = site.data[pl.data_file].results[pl.data_key] -%}
+          {%- endif -%}
+          {% include post-carousel.html name=pl.name angle=pl.angle posts=plposts results=plresults %}
         {% endfor %}
       </div>
       {% endif %}

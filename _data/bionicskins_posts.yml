@@ -15,3 +15,10 @@ linkedin:
   - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-share-7525634611746328576-Hvbl/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7525634611746328576?collapsed=1" }
   - { url: "https://www.linkedin.com/posts/bionicskins-oandp-orthoticsandprosthetics-ugcPost-7522018627978604544-LNvx/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7522018627978604544?collapsed=1" }
   - { url: "https://www.linkedin.com/posts/bionicskins-prosthetist-oandp-share-7519115058493386752-_BnW/", embed: "https://www.linkedin.com/embed/feed/update/urn:li:share:7519115058493386752?collapsed=1" }
+
+# Results to show next to each platform's posts (leave a platform out until you have numbers).
+# Example:
+#   facebook:
+#     - { value: "+40%", label: "more people reached than in September" }
+#     - { value: "3x", label: "engagement on posts featuring real people" }
+results: {}

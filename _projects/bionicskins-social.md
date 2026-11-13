@@ -25,24 +25,8 @@ BionicSkins makes custom prosthetic liners and sockets designed from a CT scan o
 ## Recent posts
 
 {% assign posts = site.data.bionicskins_posts %}
-### Instagram
-
-<div class="posts posts--feed">
-{% for p in posts.instagram %}{% include post-embed.html platform="Instagram" post=p %}{% endfor %}
-</div>
-
-### Facebook
-
-<div class="posts posts--feed">
-{% for p in posts.facebook %}{% include post-embed.html platform="Facebook" post=p %}{% endfor %}
-</div>
-
-{% if posts.linkedin.size > 0 %}
-### LinkedIn
-
-<div class="posts posts--feed">
-{% for p in posts.linkedin %}{% include post-embed.html platform="LinkedIn" post=p %}{% endfor %}
-</div>
-{% endif %}
+{% include post-carousel.html name="Facebook" angle="Plain, friendly explanations for patients and their families." posts=posts.facebook results=posts.results.facebook %}
+{% include post-carousel.html name="Instagram" angle="Visual posts for a younger audience." posts=posts.instagram results=posts.results.instagram %}
+{% include post-carousel.html name="LinkedIn" angle="More technical framing for prosthetists: a tool that supports their work, not one that replaces it." posts=posts.linkedin results=posts.results.linkedin %}
 
 More of this work, including the search audit, is on my [BionicSkins client page](/freelance/clients/bionicskins/).

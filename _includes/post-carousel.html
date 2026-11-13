@@ -1,0 +1,29 @@
+{%- comment -%}
+  One platform: a sideways-scrolling row of posts on the left, the platform's angle and results on the right.
+  Usage: {% include post-carousel.html name="LinkedIn" angle="..." posts=array results=array %}
+  results items: { value: "+40%", label: "more people reached than before" }
+{%- endcomment -%}
+<div class="pc">
+  <div class="pc__main">
+    <div class="pc__track" tabindex="0" role="region" aria-label="{{ include.name }} posts, scroll sideways" data-pc-track>
+      {% for p in include.posts %}<div class="pc__slide">{% include post-embed.html post=p platform=include.name %}</div>{% endfor %}
+    </div>
+    {% if include.posts.size > 1 %}
+    <div class="pc__nav">
+      <button type="button" class="pc__btn" data-pc-prev aria-label="Previous {{ include.name }} post">&#8249;</button>
+      <span class="pc__count" aria-live="polite" data-pc-count>1 / {{ include.posts.size }}</span>
+      <button type="button" class="pc__btn" data-pc-next aria-label="Next {{ include.name }} post">&#8250;</button>
+    </div>
+    {% endif %}
+  </div>
+  <aside class="pc__side">
+    <h3>{{ include.name }}</h3>
+    {% if include.angle %}<p class="pc__angle">{{ include.angle }}</p>{% endif %}
+    {% if include.results.size > 0 %}
+    <dl class="pc__stats">
+      {% for r in include.results %}<div><dt>{{ r.value }}</dt><dd>{{ r.label }}</dd></div>{% endfor %}
+    </dl>
+    {% endif %}
+    <p class="pc__meta">{{ include.posts.size }} posts</p>
+  </aside>
+</div>

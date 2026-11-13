@@ -663,3 +663,32 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .theme-screen .post figcaption { color: #b8b8b0; }
 .theme-screen .post figcaption a { color: #fff; }
 .prose .posts--feed { max-width: none; }
+
+/* ---------- Post carousel: sideways-scrolling posts + a side panel for the angle and results ---------- */
+.pc { display: grid; gap: 20px 32px; margin-top: 28px; align-items: start; }
+@media (min-width: 900px) { .pc { grid-template-columns: minmax(0, 1fr) 280px; } }
+.pc__main { min-width: 0; }
+.pc__track {
+  display: grid; grid-auto-flow: column; grid-auto-columns: min(340px, 85%); gap: 16px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+.pc__slide { scroll-snap-align: start; }
+.pc__slide .post { margin: 0; }
+.pc__nav { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.pc__btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid currentColor; background: none; color: inherit; font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.pc__btn:disabled { opacity: .3; cursor: default; }
+.pc__count { font-size: .95rem; min-width: 3.5em; text-align: center; }
+.pc__side h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; margin: 0 0 6px; }
+.pc__angle { margin: 0 0 16px; }
+.pc__stats { margin: 0 0 16px; display: grid; gap: 14px; }
+.pc__stats dt { font-family: var(--font-display); font-size: 2.2rem; line-height: 1; }
+.pc__stats dd { margin: 4px 0 0; font-size: .95rem; }
+.pc__meta { font-size: .9rem; margin: 0; }
+@media (max-width: 899px) { .pc__side { order: -1; } }
+.theme-label .pc__angle, .theme-label .pc__meta, .theme-label .pc__stats dd { color: #4a4a4a; }
+.theme-label .pc__btn:not(:disabled):hover { background: #141414; color: #fff; }
+.theme-screen .pc__angle, .theme-screen .pc__meta, .theme-screen .pc__stats dd { color: #c9c9c2; }
+.theme-screen .pc__side h3 { color: #fff; }
+.theme-screen .pc__btn:not(:disabled):hover { background: #fff; color: #000; }
+.prose .pc { max-width: none; }

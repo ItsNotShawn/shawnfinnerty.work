@@ -218,4 +218,24 @@
     }, { passive: true });
     document.documentElement.addEventListener("mouseleave", function () { tgt.x = REST.x; tgt.y = REST.y; wake(); });
   }
+
+  /* Post carousels: arrow buttons + counter */
+  Array.prototype.forEach.call(document.querySelectorAll(".pc"), function (pc) {
+    var track = pc.querySelector("[data-pc-track]"), prev = pc.querySelector("[data-pc-prev]"),
+        next = pc.querySelector("[data-pc-next]"), count = pc.querySelector("[data-pc-count]");
+    if (!track || !prev) return;
+    var slides = track.children;
+    var step = function () { return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth; };
+    var update = function () {
+      var i = Math.round(track.scrollLeft / step());
+      if (count) count.textContent = Math.min(i + 1, slides.length) + " / " + slides.length;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    };
+    prev.addEventListener("click", function () { track.scrollBy({ left: -step(), behavior: "smooth" }); });
+    next.addEventListener("click", function () { track.scrollBy({ left: step(), behavior: "smooth" }); });
+    track.addEventListener("scroll", function () { window.requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  });
 })();
