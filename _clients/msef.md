@@ -11,14 +11,16 @@ client_about: "MSEF runs the statewide science and engineering fair for Massachu
 # testimonial: "..."                              # Rebekah's own words, if she's happy to give one
 # testimonial_by: "Rebekah ..., Title, MSEF"
 works:
-  - title: "Module planning"
+  - title: "Module framework"
     service: "Creative & Design"
     year: 2026
-    summary: "Before designing anything, I wrote up how a module should work, building on what worked in MSEF's earlier Food and Motion modules and what needed to be stronger."
+    summary: "MSEF had two module drafts, Food and Motion, and needed them ready for teachers to test. Before designing anything, I worked out what a module should be and how students and teachers move through one."
     details: |
-      - Mapped the student path a module should follow: big idea, explore, come up with ideas, narrow down, plan a project
-      - Called out the gaps in the originals: the jump from exploring to picking a project, planning support, and guidance for teachers
-      - Used it with Rebekah at MSEF to agree on the direction before building the template
+      - **Compared formats.** Weighed Google Slides, an interactive Canva deck, Google Forms, a Notion-style workspace, a custom web app and a hybrid, on cost, ease for teachers and how interactive each could be.
+      - **Recommended a phased plan.** Start with a framework, worksheets and teacher resources that could be tested quickly, and save a more interactive "project builder" for later, once the framework proves itself.
+      - **Wrote the framework.** A five-step student journey (introduce the big idea, explore, generate ideas, narrow down, plan a project), a matching teacher journey, and the core parts every module needs.
+      - **Reviewed the originals.** Noted what already worked (clear entry points, visual exploration maps, starting questions, good resources) and what needed strengthening: the jump from exploring to picking a project, planning support, teacher guidance and consistent branding.
+      - **Revised it with Rebekah at MSEF.** Built around a "big idea" rather than a single challenge, let students pick their own path through four or five areas, and end on a draft research plan aimed mainly at middle schoolers.
   - title: "Module template"
     service: "Creative & Design"
     year: 2026
