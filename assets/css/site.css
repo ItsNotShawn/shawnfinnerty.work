@@ -167,10 +167,14 @@ p { margin: 0 0 1em; }
 html.no-motion .home .home__main { animation: none; }
 
 .home__sub { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: end; }
-@media (min-width: 1000px) {
-  /* tools panel sits in the empty space right of "Finnerty", under the stripes */
-  .home__sub { grid-template-columns: 1fr 360px; gap: 32px; }
-  .home__sub .tools { margin-top: -100px; position: relative; z-index: 2; }
+@media (min-width: 1700px) {
+  /* wide screens: tools panel lives in the empty left margin, beside the name */
+  .home__main { position: relative; }
+  .home__sub .tools {
+    position: absolute; top: 28px; z-index: 2;
+    right: calc(50% + var(--wrap) / 2 + 8px);
+    width: min(320px, calc(50% - var(--wrap) / 2 - 40px));
+  }
 }
 .channels { display: grid; gap: 16px; grid-template-columns: 1fr; }
 @media (min-width: 720px) { .channels { grid-template-columns: 1fr 1fr; gap: 20px; } }
@@ -740,14 +744,14 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .steps-row figcaption { font-family: var(--font-osd, monospace); font-size: 1.1rem; margin-top: 6px; text-transform: uppercase; letter-spacing: .05em; }
 @media (max-width: 640px) { .steps-row { grid-template-columns: 1fr; } .steps-row img { aspect-ratio: auto; } }
 
-/* Homepage on phones/tablets: channel cards first, tools panel after them */
-@media (max-width: 999px) {
+/* Homepage below wide-screen size: channel cards first, tools panel after them */
+@media (max-width: 1699px) {
   .home__main { display: flex; flex-direction: column; }
   .home__hero, .home__sub { display: contents; }
   .home__hero .logo { padding-top: 20px; }
   .home__tagline { padding-inline: var(--gutter); margin-bottom: 28px; }
   .home__main > .channels { order: 1; }
-  .home__sub .tools { order: 2; margin: 20px var(--gutter) 0; }
+  .home__sub .tools { order: 2; margin: 20px auto 0; width: calc(100% - 2 * var(--gutter)); max-width: calc(var(--wrap) - 2 * var(--gutter)); box-sizing: border-box; }
   .home__main > .nowplaying { order: 3; }
   .home__main > .home__about { order: 4; }
 }
