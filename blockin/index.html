@@ -262,6 +262,7 @@
             <label><input type="checkbox" id="showGrid" checked> Grid</label>
             <label><input type="checkbox" id="showNums" checked> Numbers</label>
             <label><input type="checkbox" id="showLines" checked> Outlines</label>
+            <label data-step="4"><input type="checkbox" id="showDepthLines" checked> Depth lines</label>
             <label><input type="checkbox" id="showCells" checked> Cell labels</label>
           </div>
         </div>
@@ -704,6 +705,13 @@ function render(){
       for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=y*W+x,v=keyMap[p];
         if((x<W-1&&keyMap[p+1]!==v)||(y<H-1&&keyMap[p+W]!==v)){if(focus!=null&&v!==focus&&keyMap[p+1]!==focus&&keyMap[p+W]!==focus)continue;ctx.fillRect(x*S,y*S,S*0.9,S*0.9);}}
     }
+    if(view==='order'&&$('#showDepthLines').checked){
+      // Where one depth layer (Back / Middle / Front) meets another: a black-and-white dashed line
+      const layer=state.layer,dash=5;
+      for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=y*W+x,l=layer[p];
+        if((x<W-1&&layer[p+1]!==l)||(y<H-1&&layer[p+W]!==l)){
+          ctx.fillStyle=(Math.floor((x+y)/dash)%2)?'#ffffff':'#111111';ctx.fillRect(x*S-S*0.4,y*S-S*0.4,S*1.8,S*1.8);}}
+    }
     if(showNums){
       const key=view;if(view==='order')state.placeCache.order0=placements(keyMap,W,H);else if(!state.placeCache[key+V])state.placeCache[key+V]=placements(keyMap,W,H);
       const fs=Math.round(W*S/34);ctx.font=`700 ${fs}px -apple-system,Segoe UI,Roboto,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
@@ -850,6 +858,7 @@ function renderOrder(){
   rc.insertAdjacentHTML('beforeend',`<div class="how"><b>How to read the paint order</b>
     <ul><li><b>Layer means depth only:</b> Back, Middle or Front, like layers in Photoshop. Finish one layer before starting the next one forward.</li>
     <li><b>Colors are the order inside a layer:</b> within each layer, paint its colors darkest to lightest.</li>
+    <li><b>Dashed lines mark where layers meet:</b> the black-and-white dashed line on the map is where one depth layer (Back, Middle, Front) ends and the next begins. Each side belongs to a different layer, so the two sides get painted at different times. Turn it off with “Depth lines” above the map.</li>
     <li><b>Grid squares are just a map:</b> they show where things go on the canvas. They aren’t part of the order.</li></ul>
     <b>The routine</b><ol><li>Back layer, its colors dark to light.</li><li>Middle layer, its colors dark to light.</li><li>Front layer, its colors dark to light.</li><li>Details and brightest highlights last, anywhere.</li></ol></div>`);
   rc.insertAdjacentHTML('beforeend',`<div class="note" style="margin:0"><b>Tap any grid square</b> on the map to zoom in and see what to paint there, in order. Numbers on the map are step numbers. Tap a step below, or in the strip under the map, to show only that step. To change depth, go back to step 2.</div>`);
@@ -942,7 +951,7 @@ $('#simp').addEventListener('input',()=>$('#sv').textContent=$('#simp').value);
 $('#vals').addEventListener('input',()=>{$('#vv').textContent=$('#vals').value;render();});
 $('#k').addEventListener('change',run);$('#simp').addEventListener('change',run);
 ['#cols','#rows'].forEach(s=>$(s).addEventListener('input',render));
-['#showGrid','#showNums','#showLines','#showCells'].forEach(s=>$(s).addEventListener('change',render));
+['#showGrid','#showNums','#showLines','#showCells','#showDepthLines'].forEach(s=>$(s).addEventListener('change',render));
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view=sub=b.dataset.v;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));syncOnly();render();});
 setStep(1);
