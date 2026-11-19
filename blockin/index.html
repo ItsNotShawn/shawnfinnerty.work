@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block In: Plan Your Painting in Layers</title>
+<style>
+  :root{
+    --bg:#f4f1ec; --card:#fffdf9; --ink:#1f2328; --muted:#6b6f76; --line:#e2ddd4;
+    --accent:#1f5f7a; --accent-ink:#fff; --grid:#e0393a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#15181b; --card:#1e2226; --ink:#eceae6; --muted:#9aa0a6; --line:#2f353b; --accent:#5fb3c9; --accent-ink:#0d1b20; }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+  h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .h1sub{display:block;font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0;margin-top:2px}
+  .acrylic{font-size:13px;margin:0 0 16px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line)}
+  .how{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--card);font-size:14px}
+  .how ul{margin:6px 0 8px;padding-left:18px}.how li{margin:3px 0}.how ol{margin:6px 0 0;padding-left:20px}
+  .layout{display:grid;gap:16px}
+  @media (min-width:860px){ .layout{grid-template-columns:300px 1fr;align-items:start} .controls{position:sticky;top:16px} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;cursor:pointer;color:var(--muted)}
+  .drop.over{border-color:var(--accent);color:var(--ink)}
+  .drop strong{color:var(--accent);display:block;font-size:16px;margin-bottom:2px}
+  .drop input{display:none}
+  .row{margin-top:16px}
+  .row label{display:flex;justify-content:space-between;font-weight:600;font-size:14px}
+  .row label span{font-weight:500;color:var(--muted)}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:2px}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .pair{display:flex;gap:10px;margin-top:6px}
+  .pair div{flex:1}
+  .pair input{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+  .pair small{color:var(--muted)}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:8px;font-size:14px}
+  .checks label{display:flex;gap:6px;align-items:center;font-weight:500}
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+  .tabs button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .stage{position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+  .stage img.tap{cursor:pointer}
+  .stage img{max-width:100%;height:auto;display:block;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .empty{color:var(--muted);text-align:center;padding:40px 10px}
+  .busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:color-mix(in srgb,var(--card) 70%,transparent);font-weight:600;border-radius:8px}
+  .busy.on{display:flex}
+  .save{font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center}
+  .palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:14px}
+  .sw{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:6px;background:var(--card)}
+  .chip{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;border:1px solid rgba(0,0,0,.15)}
+  .sw code{font-size:12px;color:var(--muted)}
+  .sw b{display:block;font-size:13px}
+  .paints{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .paints label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 4px;font-size:12.5px;font-weight:500;cursor:pointer;user-select:none}
+  .paints label.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+  .paints input{display:none}
+  .dot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.2);flex:none}
+  .recipes{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .rc{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--card)}
+  .rc-head{display:flex;align-items:center;gap:10px}
+  .rc-head .meta{font-size:12.5px;color:var(--muted)}
+  .mix{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .mix-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .cmp{display:flex;border-radius:7px;overflow:hidden;border:1px solid rgba(0,0,0,.15);flex:none}
+  .cmp div{width:30px;height:30px}
+  .rate{font-weight:700;font-size:14px}
+  .rate small{font-weight:500;color:var(--muted);margin-left:4px}
+  .lv-spot{color:#2f8f4e}.lv-very{color:#4c9a3c}.lv-close{color:#b58a12}.lv-rough{color:#c4621c}.lv-far{color:#c43a3a}
+  .ing{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:13.5px}
+  .ing span{display:flex;align-items:center;gap:6px}
+  .ing b{font-variant-numeric:tabular-nums}
+  .bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:8px;border:1px solid rgba(0,0,0,.12)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn3{margin-top:8px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .stepper{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto}
+  .stepper button{flex:1;min-width:max-content;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:8px 12px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+  .stepper button i{font-style:normal;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--line);font-size:12px;flex:none}
+  .stepper button.cur{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--card))}
+  .stepper button.cur i,.stepper button.done i{background:var(--accent);color:var(--accent-ink)}
+  .stepper button:disabled{opacity:.45;cursor:default}
+  @media (max-width:859px){ .controls{order:2} .layout>section{order:1} }
+  @media (max-width:560px){ .stepper button:not(.cur) span{display:none} .stepper button:not(.cur){flex:none} }
+  .drop.big{padding:44px 18px}
+  #preview{max-width:100%;max-height:60vh;display:block;margin:14px auto 0;border-radius:6px}
+  h2{font-size:19px;margin:0 0 2px}
+  .navbtns{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+  .primary,.ghost{border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}
+  .primary{background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent)}
+  .ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .tag{display:inline-block;padding:0 7px;border-radius:6px;color:#111;font-weight:600;font-size:12px}
+  .cellhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:17px}
+  canvas.zoom{width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
+  .seg{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+  .seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+  .seg button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--card))}
+  #live{max-width:100%;height:auto;display:block;border-radius:6px;cursor:pointer}
+  #live.brush{touch-action:none;cursor:crosshair}
+  .stepc{cursor:pointer}
+  .stepc.focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+  .focusban{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,var(--card));border:1px solid var(--accent);font-size:14px}
+  .tips{margin-top:16px;font-size:14px}
+  .tips ol{margin:6px 0 10px;padding-left:20px}
+  .tips details{border-top:1px solid var(--line);padding:8px 0}
+  .tips summary{font-weight:600;cursor:pointer}
+  .tips details p{margin:6px 0 0;color:var(--muted)}
+  .tips li{margin:3px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Block In <span class="h1sub">Plan your painting in layers</span></h1>
+  <p class="sub">Turn a painting reference into simple shapes, paint mixes and a step-by-step painting order, with a grid that matches your canvas.</p>
+  <p class="acrylic">🎨 Written for <b>acrylic</b> paint. Oil and watercolor follow different rules. Watercolor, for example, goes light to dark.</p>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="1" class="cur"><i>1</i><span>Image</span></button>
+    <button data-s="2" disabled><i>2</i><span>Depth</span></button>
+    <button data-s="3" disabled><i>3</i><span>Colors &amp; mixes</span></button>
+    <button data-s="4" disabled><i>4</i><span>Paint order</span></button>
+  </nav>
+
+  <section class="card" id="step1">
+    <label class="drop big" id="drop">
+      <strong>Choose a reference image</strong>
+      or drop or paste one here
+      <input type="file" id="file" accept="image/*">
+    </label>
+    <p class="hint" style="text-align:center">Your image stays in this browser. Nothing is uploaded.</p>
+    <img id="preview" alt="Your reference" hidden>
+    <div class="navbtns" id="nav1" hidden><span></span><button class="primary" data-go="2">Next: Depth →</button></div>
+  </section>
+
+  <div class="layout" id="work" hidden>
+    <aside class="card controls">
+      <div data-step="2">
+        <b>Set the depth</b>
+        <p class="hint">Mark what’s far away and what’s close. This is about objects, not colors: a dark ship and a dark wave can sit in different layers.</p>
+        <div class="row">
+          <label>Paint with</label>
+          <div class="seg" id="layerPick">
+            <button data-l="0" class="on"><i class="dot" style="background:rgb(120,170,225)"></i>Back</button>
+            <button data-l="1"><i class="dot" style="background:rgb(240,190,90)"></i>Middle</button>
+            <button data-l="2"><i class="dot" style="background:rgb(230,120,105)"></i>Front</button>
+          </div>
+        </div>
+        <div class="row">
+          <label>Tool</label>
+          <div class="seg" id="toolPick">
+            <button data-t="tap" class="on">Tap chunks</button>
+            <button data-t="brush">Brush</button>
+          </div>
+          <div class="hint" id="toolHint">Tap a chunk to give it the layer above.</div>
+        </div>
+        <div class="row" id="brushRow" hidden>
+          <label for="bsize">Brush size <span id="bsv">20</span></label>
+          <input type="range" id="bsize" min="4" max="60" value="20">
+        </div>
+        <div class="row">
+          <label for="chunks">Chunks <span id="chv">14</span></label>
+          <input type="range" id="chunks" min="6" max="30" value="14">
+          <div class="hint">More chunks give smaller pieces to tap. Changing this resets the depth.</div>
+        </div>
+        <div class="row"><button class="btn3" id="resetLayers" style="margin:0">Reset to auto guess</button></div>
+      </div>
+      <div data-step="3">
+        <div class="row" style="margin-top:0">
+          <label for="k">Colors <span id="kv">7</span></label>
+          <input type="range" id="k" min="3" max="12" value="7">
+          <div class="hint">How many color blobs. Start with 5 to 8.</div>
+        </div>
+        <div class="row">
+          <label for="simp">Simplify <span id="sv">5</span></label>
+          <input type="range" id="simp" min="1" max="10" value="5">
+          <div class="hint">Higher means bigger, smoother blobs. Your depth stays the same.</div>
+        </div>
+      </div>
+      <div data-step="4">
+        <div class="row" style="margin-top:0">
+          <label>Steps</label>
+          <div class="seg" id="modePick">
+            <button data-m="depth" class="on">Split by depth</button>
+            <button data-m="color">One per color</button>
+          </div>
+          <div class="hint" id="modeHint">Recommended. Strictly back to front: finish each layer before the next one forward. A color that appears at different depths becomes separate steps. Your stay-wet palette keeps the mixes ready.</div>
+        </div>
+      </div>
+      <div data-step="3 4">
+        <div class="row" data-only="values">
+          <label for="vals">Value levels <span id="vv">4</span></label>
+          <input type="range" id="vals" min="2" max="6" value="4">
+          <div class="hint">Shades of gray in the Values view.</div>
+        </div>
+        <div class="row">
+          <label>Grid</label>
+          <div class="pair">
+            <div><small>Columns</small><input type="number" id="cols" min="1" max="20" value="4"></div>
+            <div><small>Rows</small><input type="number" id="rows" min="1" max="20" value="5"></div>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" id="showGrid" checked> Grid</label>
+            <label><input type="checkbox" id="showNums" checked> Numbers</label>
+            <label><input type="checkbox" id="showLines" checked> Outlines</label>
+            <label><input type="checkbox" id="showCells" checked> Cell labels</label>
+          </div>
+        </div>
+      </div>
+      <div data-step="3">
+        <div class="row">
+          <label>My paints <span id="pcount"></span></label>
+          <div class="hint">Tap the paints you own. The mixing recipes only use these.</div>
+          <div class="paints" id="paints"></div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="card">
+      <h2 id="stepTitle"></h2>
+      <p class="hint" id="stepHelp"></p>
+      <div class="tabs" id="tabs" data-step="3">
+        <button data-v="blobs" class="on">Color blobs</button>
+        <button data-v="values">Values</button>
+        <button data-v="ref">Reference</button>
+      </div>
+      <div class="stage">
+        <div class="empty" id="empty"></div>
+        <img id="out" alt="Blob map output" hidden>
+        <canvas id="live" hidden></canvas>
+        <div class="busy" id="busy">Simplifying…</div>
+      </div>
+      <p class="save" id="save" hidden>To save: long-press the image on a phone, or right-click it and choose “Save image” on a computer.</p>
+      <div class="palette" id="palette"></div>
+      <div class="recipes" id="recipes"></div>
+      <p class="note" id="mixnote" hidden>Mixes are estimates from a pigment-mixing model. Brands vary, so mix a small amount first and adjust. Parts are by volume. When one number is much bigger than the others, start with that paint and add the rest a tiny bit at a time.</p>
+      <div class="tips" id="tips" hidden>
+        <b>How to paint from your blob map</b>
+        <ol>
+          <li><b>Transfer the shapes.</b> Use the grid to draw the blob edges onto your canvas, one square at a time.</li>
+          <li><b>Block in, back to front.</b> The Paint order tab works out the order for you. Fill every blob with flat, thin paint. Start with what’s farthest away and work forward. Carry each background color a little past the edges of whatever sits in front of it.</li>
+          <li><b>Within each layer, go dark to light.</b> A layer is a depth, like sky, middle ground or foreground, not a grid square. Inside a layer, lay down its darker blobs first, then the lighter ones next to and over them. Depth wins over value: a dark object in the middle ground still waits until the sky behind it is done. Darks first give you the shape and contrast to judge everything else, and the lightest colors stay clean when they go on last. Dark acrylic covers light easily, but light over dark often needs two coats.</li>
+          <li><b>Cover the whole canvas before adding detail.</b> It will look rough at this stage. That’s normal.</li>
+          <li><b>Refine.</b> Soften edges where shapes melt together. Add mid-sized shapes and color shifts inside the big blobs.</li>
+          <li><b>Finish with the extremes.</b> Brightest highlights, deepest accents, texture and fine lines go on last, because nothing goes on top of them.</li>
+        </ol>
+        <details>
+          <summary>What if the farthest thing is also the lightest?</summary>
+          <p>Paint it first anyway. “Back to front” decides what overlaps what. “Dark to light” decides the order of paint within an area. A bright sky still goes down first. Paint it a step darker than its brightest spots, then add the brightest glow at the very end.</p>
+        </details>
+        <details>
+          <summary>Should I dry brush?</summary>
+          <p>Yes, but only at the end, over paint that’s already dry. Don’t use it for blocking in. Blocking in needs flat, smooth coverage.</p>
+          <p>Dry brushing gives broken, sparkly texture, which suits spray, foam, grass, bark, weathered wood, rock and light glinting on water. Load a stiff brush with a little paint and wipe most of it off on a paper towel. Then drag it lightly with the side of the brush so it only catches the raised texture.</p>
+          <p>For soft hazy effects like mist, glow or a light veil over a sky, scumble instead. Scrub a thin, semi-opaque layer lightly over the area.</p>
+        </details>
+        <details>
+          <summary>Acrylic tips</summary>
+          <p>Acrylic dries fast and dries slightly darker. Mix a little lighter than your target. Blend edges while they’re still wet. Mist your palette with water, or use a stay-wet palette, so your mixes last. Two thin coats beat one thick one.</p>
+        </details>
+      </div>
+      <div class="navbtns"><button class="ghost" id="backBtn">← Back</button><button class="primary" id="nextBtn"></button></div>
+    </section>
+  </div>
+</main>
+
+<script>
+// Spectral paint-mixing engine (Kubelka-Munk on fitted reflectance curves)
+const MIX = (() => {
+  const WL = []; for (let l = 380; l <= 730; l += 10) WL.push(l);
+  const NW = WL.length;
+  const g = (l, mu, s1, s2) => { const s = l < mu ? s1 : s2, t = (l - mu) / s; return Math.exp(-0.5 * t * t); };
+  // Wyman–Sloan–Shirley analytic CIE 1931 fit
+  const XB = WL.map(l => 1.056 * g(l, 599.8, 37.9, 31.0) + 0.362 * g(l, 442.0, 16.0, 26.7) - 0.065 * g(l, 501.1, 20.4, 26.2));
+  const YB = WL.map(l => 0.821 * g(l, 568.8, 46.9, 40.5) + 0.286 * g(l, 530.9, 16.3, 31.1));
+  const ZB = WL.map(l => 1.217 * g(l, 437.0, 11.8, 36.0) + 0.681 * g(l, 459.0, 26.0, 13.8));
+  let SX = 0, SY = 0, SZ = 0; for (let i = 0; i < NW; i++) { SX += XB[i]; SY += YB[i]; SZ += ZB[i]; }
+  const WX = 0.95047, WZ = 1.08883;
+
+  function specToXYZ(R) { let X = 0, Y = 0, Z = 0; for (let i = 0; i < NW; i++) { X += R[i] * XB[i]; Y += R[i] * YB[i]; Z += R[i] * ZB[i]; } return [X / SX * WX, Y / SY, Z / SZ * WZ]; }
+  const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const gam = c => { c = Math.max(0, Math.min(1, c)); return 255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055); };
+  function rgbToXYZ(rgb) { const [r, g2, b] = rgb.map(lin); return [r * 0.4124 + g2 * 0.3576 + b * 0.1805, r * 0.2126 + g2 * 0.7152 + b * 0.0722, r * 0.0193 + g2 * 0.1192 + b * 0.9505]; }
+  function xyzToRGB([X, Y, Z]) { return [3.2406 * X - 1.5372 * Y - 0.4986 * Z, -0.9689 * X + 1.8758 * Y + 0.0415 * Z, 0.0557 * X - 0.2040 * Y + 1.0570 * Z].map(gam); }
+  const f = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+  function xyzToLab([X, Y, Z]) { const x = f(X / WX), y = f(Y), z = f(Z / WZ); return [116 * y - 16, 500 * (x - y), 200 * (y - z)]; }
+  const rgbToLab = rgb => xyzToLab(rgbToXYZ(rgb));
+
+  // CIE94 color difference (graphic arts)
+  function dE(a, b) {
+    const dL = a[0] - b[0], C1 = Math.hypot(a[1], a[2]), C2 = Math.hypot(b[1], b[2]), dC = C1 - C2;
+    const da = a[1] - b[1], db = a[2] - b[2], dH2 = Math.max(0, da * da + db * db - dC * dC);
+    const SC = 1 + 0.045 * C1, SH = 1 + 0.015 * C1;
+    return Math.sqrt(dL * dL + (dC / SC) ** 2 + dH2 / (SH * SH));
+  }
+
+  const sig = x => 0.5 + x / (2 * Math.sqrt(1 + x * x));
+  function specFromC(c) { const R = new Float64Array(NW); for (let i = 0; i < NW; i++) { const t = (WL[i] - 380) / 350; R[i] = Math.min(0.995, Math.max(0.002, sig(c[0] * t * t + c[1] * t + c[2]))); } return R; }
+  // Fit a smooth reflectance curve whose color matches an sRGB value
+  function fitSpectrum(rgb) {
+    const target = rgbToLab(rgb); let c = [0, 0, 0], lam = 1e-2;
+    const res = c => { const l = xyzToLab(specToXYZ(specFromC(c))); return [l[0] - target[0], l[1] - target[1], l[2] - target[2]]; };
+    let r = res(c), err = r[0] ** 2 + r[1] ** 2 + r[2] ** 2;
+    for (let it = 0; it < 200 && err > 1e-6; it++) {
+      const J = [[], [], []];
+      for (let j = 0; j < 3; j++) { const cc = c.slice(), h = 1e-4 * Math.max(1, Math.abs(c[j])); cc[j] += h; const r2 = res(cc); for (let i = 0; i < 3; i++) J[i][j] = (r2[i] - r[i]) / h; }
+      // (JtJ + lam I) d = -Jt r
+      const A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], bv = [0, 0, 0];
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { for (let k = 0; k < 3; k++) A[i][j] += J[k][i] * J[k][j]; }
+      for (let i = 0; i < 3; i++) { A[i][i] *= 1 + lam; A[i][i] += 1e-9; for (let k = 0; k < 3; k++) bv[i] -= J[k][i] * r[k]; }
+      const d = solve3(A, bv); if (!d) break;
+      const cn = [c[0] + d[0], c[1] + d[1], c[2] + d[2]], rn = res(cn), en = rn[0] ** 2 + rn[1] ** 2 + rn[2] ** 2;
+      if (en < err) { c = cn; r = rn; err = en; lam = Math.max(1e-6, lam / 3); } else { lam *= 4; if (lam > 1e6) break; }
+    }
+    return specFromC(c);
+  }
+  function solve3(A, b) {
+    const m = A.map((row, i) => [...row, b[i]]);
+    for (let i = 0; i < 3; i++) { let p = i; for (let k = i + 1; k < 3; k++) if (Math.abs(m[k][i]) > Math.abs(m[p][i])) p = k;
+      [m[i], m[p]] = [m[p], m[i]]; if (Math.abs(m[i][i]) < 1e-14) return null;
+      for (let k = 0; k < 3; k++) if (k !== i) { const fct = m[k][i] / m[i][i]; for (let j = i; j < 4; j++) m[k][j] -= fct * m[i][j]; } }
+    return [m[0][3] / m[0][0], m[1][3] / m[1][1], m[2][3] / m[2][2]];
+  }
+
+  // Common acrylic paints: approximate color + relative tinting strength
+  const PAINTS = [
+    { id: 'white', name: 'Titanium White', hex: '#F5F5F1', k: 3.0, def: true },
+    { id: 'black', name: 'Mars Black', hex: '#1F1F21', k: 1.6 },
+    { id: 'payne', name: "Payne's Gray", hex: '#2C3743', k: 1.5 },
+    { id: 'ultra', name: 'Ultramarine Blue', hex: '#26318F', k: 1.0, def: true },
+    { id: 'pblue', name: 'Phthalo Blue', hex: '#0E3D78', k: 2.6, def: true },
+    { id: 'cerul', name: 'Cerulean Blue', hex: '#2C7DB8', k: 0.9 },
+    { id: 'pgreen', name: 'Phthalo Green', hex: '#0A5A4A', k: 2.6 },
+    { id: 'sap', name: 'Sap Green', hex: '#40592A', k: 1.0 },
+    { id: 'lemon', name: 'Lemon Yellow', hex: '#F0E12E', k: 0.8 },
+    { id: 'cyellow', name: 'Cadmium Yellow', hex: '#F6BC1C', k: 1.0, def: true },
+    { id: 'ochre', name: 'Yellow Ochre', hex: '#C68F33', k: 0.8, def: true },
+    { id: 'orange', name: 'Cadmium Orange', hex: '#E86F1F', k: 1.0 },
+    { id: 'cred', name: 'Cadmium Red', hex: '#C42A22', k: 1.2, def: true },
+    { id: 'alizarin', name: 'Alizarin Crimson', hex: '#7A1F2C', k: 1.3 },
+    { id: 'sienna', name: 'Burnt Sienna', hex: '#8B4021', k: 1.0 },
+    { id: 'umber', name: 'Burnt Umber', hex: '#4B3023', k: 1.2, def: true },
+    { id: 'rumber', name: 'Raw Umber', hex: '#4E4030', k: 1.1 },
+    { id: 'purple', name: 'Dioxazine Purple', hex: '#3C1F52', k: 2.2 },
+  ];
+  const hexToRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  let ready = false;
+  function init() { if (ready) return; for (const p of PAINTS) { p.rgb = hexToRgb(p.hex); p.R = fitSpectrum(p.rgb); p.KS = Float64Array.from(p.R, r => (1 - r) * (1 - r) / (2 * r)); } ready = true; }
+
+  const KSbuf = new Float64Array(NW), Rbuf = new Float64Array(NW);
+  function mixLab(paints, parts) {
+    let tw = 0; KSbuf.fill(0);
+    for (let j = 0; j < paints.length; j++) { const w = parts[j] * paints[j].k; tw += w; const ks = paints[j].KS; for (let i = 0; i < NW; i++) KSbuf[i] += w * ks[i]; }
+    for (let i = 0; i < NW; i++) { const ks = KSbuf[i] / tw; Rbuf[i] = 1 + ks - Math.sqrt(ks * ks + 2 * ks); }
+    return xyzToLab(specToXYZ(Rbuf));
+  }
+  function mixRGB(paints, parts) {
+    let tw = 0; KSbuf.fill(0);
+    for (let j = 0; j < paints.length; j++) { const w = parts[j] * paints[j].k; tw += w; const ks = paints[j].KS; for (let i = 0; i < NW; i++) KSbuf[i] += w * ks[i]; }
+    for (let i = 0; i < NW; i++) { const ks = KSbuf[i] / tw; Rbuf[i] = 1 + ks - Math.sqrt(ks * ks + 2 * ks); }
+    return xyzToRGB(specToXYZ(Rbuf));
+  }
+
+  // Search mixing weights on a log scale, then refine; report readable parts
+  const GRID = []; for (let u = -4; u <= 4.001; u += 0.5) GRID.push(u);
+  function evalW(ps, u, tLab) { const w = [1, ...u.map(Math.exp)]; return dE(mixLab(ps, w), tLab); }
+  function refine(ps, u, d, tLab) {
+    let step = 0.25;
+    while (step > 0.02) { let improved = false;
+      for (let j = 0; j < u.length; j++) for (const s of [step, -step]) { const v = u.slice(); v[j] = Math.max(-5, Math.min(5, v[j] + s)); const dv = evalW(ps, v, tLab); if (dv < d) { d = dv; u = v; improved = true; } }
+      if (!improved) step /= 2; }
+    return { u, d };
+  }
+  function search(owned, n, tLab) {
+    const cands = [];
+    const push = (ps, u, d) => { cands.push({ ps, u, d }); };
+    if (n === 1) for (const p of owned) push([p], [], evalW([p], [], tLab));
+    if (n === 2) for (let i = 0; i < owned.length; i++) for (let j = i + 1; j < owned.length; j++) { const ps = [owned[i], owned[j]]; let b = null;
+      for (const a of GRID) { const d = evalW(ps, [a], tLab); if (!b || d < b.d) b = { u: [a], d }; } push(ps, b.u, b.d); }
+    if (n === 3) for (let i = 0; i < owned.length; i++) for (let j = i + 1; j < owned.length; j++) for (let k = j + 1; k < owned.length; k++) { const ps = [owned[i], owned[j], owned[k]]; let b = null;
+      for (const a of GRID) for (const c of GRID) { const d = evalW(ps, [a, c], tLab); if (!b || d < b.d) b = { u: [a, c], d }; } push(ps, b.u, b.d); }
+    cands.sort((a, b) => a.d - b.d);
+    let top = null;
+    for (const c of cands.slice(0, 6)) { const r = refine(c.ps, c.u, c.d, tLab); if (!top || r.d < top.d) top = { ps: c.ps, u: r.u, d: r.d }; }
+    return top;
+  }
+  function readableParts(w) {
+    const mn = Math.min(...w);
+    return w.map(x => { const p = x / mn; return p < 10 ? Math.max(1, Math.round(p * 2) / 2) : p < 30 ? Math.round(p / 2) * 2 : Math.round(p / 5) * 5; });
+  }
+  function best(targetRgb, ownedIds, n) {
+    init();
+    const tLab = rgbToLab(targetRgb), owned = PAINTS.filter(p => ownedIds.includes(p.id));
+    if (!owned.length) return null;
+    let top = null;
+    for (let m = 1; m <= Math.min(n, owned.length); m++) { const r = search(owned, m, tLab); if (r && (!top || r.d < top.d - 0.3)) top = r; }
+    const w = [1, ...top.u.map(Math.exp)];
+    const order = w.map((_, i) => i).sort((a, b) => w[b] - w[a]);
+    const paints = order.map(i => top.ps[i]), wts = order.map(i => w[i]), parts = readableParts(wts);
+    const d = dE(mixLab(paints, parts), tLab);
+    return { dE: d, paints, parts, rgb: mixRGB(paints, parts), score: score(d) };
+  }
+  function score(d) {
+    const pct = Math.max(0, Math.round(100 - d * 3));
+    const label = d < 2.5 ? 'Spot on' : d < 5 ? 'Very close' : d < 9 ? 'Close' : d < 15 ? 'Rough match' : 'Far off';
+    return { pct, label };
+  }
+  return { PAINTS, best, init, rgbToLab, mixRGB };
+})();
+
+</script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+let srcImg = null, state = null, view = 'blobs', runToken = 0;
+const PW = 520; // processing width
+
+/* ---------- helpers ---------- */
+function mulberry(seed){return()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const LIN = new Float32Array(256); for(let i=0;i<256;i++){const c=i/255;LIN[i]=c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+function labF(t){return t>0.008856?Math.cbrt(t):7.787*t+16/116;}
+function toLab(r,g,b){
+  r=LIN[Math.max(0,Math.min(255,Math.round(r)))];g=LIN[Math.max(0,Math.min(255,Math.round(g)))];b=LIN[Math.max(0,Math.min(255,Math.round(b)))];
+  const X=labF((r*0.4124+g*0.3576+b*0.1805)/0.95047),Y=labF(r*0.2126+g*0.7152+b*0.0722),Z=labF((r*0.0193+g*0.1192+b*0.9505)/1.08883);
+  return [116*Y-16,500*(X-Y),200*(Y-Z)];
+}
+function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h=0,s=0;const l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6;}return[h,s,l];}
+function hsl2rgb(h,s,l){if(!s)return[l*255,l*255,l*255];const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+  const f=t=>{t<0&&(t+=1);t>1&&(t-=1);return t<1/6?p+(q-p)*6*t:t<1/2?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};return[f(h+1/3)*255,f(h)*255,f(h-1/3)*255];}
+const hex = c => '#'+c.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+
+function blurCh(a,W,H,r){
+  const t=new Float32Array(a.length),o=new Float32Array(a.length),n=2*r+1;
+  for(let y=0;y<H;y++){const off=y*W;let s=0;for(let x=-r;x<=r;x++)s+=a[off+Math.min(W-1,Math.max(0,x))];
+    for(let x=0;x<W;x++){t[off+x]=s/n;s+=a[off+Math.min(W-1,x+r+1)]-a[off+Math.max(0,x-r)];}}
+  for(let x=0;x<W;x++){let s=0;for(let y=-r;y<=r;y++)s+=t[Math.min(H-1,Math.max(0,y))*W+x];
+    for(let y=0;y<H;y++){o[y*W+x]=s/n;s+=t[Math.min(H-1,y+r+1)*W+x]-t[Math.max(0,y-r)*W+x];}}
+  return o;
+}
+
+function kmeans(P,n,k,rand){
+  const step=Math.max(1,Math.floor(n/18000)),m=Math.ceil(n/step),S=new Float32Array(m*3);
+  for(let i=0,j=0;i<n;i+=step,j++){S[j*3]=P[i*3];S[j*3+1]=P[i*3+1];S[j*3+2]=P[i*3+2];}
+  const C=new Float32Array(k*3),D=new Float32Array(m).fill(Infinity);
+  const set=(c,i)=>{C[c*3]=S[i*3];C[c*3+1]=S[i*3+1];C[c*3+2]=S[i*3+2];};
+  set(0,Math.floor(rand()*m));
+  for(let c=1;c<k;c++){let sum=0;
+    for(let i=0;i<m;i++){const a=S[i*3]-C[(c-1)*3],b=S[i*3+1]-C[(c-1)*3+1],d=S[i*3+2]-C[(c-1)*3+2],dd=a*a+b*b+d*d;if(dd<D[i])D[i]=dd;sum+=D[i];}
+    let t=rand()*sum,i=0;for(;i<m-1;i++){t-=D[i];if(t<=0)break;}set(c,i);}
+  const A=new Uint8Array(m);
+  for(let it=0;it<30;it++){
+    const sum=new Float64Array(k*3),cnt=new Int32Array(k);let moved=0;
+    for(let i=0;i<m;i++){let best=0,bd=Infinity;for(let c=0;c<k;c++){const a=S[i*3]-C[c*3],b=S[i*3+1]-C[c*3+1],d=S[i*3+2]-C[c*3+2],dd=a*a+b*b+d*d;if(dd<bd){bd=dd;best=c;}}
+      if(A[i]!==best){A[i]=best;moved++;}cnt[best]++;sum[best*3]+=S[i*3];sum[best*3+1]+=S[i*3+1];sum[best*3+2]+=S[i*3+2];}
+    for(let c=0;c<k;c++)if(cnt[c]){C[c*3]=sum[c*3]/cnt[c];C[c*3+1]=sum[c*3+1]/cnt[c];C[c*3+2]=sum[c*3+2]/cnt[c];}
+    if(it>2&&moved<m*0.001)break;
+  }
+  return C;
+}
+
+function majority(L,W,H,k,r){
+  const out=new Uint8Array(L.length),cnt=new Int32Array(k);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){cnt.fill(0);
+    for(let dy=-r;dy<=r;dy++){const yy=Math.min(H-1,Math.max(0,y+dy))*W;for(let dx=-r;dx<=r;dx++)cnt[L[yy+Math.min(W-1,Math.max(0,x+dx))]]++;}
+    const p=y*W+x;let best=L[p],bc=cnt[best];for(let c=0;c<k;c++)if(cnt[c]>bc){bc=cnt[c];best=c;}out[p]=best;}
+  return out;
+}
+
+function components(L,W,H){
+  const N=W*H,comp=new Int32Array(N).fill(-1),stack=new Int32Array(N),sizes=[];let id=0;
+  for(let p=0;p<N;p++){if(comp[p]>=0)continue;const v=L[p];let sp=0,sz=0;stack[sp++]=p;comp[p]=id;
+    while(sp){const q=stack[--sp];sz++;const x=q%W;
+      if(x>0&&comp[q-1]<0&&L[q-1]===v){comp[q-1]=id;stack[sp++]=q-1;}
+      if(x<W-1&&comp[q+1]<0&&L[q+1]===v){comp[q+1]=id;stack[sp++]=q+1;}
+      if(q>=W&&comp[q-W]<0&&L[q-W]===v){comp[q-W]=id;stack[sp++]=q-W;}
+      if(q<N-W&&comp[q+W]<0&&L[q+W]===v){comp[q+W]=id;stack[sp++]=q+W;}}
+    sizes.push(sz);id++;}
+  return {comp,sizes,count:id};
+}
+
+function mergeSmall(L,W,H,k,minA){
+  for(let pass=0;pass<4;pass++){
+    const {comp,sizes,count}=components(L,W,H);const small=new Uint8Array(count);let any=false;
+    for(let i=0;i<count;i++)if(sizes[i]<minA){small[i]=1;any=true;}
+    if(!any)break;
+    const votes=new Int32Array(count*k),N=W*H;
+    for(let p=0;p<N;p++){const c=comp[p];if(!small[c])continue;const x=p%W;
+      const nb=[x>0?p-1:-1,x<W-1?p+1:-1,p>=W?p-W:-1,p<N-W?p+W:-1];
+      for(const q of nb)if(q>=0&&comp[q]!==c)votes[c*k+L[q]]++;}
+    const newL=new Int16Array(count).fill(-1);
+    for(let c=0;c<count;c++)if(small[c]){let best=-1,bv=0;for(let j=0;j<k;j++)if(votes[c*k+j]>bv){bv=votes[c*k+j];best=j;}newL[c]=best;}
+    for(let p=0;p<N;p++){const nl=newL[comp[p]];if(nl>=0)L[p]=nl;}
+  }
+  return L;
+}
+
+function distMap(L,W,H){
+  const N=W*H,d=new Float32Array(N);
+  for(let p=0;p<N;p++){const x=p%W,y=(p/W)|0,v=L[p];
+    d[p]=(x===0||y===0||x===W-1||y===H-1||L[p-1]!==v||L[p+1]!==v||L[p-W]!==v||L[p+W]!==v)?0:1e9;}
+  for(let y=1;y<H;y++)for(let x=1;x<W-1;x++){const p=y*W+x;d[p]=Math.min(d[p],d[p-1]+1,d[p-W]+1,d[p-W-1]+1.41,d[p-W+1]+1.41);}
+  for(let y=H-2;y>=0;y--)for(let x=W-2;x>0;x--){const p=y*W+x;d[p]=Math.min(d[p],d[p+1]+1,d[p+W]+1,d[p+W+1]+1.41,d[p+W-1]+1.41);}
+  return d;
+}
+
+function placements(L,W,H){
+  const {comp,sizes,count}=components(L,W,H),d=distMap(L,W,H),best=new Int32Array(count).fill(-1),bd=new Float32Array(count);
+  for(let p=0;p<W*H;p++){const c=comp[p];if(d[p]>bd[c]){bd[c]=d[p];best[c]=p;}}
+  const out=[],minA=W*H*0.004;
+  for(let c=0;c<count;c++)if(sizes[c]>=minA&&bd[c]>=6&&best[c]>=0)out.push({x:best[c]%W,y:(best[c]/W)|0,v:L[best[c]]});
+  return out;
+}
+
+/* ---------- processing ---------- */
+function prep(){
+  const W=PW,H=Math.round(srcImg.naturalHeight*W/srcImg.naturalWidth),N=W*H;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d');
+  cx.drawImage(srcImg,0,0,W,H);const px=cx.getImageData(0,0,W,H).data;
+  const R=new Float32Array(N),G=new Float32Array(N),B=new Float32Array(N);
+  for(let i=0;i<N;i++){R[i]=px[i*4];G[i]=px[i*4+1];B[i]=px[i*4+2];}
+  state={W,H,N,R,G,B,placeCache:{}};
+}
+function computeDepth(){
+  const {W,H,N,R,G,B}=state,nc=+$('#chunks').value;
+  let bR=R,bG=G,bB=B;for(let pass=0;pass<3;pass++){bR=blurCh(bR,W,H,6);bG=blurCh(bG,W,H,6);bB=blurCh(bB,W,H,6);}
+  const F=new Float32Array(N*5),PS=70/Math.max(W,H);
+  for(let i=0;i<N;i++){const l=toLab(bR[i],bG[i],bB[i]);F[i*5]=l[0];F[i*5+1]=l[1]*1.5;F[i*5+2]=l[2]*1.5;F[i*5+3]=(i%W)*PS;F[i*5+4]=((i/W)|0)*PS;}
+  // k-means in 5D (color + position) so chunks stay compact
+  const rand=mulberry(11),step=Math.max(1,Math.floor(N/12000)),idx=[];for(let i=0;i<N;i+=step)idx.push(i);
+  const C=new Float32Array(nc*5);for(let c=0;c<nc;c++){const p=idx[Math.floor(rand()*idx.length)];for(let d=0;d<5;d++)C[c*5+d]=F[p*5+d];}
+  const near=p=>{let best=0,bd=Infinity;for(let c=0;c<nc;c++){let dd=0;for(let d=0;d<5;d++){const t=F[p*5+d]-C[c*5+d];dd+=t*t;}if(dd<bd){bd=dd;best=c;}}return best;};
+  for(let it=0;it<20;it++){const sum=new Float64Array(nc*5),cnt=new Int32Array(nc);
+    for(const p of idx){const c=near(p);cnt[c]++;for(let d=0;d<5;d++)sum[c*5+d]+=F[p*5+d];}
+    for(let c=0;c<nc;c++)if(cnt[c])for(let d=0;d<5;d++)C[c*5+d]=sum[c*5+d]/cnt[c];}
+  let K=new Uint8Array(N);for(let p=0;p<N;p++)K[p]=near(p);
+  for(let i=0;i<2;i++)K=majority(K,W,H,nc,3);
+  mergeSmall(K,W,H,nc,N*0.004);
+  const cc=components(K,W,H),sy=new Float64Array(cc.count);
+  for(let p=0;p<N;p++)sy[cc.comp[p]]+=(p/W)|0;
+  const auto=new Uint8Array(cc.count);for(let c=0;c<cc.count;c++){const cy=sy[c]/cc.sizes[c]/H;auto[c]=cy<0.4?0:cy<0.68?1:2;}
+  state.chunk=cc.comp;state.chunkAuto=auto;state.focusStep=null;state.layer=new Uint8Array(N);
+  for(let p=0;p<N;p++)state.layer[p]=auto[cc.comp[p]];
+}
+function computeColors(){
+  const k=+$('#k').value,simp=+$('#simp').value,{W,H,N,R,G,B}=state;
+  const r=1+Math.round(simp*0.9);let bR=R,bG=G,bB=B;
+  for(let pass=0;pass<3;pass++){bR=blurCh(bR,W,H,r);bG=blurCh(bG,W,H,r);bB=blurCh(bB,W,H,r);}
+  const P=new Float32Array(N*3),HW=2.0;
+  for(let i=0;i<N;i++){const l=toLab(bR[i],bG[i],bB[i]);P[i*3]=l[0];P[i*3+1]=l[1]*HW;P[i*3+2]=l[2]*HW;}
+  const C=kmeans(P,N,k,mulberry(7));
+  let L=new Uint8Array(N);
+  for(let i=0;i<N;i++){let best=0,bd=Infinity;for(let c=0;c<k;c++){const a=P[i*3]-C[c*3],b=P[i*3+1]-C[c*3+1],d=P[i*3+2]-C[c*3+2],dd=a*a+b*b+d*d;if(dd<bd){bd=dd;best=c;}}L[i]=best;}
+  const mr=simp>=7?3:simp>=3?2:1;
+  for(let i=0;i<2;i++)L=majority(L,W,H,k,mr);
+  mergeSmall(L,W,H,k,N*(0.0004+simp*0.0004));
+  const sum=new Float64Array(k*3),cnt=new Int32Array(k);
+  for(let i=0;i<N;i++){const c=L[i];cnt[c]++;sum[c*3]+=R[i];sum[c*3+1]+=G[i];sum[c*3+2]+=B[i];}
+  const used=[];for(let c=0;c<k;c++)if(cnt[c]){
+    let col=[sum[c*3]/cnt[c],sum[c*3+1]/cnt[c],sum[c*3+2]/cnt[c]];const h=rgb2hsl(...col);col=hsl2rgb(h[0],Math.min(1,h[1]*1.2),h[2]);
+    used.push({old:c,rgb:col,L:toLab(...col)[0],count:cnt[c]});}
+  used.sort((a,b)=>a.L-b.L);
+  const remap=new Uint8Array(k);used.forEach((u,i)=>remap[u.old]=i);
+  for(let i=0;i<N;i++)L[i]=remap[L[i]];
+  state.L=L;state.colors=used;state.placeCache={};state.focusStep=null;
+}
+
+function valueGroups(V){
+  const ls=state.colors.map(c=>c.L),mn=Math.min(...ls),mx=Math.max(...ls);
+  const g=ls.map(l=>Math.min(V-1,Math.floor((l-mn)/(mx-mn+1e-6)*V)));
+  // compact empty groups
+  const present=[...new Set(g)].sort((a,b)=>a-b);const gi=g.map(x=>present.indexOf(x));
+  const n=present.length,gray=present.map((_,i)=>n===1?128:Math.round(28+i*(222-28)/(n-1)));
+  return {gi,gray,n};
+}
+
+/* ---------- rendering ---------- */
+const LAYERS=[{name:'Back',rgb:[120,170,225]},{name:'Middle',rgb:[240,190,90]},{name:'Front',rgb:[230,120,105]}];
+let orderMode='depth';
+function orderSteps(){
+  const {N,L,layer,colors}=state,cnt=new Int32Array(300);
+  for(let p=0;p<N;p++)cnt[layer[p]*100+L[p]]++;
+  const steps=[],idx={};
+  if(orderMode==='color'){
+    const list=colors.map((c,ci)=>{const tot=cnt[ci]+cnt[100+ci]+cnt[200+ci];let best=2;for(let l=2;l>=0;l--)if(cnt[l*100+ci]>=tot*0.3)best=l;
+      const also=[0,1,2].filter(l=>l!==best&&cnt[l*100+ci]>=N*0.006);return {layer:best,color:ci,also};});
+    list.sort((a,b)=>a.layer-b.layer||a.color-b.color);
+    list.forEach((st,i)=>{steps.push(st);for(let l=0;l<3;l++)idx[l*100+st.color]=i;});
+    return {steps,idx};
+  }
+  for(let key=0;key<300;key++)if(cnt[key]>=N*0.006){idx[key]=steps.length;steps.push({layer:Math.floor(key/100),color:key%100,also:[]});}
+  // tiny leftovers join the same color in the nearest layer
+  for(let key=0;key<300;key++)if(cnt[key]&&!(key in idx)){const c=key%100,l=Math.floor(key/100);
+    for(const d of [0,-1,1,-2,2]){const k2=(l+d)*100+c;if(l+d>=0&&l+d<3&&k2 in idx){idx[key]=idx[k2];break;}}
+    if(!(key in idx))idx[key]=0;}
+  return {steps,idx};
+}
+function stepMap(){
+  const {N,L,layer}=state,{idx}=orderSteps(),m=new Uint8Array(N);
+  for(let p=0;p<N;p++)m[p]=idx[layer[p]*100+L[p]];
+  return m;
+}
+function drawDepth(){
+  const {W,H,N,chunk,layer}=state,S=2,cv=$('#live');
+  if(cv.width!==W*S||cv.height!==H*S){cv.width=W*S;cv.height=H*S;}
+  const ctx=cv.getContext('2d');ctx.drawImage(srcImg,0,0,W*S,H*S);
+  const img=new ImageData(W,H),d=img.data;
+  for(let p=0;p<N;p++){const x=p%W,t=LAYERS[layer[p]].rgb,c=chunk[p],l=layer[p];
+    const lEdge=(x<W-1&&layer[p+1]!==l)||(p+W<N&&layer[p+W]!==l);
+    const cEdge=(x<W-1&&chunk[p+1]!==c)||(p+W<N&&chunk[p+W]!==c);
+    if(lEdge){d[p*4]=20;d[p*4+1]=20;d[p*4+2]=20;d[p*4+3]=235;}
+    else if(cEdge&&depthTool==='tap'){d[p*4]=255;d[p*4+1]=255;d[p*4+2]=255;d[p*4+3]=170;}
+    else{d[p*4]=t[0];d[p*4+1]=t[1];d[p*4+2]=t[2];d[p*4+3]=120;}}
+  const t=document.createElement('canvas');t.width=W;t.height=H;t.getContext('2d').putImageData(img,0,0);
+  ctx.imageSmoothingEnabled=true;ctx.drawImage(t,0,0,W*S,H*S);
+}
+function render(){
+  if(!state||!state.L)return;
+  const live=$('#live'),o0=$('#out');
+  if(view==='depth'){drawDepth();live.hidden=false;live.classList.toggle('brush',depthTool==='brush');o0.hidden=true;$('#save').hidden=true;$('#tips').hidden=true;$('#empty').hidden=true;renderPalette(null);return;}
+  live.hidden=true;
+  const {W,H,L,colors}=state,S=2;
+  const showGrid=$('#showGrid').checked,showNums=$('#showNums').checked,showLines=$('#showLines').checked,showCells=$('#showCells').checked;
+  const cols=Math.max(1,Math.min(20,+$('#cols').value||4)),rows=Math.max(1,Math.min(20,+$('#rows').value||5));
+  const V=+$('#vals').value,vg=valueGroups(V);
+  const stripH=view==='ref'?0:Math.round(W*S*0.13);
+  const out=document.createElement('canvas');out.width=W*S;out.height=H*S+stripH;
+  const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
+
+  let keyMap=null;
+  if(view==='ref'){ctx.drawImage(srcImg,0,0,W*S,H*S);}
+  else{
+    if(view==='order'&&state.focusStep!=null&&state.focusStep>=orderSteps().steps.length)state.focusStep=null;
+    var focus=view==='order'?state.focusStep:null;
+    keyMap=view==='values'?Uint8Array.from(L,x=>vg.gi[x]):view==='order'?stepMap():L;
+    const img=new ImageData(W,H),d=img.data;
+    for(let p=0;p<W*H;p++){let c;
+      if(view==='values'){const g=vg.gray[keyMap[p]];c=[g,g,g];}else if(focus!=null&&keyMap[p]!==focus){const b=colors[L[p]].rgb,g=232+0.08*(b[0]*.3+b[1]*.59+b[2]*.11)/255*20;c=[g,g,g];}else c=colors[L[p]].rgb;
+      d[p*4]=c[0];d[p*4+1]=c[1];d[p*4+2]=c[2];d[p*4+3]=255;}
+    const t=document.createElement('canvas');t.width=W;t.height=H;t.getContext('2d').putImageData(img,0,0);
+    ctx.imageSmoothingEnabled=true;ctx.drawImage(t,0,0,W*S,H*S);
+    if(showLines){
+      ctx.fillStyle=view==='values'?'rgba(70,110,200,.9)':'rgba(25,25,25,.85)';
+      for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=y*W+x,v=keyMap[p];
+        if((x<W-1&&keyMap[p+1]!==v)||(y<H-1&&keyMap[p+W]!==v)){if(focus!=null&&v!==focus&&keyMap[p+1]!==focus&&keyMap[p+W]!==focus)continue;ctx.fillRect(x*S,y*S,S*0.9,S*0.9);}}
+    }
+    if(showNums){
+      const key=view;if(view==='order')state.placeCache.order0=placements(keyMap,W,H);else if(!state.placeCache[key+V])state.placeCache[key+V]=placements(keyMap,W,H);
+      const fs=Math.round(W*S/34);ctx.font=`700 ${fs}px -apple-system,Segoe UI,Roboto,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+      for(const pl of (view==='order'?state.placeCache.order0:state.placeCache[key+V])){
+        if(view==='order'&&state.focusStep!=null&&pl.v!==state.focusStep)continue;
+        const lum=view==='values'?vg.gray[pl.v]/255*100:view==='order'?colors[orderSteps().steps[pl.v].color].L:colors[pl.v].L;
+        ctx.lineWidth=3;ctx.strokeStyle=lum>55?'rgba(255,255,255,.7)':'rgba(0,0,0,.6)';ctx.fillStyle=lum>55?'#111':'#fff';
+        ctx.strokeText(pl.v+1,pl.x*S,pl.y*S);ctx.fillText(pl.v+1,pl.x*S,pl.y*S);}
+    }
+  }
+  if(showGrid){
+    ctx.strokeStyle='#e0393a';ctx.lineWidth=Math.max(2,S*1.2);
+    for(let i=0;i<=cols;i++){const x=Math.min(W*S-1,Math.max(1,Math.round(i*W*S/cols)));ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H*S);ctx.stroke();}
+    for(let j=0;j<=rows;j++){const y=Math.min(H*S-1,Math.max(1,Math.round(j*H*S/rows)));ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W*S,y);ctx.stroke();}
+    if(showCells){
+      const fs=Math.round(Math.min(W*S/cols,H*S/rows)/9);ctx.font=`700 ${Math.max(12,fs)}px -apple-system,Segoe UI,Roboto,sans-serif`;
+      ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#e0393a';ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.75)';
+      for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const lab=colName(i)+(j+1),x=i*W*S/cols+6,y=j*H*S/rows+5;ctx.strokeText(lab,x,y);ctx.fillText(lab,x,y);}
+    }
+  }
+  if(view==='order'&&state.selCell){const {i,j,cols:c0,rows:r0}=state.selCell;
+    if(c0===cols&&r0===rows){ctx.strokeStyle='#ffd400';ctx.lineWidth=6;ctx.strokeRect(i*W*S/cols+3,j*H*S/rows+3,W*S/cols-6,H*S/rows-6);}else state.selCell=null;}
+  state.lastCanvas=out;
+  if(stripH){
+    const items=view==='order'?orderSteps().steps.map((st,i)=>({rgb:colors[st.color].rgb,label:String(i+1),L:colors[st.color].L})):view==='values'?vg.gray.map((g,i)=>({rgb:[g,g,g],label:String(i+1),L:g/2.55})):colors.map((c,i)=>({rgb:c.rgb,label:String(i+1),L:c.L}));
+    const n=items.length,pad=8,w=(W*S-pad*(n+1))/n,y0=H*S+pad,h=stripH-pad*2;
+    const fs=Math.round(Math.min(h*0.42,w*0.4));ctx.font=`700 ${fs}px -apple-system,Segoe UI,Roboto,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    items.forEach((it,i)=>{const x=pad+i*(w+pad);ctx.fillStyle=`rgb(${it.rgb.map(Math.round)})`;ctx.fillRect(x,y0,w,h);ctx.strokeStyle='#222';ctx.lineWidth=1.5;ctx.strokeRect(x,y0,w,h);
+      ctx.fillStyle=it.L>55?'#111':'#fff';ctx.fillText(it.label,x+w/2,y0+h/2);});
+  }
+  const o=$('#out');o.classList.toggle('tap',view==='order');o.src=out.toDataURL('image/png');o.hidden=false;$('#empty').hidden=true;$('#save').hidden=false;$('#tips').hidden=view!=='order';
+  renderPalette(vg);
+}
+function colName(i){let s='';i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;}
+
+function renderPalette(vg){
+  const el=$('#palette'),rc=$('#recipes');el.innerHTML='';rc.innerHTML='';$('#mixnote').hidden=view!=='blobs';
+  if(view==='ref'||view==='depth')return;
+  if(view==='values'){
+    vg.gray.forEach((g,i)=>{const d=document.createElement('div');d.className='sw';
+      d.innerHTML=`<div class="chip" style="background:rgb(${g},${g},${g});color:${g>140?'#111':'#fff'}">${i+1}</div><div><b>${i===0?'Darkest':i===vg.n-1?'Lightest':'Value '+(i+1)}</b><code>colors ${state.colors.map((c,j)=>vg.gi[j]===i?j+1:null).filter(Boolean).join(', ')}</code></div>`;el.appendChild(d);});
+    return;
+  }
+  if(view==='order'){renderOrder();return;}
+  renderRecipes();
+}
+
+/* ---------- mixing ---------- */
+let owned=MIX.PAINTS.filter(p=>p.def).map(p=>p.id);
+try{const sv=JSON.parse(localStorage.getItem('blobmap-paints')||'null');if(Array.isArray(sv)&&sv.length)owned=sv.filter(id=>MIX.PAINTS.some(p=>p.id===id));}catch(e){}
+const recipeCache={};
+function ownedKey(){return owned.slice().sort().join(',');}
+function getRecipe(i,n){
+  const key=ownedKey()+'|'+n+'|'+state.colors[i].rgb.map(Math.round).join(',');
+  if(!(key in recipeCache))recipeCache[key]=MIX.best(state.colors[i].rgb,owned,n);
+  return recipeCache[key];
+}
+function lvClass(l){return {'Spot on':'lv-spot','Very close':'lv-very','Close':'lv-close','Rough match':'lv-rough','Far off':'lv-far'}[l];}
+function fmtPart(p){return Number.isInteger(p)?String(p):p.toFixed(1);}
+function mixHTML(r,target,title){
+  if(!r)return `<div class="mix"><div class="note">Pick at least one paint under “My paints”.</div></div>`;
+  const total=r.parts.reduce((a,b)=>a+b,0);
+  const ing=r.paints.map((p,i)=>`<span><i class="dot" style="background:${p.hex}"></i><b>${fmtPart(r.parts[i])}</b> ${p.name}</span>`).join('');
+  const bar=r.paints.map((p,i)=>`<div style="background:${p.hex};flex:${r.parts[i]/total}"></div>`).join('');
+  const single=r.paints.length===1;
+  return `<div class="mix"><div class="mix-top">
+      <div class="cmp" title="Target | Your mix"><div style="background:${hex(target)}"></div><div style="background:${hex(r.rgb)}"></div></div>
+      <div class="rate ${lvClass(r.score.label)}">${r.score.pct}% · ${r.score.label}<small>${title}${single?' (straight from the tube)':''}</small></div>
+    </div>
+    <div class="ing">${ing}</div>
+    ${single?'':`<div class="bar">${bar}</div>`}</div>`;
+}
+function renderRecipes(){
+  const rc=$('#recipes');rc.innerHTML='';const total=state.W*state.H;
+  state.colors.forEach((c,i)=>{
+    const card=document.createElement('div');card.className='rc';
+    const r2=getRecipe(i,2);
+    card.innerHTML=`<div class="rc-head"><div class="chip" style="background:${hex(c.rgb)};color:${c.L>55?'#111':'#fff'}">${i+1}</div>
+      <div><b>Color ${i+1}</b><div class="meta">${Math.round(c.count/total*100)}% of canvas · ${hex(c.rgb)}</div></div></div>
+      ${mixHTML(r2,c.rgb,'2-paint mix')}<div class="slot3"></div>`;
+    if(r2&&owned.length>=3){
+      const b=document.createElement('button');b.className='btn3';b.textContent=r2.score.pct>=95?'Try 3 paints anyway':'Try 3 paints for a closer match';
+      b.addEventListener('click',()=>{b.textContent='Mixing…';b.disabled=true;setTimeout(()=>{const r3=getRecipe(i,3);
+        const better=r3&&r3.dE<r2.dE-0.5;
+        card.querySelector('.slot3').innerHTML=better?mixHTML(r3,c.rgb,'3-paint mix'):`<div class="mix"><div class="note">A third paint doesn’t get meaningfully closer with your paints. The 2-paint mix is your best bet.</div></div>`;
+        b.remove();},20);});
+      card.appendChild(b);
+    }
+    rc.appendChild(card);
+  });
+}
+function renderPaints(){
+  const el=$('#paints');el.innerHTML='';
+  MIX.PAINTS.forEach(p=>{const l=document.createElement('label');const on=owned.includes(p.id);l.className=on?'on':'';
+    l.innerHTML=`<input type="checkbox" ${on?'checked':''}><i class="dot" style="background:${p.hex}"></i>${p.name}`;
+    l.querySelector('input').addEventListener('change',e=>{owned=e.target.checked?[...owned,p.id]:owned.filter(x=>x!==p.id);
+      try{localStorage.setItem('blobmap-paints',JSON.stringify(owned));}catch(err){}
+      renderPaints();if(state&&view==='blobs')renderRecipes();});
+    el.appendChild(l);});
+  $('#pcount').textContent=owned.length+' selected';
+}
+renderPaints();
+
+function gridDims(){return {cols:Math.max(1,Math.min(20,+$('#cols').value||4)),rows:Math.max(1,Math.min(20,+$('#rows').value||5))};}
+function stepCellCounts(sm,nSteps){
+  const {W,H}=state,{cols,rows}=gridDims(),cnt=Array.from({length:nSteps},()=>new Int32Array(cols*rows));
+  for(let p=0;p<W*H;p++){const x=p%W,y=(p/W)|0;cnt[sm[p]][Math.min(rows-1,Math.floor(y*rows/H))*cols+Math.min(cols-1,Math.floor(x*cols/W))]++;}
+  return {cnt,cols,rows,cellA:W*H/(cols*rows)};
+}
+function mixLine(colorIdx){
+  const r=getRecipe(colorIdx,2);if(!r)return 'Pick your paints in step 3 to see a mix.';
+  return 'Mix '+r.paints.map((p,i)=>`${fmtPart(r.parts[i])} ${p.name}`).join(' : ')+` · ${r.score.pct}% match`;
+}
+function stepCard(st,i,extra){
+  const c=state.colors[st.color],d=document.createElement('div');d.className='rc stepc'+(state.focusStep===i?' focus':'');
+  d.title='Tap to show only this step';d.addEventListener('click',()=>{state.focusStep=state.focusStep===i?null:i;render();if(state.focusStep!=null)$('.stage').scrollIntoView({behavior:'smooth',block:'start'});});
+  d.innerHTML=`<div class="rc-head"><div class="chip" style="background:${hex(c.rgb)};color:${c.L>55?'#111':'#fff'}">${i+1}</div>
+    <div><b>Step ${i+1} · Color ${st.color+1}</b> <span class="tag" style="background:rgb(${LAYERS[st.layer].rgb})">${LAYERS[st.layer].name}</span>${(st.also||[]).length?` <span class="meta" style="display:inline">also ${st.also.map(l=>LAYERS[l].name.toLowerCase()).join(', ')}</span>`:''}
+    <div class="meta">${extra}</div><div class="meta">${mixLine(st.color)}</div></div></div>`;
+  return d;
+}
+function renderOrder(){
+  const rc=$('#recipes'),{steps}=orderSteps(),sm=stepMap(),{cnt,cols,rows,cellA}=stepCellCounts(sm,steps.length);
+  rc.innerHTML='';
+  const sel=state.selCell;
+  if(state.focusStep!=null&&state.focusStep<steps.length){const st=steps[state.focusStep],ban=document.createElement('div');ban.className='focusban';
+    ban.innerHTML=`<span>Showing only <b>step ${state.focusStep+1}</b> (Color ${st.color+1}, ${LAYERS[st.layer].name})</span><button class="btn3" style="margin:0">Show all steps</button>`;
+    ban.querySelector('button').addEventListener('click',()=>{state.focusStep=null;render();});rc.appendChild(ban);}
+  if(sel){
+    const cell=sel.j*cols+sel.i,name=colName(sel.i)+(sel.j+1);
+    const head=document.createElement('div');head.className='cellhead';
+    head.innerHTML=`<b>Square ${name}</b><button class="btn3" id="allSq" style="margin:0">Show all squares</button>`;rc.appendChild(head);
+    // zoomed crop of the square
+    const src=state.lastCanvas,{W,H}=state,S=2,sw=W*S/cols,sh=H*S/rows,z=document.createElement('canvas');
+    const zw=Math.min(900,Math.round(sw*2));z.width=zw;z.height=Math.round(zw*sh/sw);z.className='zoom';
+    z.getContext('2d').drawImage(src,sel.i*sw,sel.j*sh,sw,sh,0,0,z.width,z.height);rc.appendChild(z);
+    const note=document.createElement('div');note.className='note';note.style.margin='0';
+    note.textContent='Paint these in order inside this square. Tap a step to show only that one.';rc.appendChild(note);
+    let n=0;steps.forEach((st,i)=>{const k=cnt[i][cell];if(k>cellA*0.005){n++;rc.appendChild(stepCard(st,i,`About ${Math.max(1,Math.round(k/cellA*100))}% of this square`));}});
+    if(!n)rc.appendChild(Object.assign(document.createElement('div'),{className:'note',textContent:'Nothing to paint here.'}));
+    rc.querySelector('#allSq').addEventListener('click',()=>{state.selCell=null;render();});
+    return;
+  }
+  rc.insertAdjacentHTML('beforeend',`<div class="how"><b>How to read the paint order</b>
+    <ul><li><b>Layer means depth only:</b> Back, Middle or Front, like layers in Photoshop. Finish one layer before starting the next one forward.</li>
+    <li><b>Colors are the order inside a layer:</b> within each layer, paint its colors darkest to lightest.</li>
+    <li><b>Grid squares are just a map:</b> they show where things go on the canvas. They aren’t part of the order.</li></ul>
+    <b>The routine</b><ol><li>Back layer, its colors dark to light.</li><li>Middle layer, its colors dark to light.</li><li>Front layer, its colors dark to light.</li><li>Details and brightest highlights last, anywhere.</li></ol></div>`);
+  rc.insertAdjacentHTML('beforeend',`<div class="note" style="margin:0"><b>Tap any grid square</b> on the map to zoom in and see what to paint there, in order. Numbers on the map are step numbers. Tap a step below, or in the strip under the map, to show only that step. To change depth, go back to step 2.</div>`);
+  let last=-1;
+  steps.forEach((st,i)=>{
+    if(st.layer!==last){last=st.layer;const h=document.createElement('div');h.style.cssText='font-weight:700;margin-top:6px;display:flex;align-items:center;gap:8px';
+      h.innerHTML=`<i class="dot" style="background:rgb(${LAYERS[st.layer].rgb})"></i>${LAYERS[st.layer].name} layer`;rc.appendChild(h);}
+    const cells=[];for(let j=0;j<rows;j++)for(let q=0;q<cols;q++)if(cnt[i][j*cols+q]>cellA*0.01)cells.push(colName(q)+(j+1));
+    rc.appendChild(stepCard(st,i,cells.length?'Squares '+cells.join(', '):'Small areas'));});
+  const f=document.createElement('div');f.className='rc';
+  f.innerHTML=`<div class="rc-head"><div class="chip" style="background:var(--line)">★</div><div><b>Last: details, in any layer</b><div class="meta">Brightest highlights, darkest accents, texture and fine lines.</div></div></div>`;
+  rc.appendChild(f);
+}
+$('#out').addEventListener('click',e=>{
+  if(view!=='order'||!state)return;const rect=e.target.getBoundingClientRect(),{W,H}=state,S=2;
+  const totalH=e.target.naturalHeight/S,x=Math.floor((e.clientX-rect.left)/rect.width*W),y=Math.floor((e.clientY-rect.top)/rect.height*totalH);
+  if(y>=H&&x>=0&&x<W){const n=orderSteps().steps.length,pad=8,w=(W*S-pad*(n+1))/n,cx=(e.clientX-rect.left)/rect.width*W*S,k=Math.floor((cx-pad/2)/(w+pad));
+    if(k>=0&&k<n){state.focusStep=state.focusStep===k?null:k;render();}return;}
+  if(x<0||x>=W||y<0||y>=H)return;
+  const {cols,rows}=gridDims(),i=Math.min(cols-1,Math.floor(x*cols/W)),j=Math.min(rows-1,Math.floor(y*rows/H));
+  state.selCell=(state.selCell&&state.selCell.i===i&&state.selCell.j===j)?null:{i,j,cols,rows};render();
+  if(state.selCell)$('#recipes').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+/* ---------- wiring ---------- */
+let depthTool='tap',activeLayer=0,painting=false;
+function livePos(e){const r=$('#live').getBoundingClientRect(),{W,H}=state;return {x:Math.floor((e.clientX-r.left)/r.width*W),y:Math.floor((e.clientY-r.top)/r.height*H)};}
+function paintAt(x,y){const {W,H,layer}=state,rad=+$('#bsize').value/2;
+  for(let yy=Math.max(0,Math.floor(y-rad));yy<=Math.min(H-1,Math.ceil(y+rad));yy++)for(let xx=Math.max(0,Math.floor(x-rad));xx<=Math.min(W-1,Math.ceil(x+rad));xx++)
+    if((xx-x)**2+(yy-y)**2<=rad*rad)layer[yy*W+xx]=activeLayer;}
+let lastPt=null,rafPending=false;
+function queueDraw(){if(rafPending)return;rafPending=true;requestAnimationFrame(()=>{rafPending=false;drawDepth();});}
+$('#live').addEventListener('pointerdown',e=>{if(!state)return;const {x,y}=livePos(e),{W,H,N}=state;if(x<0||y<0||x>=W||y>=H)return;
+  if(depthTool==='tap'){const c=state.chunk[y*W+x];for(let p=0;p<N;p++)if(state.chunk[p]===c)state.layer[p]=activeLayer;drawDepth();return;}
+  painting=true;lastPt={x,y};$('#live').setPointerCapture(e.pointerId);paintAt(x,y);queueDraw();e.preventDefault();});
+$('#live').addEventListener('pointermove',e=>{if(!painting)return;const {x,y}=livePos(e),n=Math.max(1,Math.ceil(Math.hypot(x-lastPt.x,y-lastPt.y)/3));
+  for(let i=1;i<=n;i++)paintAt(lastPt.x+(x-lastPt.x)*i/n,lastPt.y+(y-lastPt.y)*i/n);lastPt={x,y};queueDraw();});
+['pointerup','pointercancel'].forEach(ev=>$('#live').addEventListener(ev,()=>{painting=false;}));
+$('#layerPick').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;activeLayer=+b.dataset.l;document.querySelectorAll('#layerPick button').forEach(x=>x.classList.toggle('on',x===b));});
+$('#toolPick').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;depthTool=b.dataset.t;document.querySelectorAll('#toolPick button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#brushRow').hidden=depthTool!=='brush';$('#toolHint').textContent=depthTool==='brush'?'Drag on the image to paint the layer above. Scrolling is paused on the image while the brush is on.':'Tap a chunk to give it the layer above.';if(state&&view==='depth')render();});
+$('#modePick').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;orderMode=b.dataset.m;document.querySelectorAll('#modePick button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#modeHint').textContent=orderMode==='color'?'Fewer steps: each color is painted all at once, at the farthest depth where a good share of it sits. Good for quick studies. Expect to touch up edges where a color meets something in front of it.':'Recommended. Strictly back to front: finish each layer before the next one forward. A color that appears at different depths becomes separate steps. Your stay-wet palette keeps the mixes ready.';
+  if(state){state.focusStep=null;render();}});
+$('#bsize').addEventListener('input',()=>$('#bsv').textContent=$('#bsize').value);
+$('#chunks').addEventListener('input',()=>$('#chv').textContent=$('#chunks').value);
+$('#chunks').addEventListener('change',()=>{if(!state)return;$('#busy').classList.add('on');setTimeout(()=>{computeDepth();render();$('#busy').classList.remove('on');},30);});
+function run(){
+  if(!srcImg||!state)return;const tok=++runToken;$('#busy').classList.add('on');
+  setTimeout(()=>{if(tok!==runToken)return;try{computeColors();render();}catch(e){console.error(e);$('#empty').textContent='Something went wrong reading that image. Try another file.';$('#empty').hidden=false;}
+    $('#busy').classList.remove('on');},30);
+}
+let step=1,sub='blobs',maxStep=1;
+const STEPS={
+  2:{title:'Depth',help:'Blue is far away, yellow is the middle, red is close. Pick a layer, then tap chunks or brush over areas to set them.',next:'Next: Colors & mixes →'},
+  3:{title:'Colors & mixes',help:'These are the flat shapes to block in. Each color has a mixing recipe made from the paints you own.',next:'Next: Paint order →'},
+  4:{title:'Paint order',help:'Paint the numbered steps in order: back to front, and darkest to lightest within each layer. Tap a grid square to see just that square.',next:'Start over with a new image'}
+};
+function setStep(n){
+  if(n>1&&!state)return;step=n;maxStep=Math.max(maxStep,n);
+  document.querySelectorAll('#stepper button').forEach(b=>{const s2=+b.dataset.s;b.classList.toggle('cur',s2===n);b.classList.toggle('done',s2<maxStep&&s2!==n);b.disabled=s2>1&&!state;});
+  $('#step1').hidden=n!==1;$('#work').hidden=n===1;
+  document.querySelectorAll('[data-step]').forEach(el=>el.hidden=!el.dataset.step.split(' ').includes(String(n)));
+  if(n>1){$('#stepTitle').textContent=`Step ${n}: ${STEPS[n].title}`;$('#stepHelp').textContent=STEPS[n].help;$('#nextBtn').textContent=STEPS[n].next;}
+  view=n===2?'depth':n===3?sub:n===4?'order':view;
+  syncOnly();if(n>1)render();window.scrollTo({top:0,behavior:'smooth'});
+}
+function syncOnly(){document.querySelectorAll('[data-only]').forEach(el=>el.hidden=!(step===3&&view===el.dataset.only));}
+function loadFile(f){
+  if(!f||!f.type.startsWith('image/'))return;const url=URL.createObjectURL(f),img=new Image();
+  img.onload=()=>{srcImg=img;const pv=$('#preview');pv.src=url;pv.hidden=false;$('#nav1').hidden=false;
+    $('#busy').classList.add('on');setStep(2);
+    setTimeout(()=>{try{prep();computeDepth();computeColors();setStep(2);}catch(e){console.error(e);}$('#busy').classList.remove('on');},30);};
+  img.src=url;
+}
+$('#stepper').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled)setStep(+b.dataset.s);});
+document.querySelector('[data-go="2"]').addEventListener('click',()=>setStep(2));
+$('#backBtn').addEventListener('click',()=>setStep(step-1));
+$('#nextBtn').addEventListener('click',()=>{if(step<4)setStep(step+1);else{srcImg=null;state=null;maxStep=1;$('#file').value='';$('#preview').hidden=true;$('#nav1').hidden=true;setStep(1);}});
+$('#resetLayers').addEventListener('click',()=>{if(!state)return;for(let p=0;p<state.N;p++)state.layer[p]=state.chunkAuto[state.chunk[p]];render();});
+$('#file').addEventListener('change',e=>loadFile(e.target.files[0]));
+const drop=$('#drop');
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+document.addEventListener('paste',e=>{const it=[...(e.clipboardData||{}).items||[]].find(i=>i.type.startsWith('image/'));if(it)loadFile(it.getAsFile());});
+
+$('#k').addEventListener('input',()=>$('#kv').textContent=$('#k').value);
+$('#simp').addEventListener('input',()=>$('#sv').textContent=$('#simp').value);
+$('#vals').addEventListener('input',()=>{$('#vv').textContent=$('#vals').value;render();});
+$('#k').addEventListener('change',run);$('#simp').addEventListener('change',run);
+['#cols','#rows'].forEach(s=>$(s).addEventListener('input',render));
+['#showGrid','#showNums','#showLines','#showCells'].forEach(s=>$(s).addEventListener('change',render));
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view=sub=b.dataset.v;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));syncOnly();render();});
+setStep(1);
+})();
+</script>
+</body>
+</html>
