@@ -110,12 +110,69 @@
   .tips details p{margin:6px 0 0;color:var(--muted)}
   .tips li{margin:3px 0}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400..700&family=Righteous&family=VT323&display=swap">
+<style id="site-skin">
+  /* shawnfinnerty.work look, layered over the tool's own styles */
+  :root{
+    --bg:#0a0a0a; --card:#121212; --ink:#f2f2ec; --muted:#a3a39b; --line:#353535;
+    --accent:#b45cff; --accent-ink:#000;
+    --display:"Righteous","Arial Rounded MT Bold",system-ui,sans-serif;
+    --osd:"VT323",ui-monospace,monospace;
+  }
+  body{font:16px/1.5 "Jost","Futura","Century Gothic",system-ui,sans-serif;letter-spacing:.005em}
+  main{padding-top:28px}
+
+  .site-top{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:1100px;margin:0 auto;padding:14px 16px 0;font-family:var(--osd);font-size:1.35rem;text-transform:uppercase}
+  .site-top a{color:var(--ink);text-decoration:none}
+  .site-top a:hover{color:var(--accent)}
+  .site-stripes{display:grid;grid-template-rows:repeat(6,1fr);height:14px;margin-top:10px}
+  .site-stripes i:nth-child(1){background:#23e05a}.site-stripes i:nth-child(2){background:#ffd500}
+  .site-stripes i:nth-child(3){background:#ff8a00}.site-stripes i:nth-child(4){background:#ff2b3d}
+  .site-stripes i:nth-child(5){background:#a63cff}.site-stripes i:nth-child(6){background:#1ea7ff}
+
+  h1{font-family:var(--display);font-weight:400;font-size:clamp(2.8rem,8vw,4.6rem);line-height:1;letter-spacing:0;margin:0 0 6px}
+  .h1sub{font-family:var(--osd);font-weight:400;font-size:clamp(1.4rem,3vw,1.9rem);text-transform:uppercase;color:var(--accent);margin-top:8px;letter-spacing:.02em}
+  .sub{font-size:1.08rem;max-width:62ch;color:#cfcfc8;margin:10px 0 14px}
+  .acrylic{background:transparent;border:0;border-left:4px solid #ffd500;border-radius:0;padding:4px 12px;font-size:.95rem;color:#cfcfc8;margin-bottom:22px}
+  .acrylic b{color:#ffd500;font-weight:600}
+
+  h2{font-family:var(--display);font-weight:400;font-size:1.7rem;line-height:1.1;margin-bottom:4px}
+  .card{border:2px solid rgba(255,255,255,.22);border-radius:14px}
+  .rc,.sw{border-radius:8px}
+
+  .stepper{gap:8px;margin-bottom:18px}
+  .stepper button{border:2px solid var(--line);border-radius:10px;padding:8px 14px;font-family:var(--osd);font-size:1.45rem;font-weight:400;text-transform:uppercase;letter-spacing:.02em}
+  .stepper button i{border-radius:4px;font-size:1.2rem;width:26px;height:26px}
+  .stepper button.cur{border-color:var(--accent);background:#000;box-shadow:0 0 14px rgba(180,92,255,.45)}
+
+  .drop{border:2px dashed #4a4a4a;border-radius:10px}
+  .drop:hover,.drop.over{border-color:var(--accent)}
+  .drop strong{font-family:var(--display);font-weight:400;font-size:1.5rem;color:var(--ink);margin-bottom:4px}
+
+  .primary,.ghost,.btn3{border-radius:8px;font-family:var(--osd);font-weight:400;font-size:1.4rem;text-transform:uppercase;letter-spacing:.02em;padding:6px 16px}
+  .primary:hover{background:#fff;border-color:#fff}
+  .ghost:hover{border-color:#fff}
+  .tabs button,.seg button{border-radius:8px}
+  .tabs button.on{color:var(--accent-ink)}
+  .paints label{border-radius:6px}
+  .focusban{border-radius:10px}
+  .row label{font-weight:600}
+  .site-foot{max-width:1100px;margin:0 auto;padding:0 16px 32px;color:var(--muted);font-size:.9rem}
+  .site-foot a{color:var(--ink)}
+</style>
 </head>
 <body>
+<header class="site-top">
+  <a href="/">&larr; Shawn Finnerty</a>
+  <a href="/portfolio/block-in/">About this tool</a>
+</header>
+<div class="site-stripes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <main>
   <h1>Block In <span class="h1sub">Plan your painting in layers</span></h1>
   <p class="sub">Turn a painting reference into simple shapes, paint mixes and a step-by-step painting order, with a grid that matches your canvas.</p>
-  <p class="acrylic">🎨 Written for <b>acrylic</b> paint. Oil and watercolor follow different rules. Watercolor, for example, goes light to dark.</p>
+  <p class="acrylic">Written for <b>acrylic</b> paint. Oil and watercolor follow different rules. Watercolor, for example, goes light to dark.</p>
 
   <nav class="stepper" id="stepper">
     <button data-s="1" class="cur"><i>1</i><span>Image</span></button>
@@ -265,6 +322,7 @@
     </section>
   </div>
 </main>
+<footer class="site-foot">Free, no account, nothing uploaded. Made by <a href="/">Shawn Finnerty</a>, built with Claude.</footer>
 
 <script>
 // Spectral paint-mixing engine (Kubelka-Munk on fitted reflectance curves)
