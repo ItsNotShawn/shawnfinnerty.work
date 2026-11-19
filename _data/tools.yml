@@ -1,0 +1,6 @@
+# Quick-access tools on the homepage (right-hand panel).
+# url = where the tool itself lives; about = the project page explaining it (optional).
+- name: "Block In"
+  desc: "Plan a painting in layers: shapes, paint mixes and order."
+  url: /blockin/
+  about: /portfolio/block-in/

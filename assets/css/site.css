@@ -136,23 +136,23 @@ p { margin: 0 0 1em; }
   font-size: 1.6rem; color: #fff; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,255,255,.45);
 }
 .home__main { padding-bottom: 64px; }
-.home__hero { padding: 48px 0 40px; overflow: hidden; }
+.home__hero { padding: 20px 0 28px; overflow: hidden; }
 
 .logo { position: relative; margin: 0; padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))); }
 .logo__stripes {
   position: absolute; z-index: 0; right: 0;
   left: calc(max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) + .35em);
   top: 18%; height: 34%;
-  font-size: clamp(3.6rem, 13vw, 9.5rem);
+  font-size: clamp(3.2rem, 10vw, 6.6rem);
 }
 .logo__stripes .stripes { height: 100%; border-radius: .5em 0 0 .5em; overflow: hidden; }
 .logo__name {
   position: relative; z-index: 1; display: inline-block;
-  font-family: var(--font-display); font-weight: 400; font-size: clamp(3.6rem, 13vw, 9.5rem); line-height: .92;
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(3.2rem, 10vw, 6.6rem); line-height: .92;
   color: #fff; -webkit-text-stroke: .045em #000; paint-order: stroke fill;
 }
 .home__tagline {
-  margin: 28px 0 0; padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+  margin: 16px 0 0; padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
   padding-right: var(--gutter); max-width: 42ch; box-sizing: content-box;
   font-size: clamp(1.15rem, 2.4vw, 1.45rem); color: #d7d7d0;
 }
@@ -167,8 +167,10 @@ p { margin: 0 0 1em; }
 @media (prefers-reduced-motion: reduce) { .home .home__main { animation: none; } }
 html.no-motion .home .home__main { animation: none; }
 
-.channels { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 8px; }
-@media (min-width: 720px) { .channels { grid-template-columns: 1fr 1fr; gap: 24px; } }
+.home__deck { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 1000px) { .home__deck { grid-template-columns: 2fr 1fr; gap: 24px; align-items: stretch; } }
+.channels { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .channels { grid-template-columns: 1fr 1fr; gap: 20px; } }
 .channel {
   position: relative; display: grid; gap: 4px; padding: 22px 24px 24px; text-decoration: none;
   border: 3px solid #fff; border-radius: var(--radius-screen); background: #000; overflow: hidden;
@@ -179,7 +181,36 @@ html.no-motion .home .home__main { animation: none; }
 .channel__num { font-size: 2.2rem; line-height: 1; color: var(--ch); margin-top: 6px; }
 .channel__name { font-family: var(--font-display); font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.05; color: #fff; }
 .channel__desc { color: #bdbdb6; font-size: 1rem; }
-.channel:hover, .channel:focus-visible { border-color: var(--ch); }
+.channel { align-content: start; min-height: 230px; padding-top: 26px; }
+.channel__go {
+  align-self: end; justify-self: start; margin-top: 18px; padding: 4px 14px;
+  font-size: 1.5rem; text-transform: uppercase; color: #000; background: var(--ch); border-radius: 6px;
+}
+.channel:hover, .channel:focus-visible { border-color: var(--ch); box-shadow: 0 0 18px var(--ch); }
+.channel:hover .channel__go { background: #fff; }
+
+/* Free tools panel (homepage, right side) */
+.tools {
+  display: flex; flex-direction: column; padding: 18px 20px 20px;
+  border: 3px solid rgba(255,255,255,.55); border-radius: var(--radius-screen); background: #000;
+}
+.tools__title { margin: 0 0 12px; font-size: 1.7rem; text-transform: uppercase; color: #b45cff; }
+.tools__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.tool { display: flex; align-items: stretch; gap: 8px; }
+.tool__open {
+  flex: 1; display: grid; gap: 2px; padding: 10px 12px; text-decoration: none;
+  border: 2px solid #b45cff; border-radius: 8px;
+}
+.tool__open:hover, .tool__open:focus-visible { background: #b45cff; }
+.tool__open:hover .tool__name, .tool__open:hover .tool__desc { color: #000; }
+.tool__name { font-family: var(--font-display); font-size: 1.35rem; color: #fff; }
+.tool__desc { font-size: .92rem; color: #bdbdb6; line-height: 1.35; }
+.tool__about {
+  display: flex; align-items: center; padding: 0 10px; font-size: 1.15rem; text-transform: uppercase;
+  color: #fff; text-decoration: none; border: 2px solid rgba(255,255,255,.4); border-radius: 8px;
+}
+.tool__about:hover { border-color: #fff; }
+.tools__note { margin: auto 0 0; padding-top: 14px; font-size: .88rem; color: #9a9a93; }
 
 
 

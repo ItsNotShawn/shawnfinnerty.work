@@ -20,18 +20,38 @@ description: "Shawn Finnerty is a Medford/Boston designer working across video, 
     <p class="home__tagline">Designer for video, branding, marketing, and data, based in Medford/Boston.</p>
   </section>
 
-  <nav class="channels wrap" aria-label="Choose a section">
-    <a class="channel" href="/freelance/" style="--ch: #ffd500">
-      <span class="channel__num osd">CH 01</span>
-      <span class="channel__name">Freelance services</span>
-      <span class="channel__desc">Design, video, marketing, and data work for your business.</span>
-    </a>
-    <a class="channel" href="/portfolio/" style="--ch: #19d3ff">
-      <span class="channel__num osd">CH 02</span>
-      <span class="channel__name">My work</span>
-      <span class="channel__desc">Games, hardware, 3D, AI, and everything else I make for fun.</span>
-    </a>
-  </nav>
+  <div class="home__deck wrap">
+    <nav class="channels" aria-label="Choose a section">
+      <a class="channel" href="/freelance/" style="--ch: #ffd500">
+        <span class="channel__num osd">CH 01</span>
+        <span class="channel__name">Freelance services</span>
+        <span class="channel__desc">Design, video, marketing, and data work for your business.</span>
+        <span class="channel__go osd">Tune in &#9654;</span>
+      </a>
+      <a class="channel" href="/portfolio/" style="--ch: #19d3ff">
+        <span class="channel__num osd">CH 02</span>
+        <span class="channel__name">My work</span>
+        <span class="channel__desc">Games, hardware, 3D, AI, and everything else I make for fun.</span>
+        <span class="channel__go osd">Tune in &#9654;</span>
+      </a>
+    </nav>
+
+    <aside class="tools" aria-labelledby="tools-title">
+      <h2 class="tools__title osd" id="tools-title">Free tools</h2>
+      <ul class="tools__list">
+        {% for t in site.data.tools %}
+        <li class="tool">
+          <a class="tool__open" href="{{ t.url | relative_url }}">
+            <span class="tool__name">{{ t.name }}</span>
+            <span class="tool__desc">{{ t.desc }}</span>
+          </a>
+          {% if t.about %}<a class="tool__about osd" href="{{ t.about | relative_url }}">About</a>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="tools__note">Free, no account. Built with AI to help creatives, not replace them.</p>
+    </aside>
+  </div>
 
   {% if featured.size > 0 %}
   <section class="nowplaying wrap" aria-roledescription="carousel" aria-label="Now playing: featured projects" data-nowplaying>
