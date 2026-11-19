@@ -168,11 +168,11 @@ html.no-motion .home .home__main { animation: none; }
 
 .home__sub { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: end; }
 @media (min-width: 1700px) {
-  /* wide screens: tools panel lives in the empty left margin, beside the name */
+  /* wide screens: tools panel lives in the empty right margin */
   .home__main { position: relative; }
   .home__sub .tools {
-    position: absolute; top: 28px; z-index: 2;
-    right: calc(50% + var(--wrap) / 2 + 8px);
+    position: absolute; top: 150px; z-index: 2;   /* right margin, just under the stripes */
+    left: calc(50% + var(--wrap) / 2 + 8px);
     width: min(260px, calc(50% - var(--wrap) / 2 - 40px));
   }
 }
