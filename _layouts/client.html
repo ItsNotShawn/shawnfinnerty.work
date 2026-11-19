@@ -15,7 +15,7 @@ theme: label
       <p class="lede">{{ page.summary }}</p>
       <ul class="svc-tags">{% for s in services %}<li>{{ s }}</li>{% endfor %}</ul>
     </header>
-    {% if page.image %}<div class="fl-detail__hero">{% include media.html item=page %}</div>{% endif %}
+    {% if page.image %}<div class="fl-detail__hero fl-detail__hero--natural">{% include media.html item=page %}</div>{% endif %}
 
     <div class="fl-detail__layout">
       <dl class="fl-meta">
@@ -39,7 +39,7 @@ theme: label
       {%- elsif w.video -%}
         <figure class="embed{% if w.portrait %} embed--portrait{% endif %}"><video src="{{ w.video | relative_url }}"{% if w.image %} poster="{{ w.image | relative_url }}"{% endif %} autoplay controls muted playsinline loop preload="metadata"></video></figure>
       {%- elsif w.image -%}
-        <div class="fl-detail__hero">{% include media.html item=w %}</div>
+        <div class="fl-detail__hero fl-detail__hero--natural">{% include media.html item=w %}</div>
       {%- endif -%}
       <div class="work__body">
         {% if w.details %}<div class="prose">{{ w.details | markdownify }}</div>{% endif %}
