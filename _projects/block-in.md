@@ -10,7 +10,8 @@ role: "Idea, design, testing"
 tools: "Claude"
 link: /blockin/
 link_label: "Open Block In"
-# image: /images/block-in/cover.jpg   # uncomment once you add a cover image
+image: /images/block-in/cover.jpg
+image_alt: "Block In's three steps on Monet's Jardin à Sainte-Adresse: the reference, the depth layers, and the simplified color map"
 ---
 
 ## The idea
@@ -20,6 +21,14 @@ I got back into acrylic painting after about ten years, and the hardest part was
 [**Open Block In →**](/blockin/)
 
 ## What it does
+
+<div class="steps-row">
+  <figure><img src="/images/block-in/step-1-reference.jpg" alt="Monet's Jardin à Sainte-Adresse, the reference image" loading="lazy"><figcaption>1. Reference</figcaption></figure>
+  <figure><img src="/images/block-in/step-2-depth.jpg" alt="The same painting split into far, middle and near depth layers" loading="lazy"><figcaption>2. Depth</figcaption></figure>
+  <figure><img src="/images/block-in/step-3-colors.png" alt="The painting simplified into numbered flat color blobs on a grid, with a color strip" loading="lazy"><figcaption>3. Colors</figcaption></figure>
+</div>
+
+*Example: Claude Monet, Jardin à Sainte-Adresse (1867), one of my favorites.*
 
 1. **Image.** Drop in a reference photo. It stays in your browser; nothing is uploaded.
 2. **Depth.** Mark what's far away, in the middle and close, by tapping chunks or brushing over them.

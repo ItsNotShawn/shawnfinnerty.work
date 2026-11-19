@@ -692,3 +692,10 @@ html.no-motion .theme-screen::before, html.no-motion .theme-screen::after { anim
 .theme-screen .pc__side h3 { color: #fff; }
 .theme-screen .pc__btn:not(:disabled):hover { background: #fff; color: #000; }
 .prose .pc { max-width: none; }
+
+/* Block In: step images row */
+.steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.2em 0 .6em; }
+.steps-row figure { margin: 0; }
+.steps-row img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; border: 2px solid currentColor; }
+.steps-row figcaption { font-family: var(--font-osd, monospace); font-size: 1.1rem; margin-top: 6px; text-transform: uppercase; letter-spacing: .05em; }
+@media (max-width: 640px) { .steps-row { grid-template-columns: 1fr; } .steps-row img { aspect-ratio: auto; } }
