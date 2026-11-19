@@ -186,9 +186,10 @@ html.no-motion .home .home__main { animation: none; }
 .channel__desc { color: #bdbdb6; font-size: 1rem; }
 .channel { padding-top: 26px; }
 @media (min-width: 720px) {
-  .channel { grid-template-columns: 1fr auto; column-gap: 20px; align-items: end; }
-  .channel > :not(.channel__go) { grid-column: 1; }
-  .channel__go { grid-column: 2; grid-row: 1 / span 3; margin-top: 0 !important; }
+  .channel { grid-template-columns: 1fr auto; column-gap: 20px; }
+  .channel > :not(.channel__go) { grid-column: 1 / -1; }
+  .channel__num { grid-row: 1; grid-column: 1 !important; }
+  .channel__go { grid-column: 2; grid-row: 1; align-self: center; margin-top: 4px !important; }
 }
 .channel__go {
   align-self: end; justify-self: start; margin-top: 14px; padding: 4px 14px; white-space: nowrap;
