@@ -1,4 +1,6 @@
 ---
+image: /images/clients/bionicskins/posts-cover.jpg
+image_alt: "Slices of five BionicSkins social posts I designed: digital memory, inside the interface, getting your new socket, a pressure-map video, and World Diabetes Day"
 layout: client
 client: "BionicSkins"
 order: 1
